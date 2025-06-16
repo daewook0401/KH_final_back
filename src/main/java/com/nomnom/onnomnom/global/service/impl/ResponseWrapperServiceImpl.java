@@ -1,11 +1,12 @@
-package com.nomnom.onnomnom.util.responsewrapper;
+package com.nomnom.onnomnom.global.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nomnom.onnomnom.util.responsewrapper.responseType.Body;
-import com.nomnom.onnomnom.util.responsewrapper.responseType.Header;
-import com.nomnom.onnomnom.util.responsewrapper.responseType.ResponseWrapper;
+import com.nomnom.onnomnom.global.response.Body;
+import com.nomnom.onnomnom.global.response.Header;
+import com.nomnom.onnomnom.global.response.ResponseWrapper;
+import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 
 
 public class ResponseWrapperServiceImpl<T> implements ResponseWrapperService{
@@ -25,7 +26,7 @@ public class ResponseWrapperServiceImpl<T> implements ResponseWrapperService{
         Body<T> body = new Body<>(safeList, safeList.size());
         return new ResponseWrapper<>(header, body);
     }
-
+    
     @Override
     public ResponseWrapper<String> errorCreate(int code, String message){
         return wrapperCreate(code, message);

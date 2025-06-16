@@ -1,8 +1,8 @@
-package com.nomnom.onnomnom.util.responsewrapper;
+package com.nomnom.onnomnom.global.service;
 
 import java.util.List;
 
-import com.nomnom.onnomnom.util.responsewrapper.responseType.ResponseWrapper;
+import com.nomnom.onnomnom.global.response.ResponseWrapper;
 
 
 public interface ResponseWrapperService {

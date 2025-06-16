@@ -1,4 +1,4 @@
-package com.nomnom.onnomnom.util.responsewrapper.responseType;
+package com.nomnom.onnomnom.global.response;
 
 
 import lombok.AllArgsConstructor;
