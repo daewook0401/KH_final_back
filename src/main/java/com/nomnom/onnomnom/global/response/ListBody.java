@@ -3,13 +3,13 @@ package com.nomnom.onnomnom.global.response;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Body<T> {
+public class ListBody<T> {
     private List<T> items;
     private int totalCount;
 }

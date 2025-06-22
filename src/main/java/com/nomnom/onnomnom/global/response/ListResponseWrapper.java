@@ -2,13 +2,13 @@ package com.nomnom.onnomnom.global.response;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseWrapper<T> {
+public class ListResponseWrapper<T> {
     private Header header;
-    private Body<T> body;
+    private ListBody<T> body;
 }
