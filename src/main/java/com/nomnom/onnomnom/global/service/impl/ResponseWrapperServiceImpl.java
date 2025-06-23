@@ -16,10 +16,13 @@ import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 @Service
 public class ResponseWrapperServiceImpl implements ResponseWrapperService{
     
+    private Header makeHeader(ErrorCode code, String message) {
+        return new Header(code, message);
+    }
+
     @Override
     public ObjectResponseWrapper<String> wrapperCreate(ErrorCode code, String message) {
-        Header header = new Header(code, message);
-        return new ObjectResponseWrapper<>(header, null);
+        return new ObjectResponseWrapper<>(makeHeader(code, message), null);
     }
 
     @Override
@@ -28,17 +31,15 @@ public class ResponseWrapperServiceImpl implements ResponseWrapperService{
     }
 
     @Override
-    public <U> ListResponseWrapper<U> wrapperCreate(ErrorCode code, String message, List<U> item) {
-        Header header = new Header(code, message);
-        List<U> safeList = (item != null) ? item : new ArrayList<>();
+    public <U> ListResponseWrapper<U> wrapperCreate(ErrorCode code, String message, List<U> items) {
+        List<U> safeList = (items != null) ? items : new ArrayList<>();
         ListBody<U> body = new ListBody<>(safeList, safeList.size());
-        return new ListResponseWrapper<>(header, body);
+        return new ListResponseWrapper<>(makeHeader(code, message), body);
     }
     
     @Override
-    public <U> ObjectResponseWrapper<U> wrapperCreate(ErrorCode code, String message, U item) {
-        Header header = new Header(code, message);
-        ObjectBody<U> body = new ObjectBody<>(item, 1);
-        return new ObjectResponseWrapper<>(header, body);
+    public <U> ObjectResponseWrapper<U> wrapperCreate(ErrorCode code, String message, U items) {
+        ObjectBody<U> body = new ObjectBody<>(items, 1);
+        return new ObjectResponseWrapper<>(makeHeader(code, message), body);
     }
 }
