@@ -19,10 +19,16 @@ public class ResponseWrapperServiceImpl implements ResponseWrapperService{
     private Header makeHeader(ErrorCode code, String message) {
         return new Header(code, message);
     }
-
+    private Header makeHeader(String code, String message) {
+        return new Header(code, message);
+    }
+    @Override
+    public ObjectResponseWrapper<String> wrapperCreate(String code, String message){
+        return new ObjectResponseWrapper<String>(makeHeader(code, message), null);
+    }
     @Override
     public ObjectResponseWrapper<String> wrapperCreate(ErrorCode code, String message) {
-        return new ObjectResponseWrapper<>(makeHeader(code, message), null);
+        return new ObjectResponseWrapper<String>(makeHeader(code, message), null);
     }
 
     @Override
@@ -32,14 +38,14 @@ public class ResponseWrapperServiceImpl implements ResponseWrapperService{
 
     @Override
     public <U> ListResponseWrapper<U> wrapperCreate(ErrorCode code, String message, List<U> items) {
-        List<U> safeList = (items != null) ? items : new ArrayList<>();
-        ListBody<U> body = new ListBody<>(safeList, safeList.size());
-        return new ListResponseWrapper<>(makeHeader(code, message), body);
+        List<U> safeList = (items != null) ? items : new ArrayList<U>();
+        ListBody<U> body = new ListBody<U>(safeList, safeList.size());
+        return new ListResponseWrapper<U>(makeHeader(code, message), body);
     }
     
     @Override
     public <U> ObjectResponseWrapper<U> wrapperCreate(ErrorCode code, String message, U items) {
-        ObjectBody<U> body = new ObjectBody<>(items, 1);
-        return new ObjectResponseWrapper<>(makeHeader(code, message), body);
+        ObjectBody<U> body = new ObjectBody<U>(items, 1);
+        return new ObjectResponseWrapper<U>(makeHeader(code, message), body);
     }
 }
