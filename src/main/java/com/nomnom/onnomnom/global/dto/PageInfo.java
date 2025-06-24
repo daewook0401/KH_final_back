@@ -1,7 +1,9 @@
 package com.nomnom.onnomnom.global.dto;
 
 import lombok.Builder;
+import lombok.Value;
 
+@Value
 @Builder
 public class PageInfo {
 
