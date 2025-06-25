@@ -19,11 +19,13 @@ public class MemberEntity {
     @Id private Long memberNo;
     private String memberId;
     private String memberPw;
+    private String memberEmail;
     private String memberName;
     private String memberNickName;
     private String memberPh;
     private Date memberEnrollDate;
     private Date memberModifiedDate;
+    private String memberRole;
     private String isActive;
     private String memberSelfie;
 }

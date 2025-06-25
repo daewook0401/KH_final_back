@@ -2,6 +2,8 @@ package com.nomnom.onnomnom.member.model.dto;
 
 import java.util.Date;
 
+import com.nomnom.onnomnom.member.model.entity.MemberEntity;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -54,4 +56,21 @@ public class MemberDTO {
     private String MemberRole;
     private String isActive;
     private String memberSelfie;
+
+    public static MemberDTO fromEntity(MemberEntity e){
+        return new MemberDTO(
+            e.getMemberNo(),
+            e.getMemberId(),
+            e.getMemberPw(),
+            e.getMemberEmail(),
+            e.getMemberName(),
+            e.getMemberNickName(),
+            e.getMemberPh(),
+            e.getMemberEnrollDate(),
+            e.getMemberModifiedDate(),
+            e.getMemberRole(),
+            e.getIsActive(),
+            e.getMemberSelfie()
+        );
+    }
 }

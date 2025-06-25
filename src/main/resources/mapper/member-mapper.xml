@@ -21,43 +21,58 @@ FROM
         TB_MEMBER
 </sql>
 <select id="selectMemberByInput"
-        parameterType="com.nomnom.onnomnom.member.dto.MemberDTO"
-        resultType="com.nomnom.onnomnom.member.dto.MemberDTO">
+        parameterType="com.nomnom.onnomnom.member.dto.MemberSelectDTO"
+        resultType="com.nomnom.onnomnom.member.entity.MemberEntity">
 <include refid="Base_MemberDTO_Select" />
 <where>
-  <if test="memberNo != null">AND MEMBER_NO = #{memberNo}</if>
+  <choose>
+
+    <when test="memberNo != null">
+        MEMBER_NO = #{memberNo}
+    </when> 
+
+    <when test="memberId != null">
+        MEMBER_ID = #{memberId}
+    </when>
+
+    <when test="memberEmail != null">
+        MEMBER_EMAIL = #{memberEmail}
+    </when>
+
+    <when test="memberName != null">
+        MEMBER_NAME = #{memberName}
+    </when>
+
+    <when test="memberNickName != null">
+        MEMBER_NICKNAME = #{memberNickName}
+    </when>
+
+    <when test="memberPh != null">
+        MEMBER_PH = #{memberPh}
+    </when>
+
+    <when test="memberRole != null">
+        MEMBER_ROLE = #{memberRole}
+    </when>
+
+    <otherwise test="isActive != null">
+        IS_ACTIVE = #{isActive}
+    </otherwise>
+
+  </choose>
+  <!-- <if test="memberNo != null">AND MEMBER_NO = #{memberNo}</if>
   <if test="memberId != null">AND MEMBER_ID = #{memberId}</if>
-  <if test="memberNickName != null">AND MEMBER_NICKNAME = #{memberNickName}</if>
   <if test="memberEmail != null">AND MEMBER_EMAIL = #{memberEmail}</if>
+  <if test="memberName != null">AND MEMBER_NAME = #{memberName}</if>
+  <if test="memberNickName != null">AND MEMBER_NICKNAME = #{memberNickName}</if>
+  <if test="memberPh != null">AND MEMBER_PH = #{memberPh}</if>
+  <if test="memberRole != null">AND MEMBER_ROLE = #{memberRole}</if> -->
 </where>
-        MEMBER_ID = #{memberId} 
 </select>
 
-<select id="selectMemberByMemberNickName"
-parameterType="string"
-resultType="com.nomnom.onnomnom.member.dto.MemberDTO">
-SELECT 
-        MEMBER_NO AS memberNo,
-        MEMBER_ID AS memberId,
-        MEMBER_PW AS memberPw,
-        MEMBER_EMAIL AS memberEmail,
-        MEMBER_NAME AS memberName,
-        MEMBER_NICKNAME AS memberNickName,
-        MEMBER_PH AS memberPh,
-        MEMBER_ENROLL_DATE AS memberEnrollDate,
-        MEMBER_MODIFIED_DATE AS memberModifiedDate,
-        MEMBER_ROLE AS memberRole,
-        IS_ACTIVE AS isActive,
-        MEMBER_SELFIE AS memberSelfie
-FROM
-        TB_MEMBER
-WHERE
-        MEMBER_EMAIL = #{memberNickName} 
-</select>
-
-<select id="insertMember"
+<insert id="insertMember"
 parameterType="com.nomnom.onnomnom.member.vo.MemberInsertVo">
 
-</select>
+</insert>
 
 </mapper>

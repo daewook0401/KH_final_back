@@ -6,9 +6,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
+import com.nomnom.onnomnom.member.model.dto.MemberSelectDTO;
+import com.nomnom.onnomnom.member.model.entity.MemberEntity;
 
 public interface MemberService {
-    ObjectResponseWrapper<String> selectCheckId(MemberDTO member);
-    ObjectResponseWrapper<String> selectCheckNickName(MemberDTO member);
+    List<MemberDTO> selectMemberByInput(MemberSelectDTO member);
+    MemberDTO selectMemberByNo(String memberNo);
+    MemberDTO selectMemberById(String memberId);
+    MemberDTO selectMemberByEmail(String memberEmail);
+    MemberDTO selectMemberByName(String memberName);
+    MemberDTO selectMemberByNickName(String memberNickName);
+    MemberDTO selectMemberByPh(String memberPh);
+    List<MemberDTO> selectMemberByRole(String memberRole);
+    List<MemberDTO> selectMemberByIsActive(String isActive);
+    ObjectResponseWrapper<String> selectCheckId(String memberId);
+    ObjectResponseWrapper<String> selectCheckNickName(String memberNickName);
     ObjectResponseWrapper<String> insertMember(MemberDTO member, List<MultipartFile> memberSelfie);
 }

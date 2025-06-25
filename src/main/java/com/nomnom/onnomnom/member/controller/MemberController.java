@@ -33,12 +33,12 @@ public class MemberController {
     }
 
     @PostMapping("/check-id")
-    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckId(@RequestBody MemberDTO member){
-        return ResponseEntity.ok(memberService.selectCheckId(member));
+    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckId(@RequestBody String memberInput){
+        return ResponseEntity.ok(memberService.selectCheckId(memberInput));
     }
     @PostMapping("/check-nickname")
-    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckNickName(@RequestBody MemberDTO member){
-        return ResponseEntity.ok(memberService.selectCheckNickName(member));
+    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckNickName(@RequestBody String memberInput){
+        return ResponseEntity.ok(memberService.selectCheckNickName(memberInput));
     }
 
     
