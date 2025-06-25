@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nomnom.onnomnom.member.model.dao.MemberMapper">
+  
+  <select id="selectMEmberByMemberId"
+          parameterType="string"
+          resultType="com.nomnom.onnomnom.member.dto.MemberDTO">
+  </select>
+
+  <select id="selectMemberByMemberNickName"
+          parameterType="string"
+          resultType="com.nomnom.onnomnom.member.dto.MemberDTO">
+  </select>
+
+  <select id="insertMember"
+          parameterType="com.nomnom.onnomnom.member.vo.Member">
+  </select>
+
+      MemberDTO selectMemberByMemberId(String memberId);
+    MemberDTO selectMemberByMemberNickName(String memberNickName);
+    MemberDTO insertMember(Member member);
+
+</mapper>

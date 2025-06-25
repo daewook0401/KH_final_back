@@ -2,6 +2,7 @@ package com.nomnom.onnomnom.member.model.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
@@ -9,7 +10,6 @@ import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 import com.nomnom.onnomnom.member.model.dao.MemberMapper;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
-import com.nomnom.onnomnom.member.model.vo.Member;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,16 +38,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public ObjectResponseWrapper<String> insertMember(MemberDTO member){
-        Member memberValue = Member.builder()
-                                    .memberId(member.getMemberId())
-                                    .memberPw(passwordEncoder.encode(member.getMemberPw()))
-                                    .memberName(member.getMemberName())
-                                    .memberNickName(member.getMemberNickName())
-                                    .memberPh(member.getMemberPh())
-                                    .memberSelfie(null)
-                                    .build();
-        memberMapper.insertMember(memberValue);
+    public ObjectResponseWrapper<String> insertMember(MemberDTO member, MultipartFile memberSelfie){
+        memberMapper.insertMember(member);
         return responseWrapperService.wrapperCreate("S100","회원가입 성공");
     }
 }

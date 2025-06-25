@@ -24,10 +24,10 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // @PostMapping
-    // public ResponseEntity<ObjectResponseWrapper<String>> insertMember(@ModelAttribute MemberDTO member, @RequestPart MultipartFile memberSelfie) {
-    //     return ResponseEntity.ok(memberService.insertMember(member));
-    // }
+    @PostMapping
+    public ResponseEntity<ObjectResponseWrapper<String>> insertMember(@ModelAttribute MemberDTO member, @RequestPart MultipartFile memberSelfie) {
+        return ResponseEntity.ok(memberService.insertMember(member, memberSelfie));
+    }
 
     @PostMapping("/check-id")
     public ResponseEntity<ObjectResponseWrapper<String>> selectCheckId(@RequestBody MemberDTO member){
