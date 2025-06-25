@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nomnom.onnomnom.review.model.dao.ReviewMapper">
+
+
+  <resultMap id="reviewWithPhotosResultMap" type="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
+    <id property="reviewNo" column="reviewNo" />
+    <result property="memberNickname" column="memberNickname" />
+    <result property="reviewContent" column="reviewContent" />
+    <result property="reviewScore" column="reviewScore" />
+    <result property="createDate" column="createDate" />
+    
+    <collection property="photos" ofType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
+      <id property="reviewPhotoNo" column="reviewPhotoNo" />
+      <result property="reviewPhotoUrl" column="reviewPhotoUrl" />
+    </collection>
+  </resultMap>
+
+
+  <select id="selectReview" resultMap="reviewWithPhotosResultMap">
+    SELECT
+      R.REVIEW_NO,
+      M.MEMBER_NICKNAME,
+      R.REVIEW_CONTENT,
+      R.REVIEW_SCORE,
+      R.CREATE_DATE,
+      P.REVIEW_PHOTO_NO,
+      P.REVIEW_PHOTO_URL
+    FROM TB_REVIEW R
+    JOIN TB_MEMBER M ON R.MEMBER_NO = M.MEMBER_NO
+    LEFT JOIN TB_REVIEW_PHOTO P ON R.REVIEW_NO = P.REVIEW_NO
+    WHERE R.RESTAURANT_NO = #{restaurantNo}
+      AND R.IS_ACTIVE = 'Y'
+    ORDER BY
+      (R.MEMBER_NO = #{memberNo}) DESC,
+      R.CREATE_DATE DESC
+  </select>
+
+  <insert id="insertReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO"
+          useGeneratedKeys="true" keyProperty="reviewNo" keyColumn="REVIEW_NO">
+    INSERT INTO 
+      TB_REVIEW (
+        RESTAURANT_NO,
+        MEMBER_NO,
+        REVIEW_CONTENT,
+        REVIEW_SCORE,
+        CREATE_DATE
+    ) VALUES (
+        #{restaurantNo},
+        #{memberNo},
+        #{reviewContent},
+        #{reviewScore},
+        SYSDATE
+    )
+  </insert>
+
+
+  <update id="updateReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
+    UPDATE
+      TB_REVIEW
+    SET 
+      REVIEW_CONTENT = #{reviewContent},
+      REVIEW_SCORE = #{reviewScore}
+    WHERE 
+      REVIEW_NO = #{reviewNo}
+    AND 
+      IS_ACTIVE = 'Y'
+  </update>
+
+
+  <update id="deleteReview" parameterType="String">
+    UPDATE
+      TB_REVIEW
+    SET 
+      IS_ACTIVE = 'N'
+    WHERE 
+      REVIEW_NO = #{reviewNo}
+  </update>
+
+  <insert id="insertReviewPhoto" parameterType="java.util.List">
+    INSERT INTO 
+      TB_REVIEW_PHOTO (
+        REVIEW_NO,
+        REVIEW_PHOTO_URL
+    )
+    VALUES
+    <foreach collection="list" item="photo" separator=",">
+      (#{photo.reviewNo}, #{photo.reviewPhotoUrl})
+    </foreach>
+  </insert>
+
+
+  <delete id="deleteReviewPhoto" parameterType="String">
+    DELETE FROM 
+      TB_REVIEW_PHOTO
+    WHERE 
+      REVIEW_NO = #{reviewNo}
+  </delete>
+
+</mapper>
