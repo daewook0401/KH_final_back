@@ -51,6 +51,7 @@ public class MemberDTO {
     private String memberPh;
     private Date memberEnrollDate;
     private Date memberModifiedDate;
+    private String MemberRole;
     private String isActive;
     private String memberSelfie;
 }

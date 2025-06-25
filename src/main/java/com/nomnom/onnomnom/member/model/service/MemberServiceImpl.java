@@ -1,5 +1,7 @@
 package com.nomnom.onnomnom.member.model.service;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,9 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
+import com.nomnom.onnomnom.global.service.FileService;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 import com.nomnom.onnomnom.member.model.dao.MemberMapper;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
+import com.nomnom.onnomnom.member.model.vo.MemberInsertVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final ResponseWrapperService responseWrapperService;
     private final MemberMapper memberMapper;
+    private final FileService fileService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -38,8 +43,19 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public ObjectResponseWrapper<String> insertMember(MemberDTO member, MultipartFile memberSelfie){
-        memberMapper.insertMember(member);
+    public ObjectResponseWrapper<String> insertMember(MemberDTO member, List<MultipartFile> memberSelfie){
+        List<String> url = fileService.imageUpLoad(memberSelfie);
+        MemberInsertVo memberValue = MemberInsertVo.builder()
+                                                    .memberId(member.getMemberId())
+                                                    .memberPw(passwordEncoder.encode(member.getMemberPw()))
+                                                    .memberEmail(member.getMemberEmail())
+                                                    .memberName(member.getMemberName())
+                                                    .memberNickName(member.getMemberNickName())
+                                                    .memberPh(member.getMemberPh())
+                                                    .memberRole(member.getMemberRole())
+                                                    .memberSelfie(url.get(0))
+                                                    .build();
+        memberMapper.insertMember(memberValue);
         return responseWrapperService.wrapperCreate("S100","회원가입 성공");
     }
 }
