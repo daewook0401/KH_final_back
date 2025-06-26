@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.config.util.JwtUtil;
+import com.nomnom.onnomnom.token.model.dto.TokenDTO;
+import com.nomnom.onnomnom.token.model.service.TokenService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends OncePerRequestFilter{
 
     private final JwtUtil util;
+    private final TokenService tokenService;
     private final UserDetailsService userService;
 
     @Override
@@ -64,12 +67,10 @@ public class JwtFilter extends OncePerRequestFilter{
                 CustomUserDetails user = (CustomUserDetails) userService.loadUserByUsername(username);
 
                 // 3) 새 Access Token 발급
-                String newAccessToken = util.getAccessToken(user.getUsername());
-                // (선택) 필요하다면 새로운 Refresh Token도 생성
-                // String newRefreshToken = util.generateRefreshToken(user);
+                TokenDTO tokens = tokenService.refreshToken(refreshToken);
 
                 // 4) 응답 헤더에 담아주기
-                response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + newAccessToken);
+                response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.getAccessToken());
                 // response.setHeader("Refresh-Token", newRefreshToken);
 
                 // 5) SecurityContext 업데이트

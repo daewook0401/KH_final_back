@@ -13,6 +13,7 @@ public class MemberInsertVo {
     private String memberNickName;
     private String memberPh;
     private String memberRole;
-    private String isActive;
     private String memberSelfie;
+    private String isActive;
+    private String isStoreOwner;
 }

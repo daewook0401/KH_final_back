@@ -20,7 +20,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class MemberDTO {
-    private Long memberNo;
+    private String memberNo;
 
     @NotBlank(message = "아이디는 필수 입력값입니다.")
     @Pattern(
@@ -54,8 +54,9 @@ public class MemberDTO {
     private Date memberEnrollDate;
     private Date memberModifiedDate;
     private String MemberRole;
-    private String isActive;
     private String memberSelfie;
+    private String isActive;
+    private String isStoreOwner;
 
     public static MemberDTO fromEntity(MemberEntity e){
         return new MemberDTO(
@@ -70,7 +71,8 @@ public class MemberDTO {
             e.getMemberModifiedDate(),
             e.getMemberRole(),
             e.getIsActive(),
-            e.getMemberSelfie()
+            e.getMemberSelfie(),
+            e.getIsStoreOwner()
         );
     }
 }

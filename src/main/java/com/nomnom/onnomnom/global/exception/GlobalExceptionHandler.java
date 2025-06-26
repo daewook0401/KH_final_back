@@ -1,5 +1,8 @@
 package com.nomnom.onnomnom.global.exception;
 
+import org.springframework.security.core.AuthenticationException;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,9 +24,17 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(RuntimeException e, ErrorCode code){
         return ResponseEntity.ok().body(service.errorCreate(code, e.getMessage()));
     }
+    private ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(AuthenticationException e, ErrorCode code){
+        return ResponseEntity.ok().body(service.errorCreate(code, e.getMessage()));
+    }
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(BaseException e){
+        return makeResponseEntity(e, e.getErrorCode());
+    }
+
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(CustomAuthenticationException e){
         return makeResponseEntity(e, e.getErrorCode());
     }
 }

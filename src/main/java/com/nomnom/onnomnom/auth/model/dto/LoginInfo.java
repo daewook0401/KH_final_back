@@ -1,4 +1,4 @@
-package com.nomnom.onnomnom.member.model.dto;
+package com.nomnom.onnomnom.auth.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Builder
-public class MemberSelectDTO {
+public class LoginInfo {
     private String memberNo;
-    private String memberId;
-    private String memberEmail;
-    private String memberName;
-    private String memberNickName;
-    private String memberPh;
+    private String username;
     private String memberRole;
-    private String isActive;
     private String isStoreOwner;
 }

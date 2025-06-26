@@ -37,14 +37,14 @@ public class ResponseWrapperServiceImpl implements ResponseWrapperService{
     }
 
     @Override
-    public <U> ListResponseWrapper<U> wrapperCreate(ErrorCode code, String message, List<U> items) {
+    public <U> ListResponseWrapper<U> wrapperCreate(String code, String message, List<U> items) {
         List<U> safeList = (items != null) ? items : new ArrayList<U>();
         ListBody<U> body = new ListBody<U>(safeList, safeList.size());
         return new ListResponseWrapper<U>(makeHeader(code, message), body);
     }
     
     @Override
-    public <U> ObjectResponseWrapper<U> wrapperCreate(ErrorCode code, String message, U items) {
+    public <U> ObjectResponseWrapper<U> wrapperCreate(String code, String message, U items) {
         ObjectBody<U> body = new ObjectBody<U>(items, 1);
         return new ObjectResponseWrapper<U>(makeHeader(code, message), body);
     }
