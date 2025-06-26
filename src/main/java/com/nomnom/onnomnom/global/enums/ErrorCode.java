@@ -69,7 +69,11 @@ public enum ErrorCode {
     
     FILE_SIZE_EXCEEDED("E934", "파일 크기 초과"),
     
-    DUPLICATE_MEMBER_EMAIL("E935", "이메일 중복 검사 실패");
+    DUPLICATE_MEMBER_EMAIL("E935", "이메일 중복 검사 실패"),
+    
+    INVALID_REFRESH_TOKEN("E936", "유효하지 않은 리프레쉬 토큰입니다."),
+    
+    ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다.");
 
     private final String code;
     private final String defaultMessage;

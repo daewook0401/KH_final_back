@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MemberEntity {
-    @Id private Long memberNo;
+    @Id private String memberNo;
     private String memberId;
     private String memberPw;
     private String memberEmail;
@@ -26,6 +26,7 @@ public class MemberEntity {
     private Date memberEnrollDate;
     private Date memberModifiedDate;
     private String memberRole;
-    private String isActive;
     private String memberSelfie;
+    private String isActive;
+    private String isStoreOwner;
 }

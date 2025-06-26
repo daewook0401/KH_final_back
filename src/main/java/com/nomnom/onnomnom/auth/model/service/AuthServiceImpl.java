@@ -1,0 +1,60 @@
+package com.nomnom.onnomnom.auth.model.service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
+
+import com.nomnom.onnomnom.auth.model.dto.LoginInfo;
+import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
+import com.nomnom.onnomnom.auth.model.dto.MemberLoginDTO;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
+import com.nomnom.onnomnom.global.enums.ErrorCode;
+import com.nomnom.onnomnom.global.exception.CustomAuthenticationException;
+import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
+import com.nomnom.onnomnom.global.service.ResponseWrapperService;
+import com.nomnom.onnomnom.token.model.service.TokenService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class AuthServiceImpl implements AuthService{
+
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+    private final ResponseWrapperService responseWrapperService;
+
+    @Override
+    public ObjectResponseWrapper<LoginResponseDTO> tokens(MemberLoginDTO memberLoginInfo) {
+        Authentication authentication = null;
+        try{
+            authentication =
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    memberLoginInfo.getMemberId(), 
+                    memberLoginInfo.getMemberPw()));
+        } catch(AuthenticationException e) {
+            throw new CustomAuthenticationException(ErrorCode.ID_PASSWORD_MISMATCH);
+        }
+        CustomUserDetails loginMember = (CustomUserDetails)authentication.getPrincipal();
+
+        LoginResponseDTO loginResponse = LoginResponseDTO
+                .builder()
+                .loginInfo(LoginInfo.builder()
+                                    .memberNo(loginMember.getMemberNo())
+                                    .username(loginMember.getUsername())
+                                    .memberRole(loginMember.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("ROLE_USER"))
+                                    .isStoreOwner(loginMember.getIsStoreOwner())
+                                    .build())
+                .tokens(tokenService.generateToken(loginMember.getUsername(), loginMember.getMemberNo()))
+                .build();
+        
+        return responseWrapperService.wrapperCreate("E100", "로그인 성공", loginResponse);
+    }
+}

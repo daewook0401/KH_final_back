@@ -55,8 +55,11 @@ FROM
         MEMBER_ROLE = #{memberRole}
     </when>
 
-    <otherwise test="isActive != null">
+    <when test="isActive != null">
         IS_ACTIVE = #{isActive}
+    </when>
+    <otherwise test="isStoreOwner != null">
+        IS_STORE_OWNER = #{isStoreOwner}
     </otherwise>
 
   </choose>
@@ -72,7 +75,25 @@ FROM
 
 <insert id="insertMember"
 parameterType="com.nomnom.onnomnom.member.vo.MemberInsertVo">
-
+    INSERT INTO TB_MEMBER(
+        MEMBER_ID,
+        MEMBER_PW,
+        MEMBER_EMAIL,
+        MEMBER_NAME,
+        MEMBER_NICKNAME,
+        MEMBER_PH,
+        MEMBER_ROLE
+        MEMBER_SELFIE
+    ) VALUES (
+        #{memberId},
+        #{memberPw},
+        #{memberEmail},
+        #{memberName},
+        #{memberNickName},
+        #{memberPh},
+        #{memberRole},
+        #{memberSelfie}
+    )
 </insert>
 
 </mapper>

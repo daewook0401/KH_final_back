@@ -15,12 +15,10 @@ import lombok.Value;
 @Getter
 @ToString
 public class CustomUserDetails implements UserDetails {
-    private final Long memberNo;
+    private final String memberNo;
     private final String username; //MEMBER_ID
     private final String password; //MEMBER_PW
-    private final String email;
-    private final String memberRole;        
-    private final String memberName;
-    private final char isActive;
+    private final String isActive;
+    private final String isStoreOwner;
     private final Collection<? extends GrantedAuthority> authorities;
 }
