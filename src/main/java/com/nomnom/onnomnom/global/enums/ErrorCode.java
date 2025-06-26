@@ -65,7 +65,11 @@ public enum ErrorCode {
     
     RESTAURANT_VALIDATION_FAIL("E932", "맛집 유효성 검증 실패"),
     
-    REVIEW_VALIDATION_FAIL("E933", "리뷰 유효성 검증 실패");
+    REVIEW_VALIDATION_FAIL("E933", "리뷰 유효성 검증 실패"),
+    
+    FILE_SIZE_EXCEEDED("E934", "파일 크기 초과"),
+    
+    DUPLICATE_MEMBER_EMAIL("E935", "이메일 중복 검사 실패");
 
     private final String code;
     private final String defaultMessage;

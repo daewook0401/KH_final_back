@@ -11,6 +11,9 @@ import com.nomnom.onnomnom.member.model.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,18 +27,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // @PostMapping
-    // public ResponseEntity<ObjectResponseWrapper<String>> insertMember(@ModelAttribute MemberDTO member, @RequestPart MultipartFile memberSelfie) {
-    //     return ResponseEntity.ok(memberService.insertMember(member));
-    // }
+    @PostMapping
+    public ResponseEntity<ObjectResponseWrapper<String>> insertMember(@ModelAttribute MemberDTO member, @RequestPart List<MultipartFile> memberSelfie) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.insertMember(member, memberSelfie));
+    }
 
     @PostMapping("/check-id")
-    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckId(@RequestBody MemberDTO member){
-        return ResponseEntity.ok(memberService.selectCheckId(member));
+    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckId(@RequestBody String memberInput){
+        return ResponseEntity.ok(memberService.selectCheckId(memberInput));
     }
     @PostMapping("/check-nickname")
-    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckNickName(@RequestBody MemberDTO member){
-        return ResponseEntity.ok(memberService.selectCheckNickName(member));
+    public ResponseEntity<ObjectResponseWrapper<String>> selectCheckNickName(@RequestBody String memberInput){
+        return ResponseEntity.ok(memberService.selectCheckNickName(memberInput));
     }
 
     
