@@ -9,7 +9,7 @@ import com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO;
 
 public interface ReviewService {
    // 리뷰 목록 조회
-    ListResponseWrapper<ReviewDTO> selectReview(String restaurantNo,  int currentPage);
+    ListResponseWrapper<ReviewDTO> selectReview(String restaurantNo);
 
     // 리뷰 작성
     void insertReview(ReviewDTO reviewDTO);

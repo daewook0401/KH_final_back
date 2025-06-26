@@ -25,20 +25,11 @@ public class ReviewServiceImpl implements ReviewService {
   private final ResponseWrapperService responseWrapperService;
  
 @Override
-public ListResponseWrapper<ReviewDTO> selectReview(String restaurantNo, int currentPage) {
-    int pageSize = 5;
-    int boardNoPerPage = 5;
-
-    int totalReviewCount = reviewMapper.selectReviewCount(restaurantNo);
-    PageInfo pageInfo = Pagination.getPageInfo(currentPage, pageSize, boardNoPerPage, totalReviewCount);
-
-    int startRow = (currentPage - 1) * pageSize + 1;
-    int endRow = currentPage * pageSize;
-
+public ListResponseWrapper<ReviewDTO> selectReview(String restaurantNo) {
+ 
+    
     ReviewDTO reviewDTO = new ReviewDTO();
     reviewDTO.setRestaurantNo(restaurantNo);
-    reviewDTO.setStartRow(startRow);
-    reviewDTO.setEndRow(endRow);
 
     List<ReviewDTO> reviews = reviewMapper.selectReview(reviewDTO);
 

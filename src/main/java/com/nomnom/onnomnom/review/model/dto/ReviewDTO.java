@@ -22,7 +22,5 @@ public class ReviewDTO {
     private String reviewContent;
     private int reviewScore;
     private Date createDate;
-    private int startRow;
-    private int endRow;
     private List<ReviewPhotoDTO> photos;
 }
