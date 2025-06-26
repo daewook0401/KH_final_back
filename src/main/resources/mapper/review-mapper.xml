@@ -5,38 +5,52 @@
 
 <mapper namespace="com.nomnom.onnomnom.review.model.dao.ReviewMapper">
 
+  <select id="selectReviewCount" resultType="int">
+    SELECT 
+      COUNT(*)
+    FROM 
+      TB_REVIEW
+    WHERE 
+      RESTAURANT_NO = #{restaurantNo}
+    AND 
+      IS_ACTIVE = 'Y'
+  </select>
 
   <resultMap id="reviewWithPhotosResultMap" type="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
-    <id property="reviewNo" column="reviewNo" />
-    <result property="memberNickname" column="memberNickname" />
-    <result property="reviewContent" column="reviewContent" />
-    <result property="reviewScore" column="reviewScore" />
-    <result property="createDate" column="createDate" />
-    
-    <collection property="photos" ofType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
-      <id property="reviewPhotoNo" column="reviewPhotoNo" />
-      <result property="reviewPhotoUrl" column="reviewPhotoUrl" />
-    </collection>
-  </resultMap>
+  <id property="reviewNo" column="REVIEW_NO" />
+  <result property="memberNickname" column="MEMBER_NICKNAME" />
+  <result property="reviewContent" column="REVIEW_CONTENT" />
+  <result property="reviewScore" column="REVIEW_SCORE" />
+  <result property="createDate" column="CREATE_DATE" />
+  
+  <collection property="photos" ofType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
+    <id property="reviewPhotoNo" column="REVIEW_PHOTO_NO" />
+    <result property="reviewPhotoUrl" column="REVIEW_PHOTO_URL" />
+  </collection>
+</resultMap>
 
 
-  <select id="selectReview" resultMap="reviewWithPhotosResultMap">
-    SELECT
-      R.REVIEW_NO,
-      M.MEMBER_NICKNAME,
-      R.REVIEW_CONTENT,
-      R.REVIEW_SCORE,
-      R.CREATE_DATE,
-      P.REVIEW_PHOTO_NO,
-      P.REVIEW_PHOTO_URL
-    FROM TB_REVIEW R
-    JOIN TB_MEMBER M ON R.MEMBER_NO = M.MEMBER_NO
-    LEFT JOIN TB_REVIEW_PHOTO P ON R.REVIEW_NO = P.REVIEW_NO
-    WHERE R.RESTAURANT_NO = #{restaurantNo}
-      AND R.IS_ACTIVE = 'Y'
-    ORDER BY
-      (R.MEMBER_NO = #{memberNo}) DESC,
-      R.CREATE_DATE DESC
+  <select id="selectReviewPage" resultMap="reviewWithPhotosResultMap">
+  SELECT * FROM (
+    SELECT ROWNUM rn, a.* FROM (
+      SELECT
+        R.REVIEW_NO,
+        M.MEMBER_NICKNAME,
+        R.REVIEW_CONTENT,
+        R.REVIEW_SCORE,
+        R.CREATE_DATE,
+        P.REVIEW_PHOTO_NO,
+        P.REVIEW_PHOTO_URL
+      FROM TB_REVIEW R
+      JOIN TB_MEMBER M ON R.MEMBER_NO = M.MEMBER_NO
+      LEFT JOIN TB_REVIEW_PHOTO P ON R.REVIEW_NO = P.REVIEW_NO
+      WHERE R.RESTAURANT_NO = #{restaurantNo}
+        AND R.IS_ACTIVE = 'Y'
+      ORDER BY R.CREATE_DATE DESC
+    ) a
+    WHERE ROWNUM <= #{endRow}
+  )
+  WHERE rn > #{startRow}
   </select>
 
   <insert id="insertReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO"
@@ -87,7 +101,7 @@
         REVIEW_PHOTO_URL
     )
     VALUES
-    <foreach collection="list" item="photo" separator=",">
+    <foreach collection="reviewPhotoDTO" item="photo" separator=",">
       (#{photo.reviewNo}, #{photo.reviewPhotoUrl})
     </foreach>
   </insert>
