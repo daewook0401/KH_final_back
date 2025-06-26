@@ -27,8 +27,8 @@ public ResponseEntity<ListResponseWrapper<String>> getReviews(
         @PathVariable String restaurantNo,
         @RequestParam(name = "page", defaultValue = "1") int page
 ) {
-    ListResponseWrapper<String> result = reviewService.selectReview(restaurantNo, page);
-    return ResponseEntity.ok(result);
+    // ListResponseWrapper<String> result = reviewService.selectReview(restaurantNo, page);
+    return ResponseEntity.ok(null);
 }
  
     
