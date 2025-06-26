@@ -21,8 +21,8 @@ FROM
         TB_MEMBER
 </sql>
 <select id="selectMemberByInput"
-        parameterType="com.nomnom.onnomnom.member.dto.MemberSelectDTO"
-        resultType="com.nomnom.onnomnom.member.entity.MemberEntity">
+        parameterType="com.nomnom.onnomnom.member.model.dto.MemberSelectDTO"
+        resultType="com.nomnom.onnomnom.member.model.entity.MemberEntity">
 <include refid="Base_MemberDTO_Select" />
 <where>
   <choose>
@@ -55,10 +55,13 @@ FROM
         MEMBER_ROLE = #{memberRole}
     </when>
 
-    <otherwise test="isActive != null">
+    <when test="isActive != null">
         IS_ACTIVE = #{isActive}
-    </otherwise>
-
+    </when>
+    <when test="isStoreOwner != null">
+        IS_STORE_OWNER = #{isStoreOwner}
+    </when>
+    <otherwise/>
   </choose>
   <!-- <if test="memberNo != null">AND MEMBER_NO = #{memberNo}</if>
   <if test="memberId != null">AND MEMBER_ID = #{memberId}</if>
@@ -71,8 +74,26 @@ FROM
 </select>
 
 <insert id="insertMember"
-parameterType="com.nomnom.onnomnom.member.vo.MemberInsertVo">
-
+parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+    INSERT INTO TB_MEMBER(
+        MEMBER_ID,
+        MEMBER_PW,
+        MEMBER_EMAIL,
+        MEMBER_NAME,
+        MEMBER_NICKNAME,
+        MEMBER_PH,
+        MEMBER_ROLE
+        MEMBER_SELFIE
+    ) VALUES (
+        #{memberId},
+        #{memberPw},
+        #{memberEmail},
+        #{memberName},
+        #{memberNickName},
+        #{memberPh},
+        #{memberRole},
+        #{memberSelfie}
+    )
 </insert>
 
 </mapper>
