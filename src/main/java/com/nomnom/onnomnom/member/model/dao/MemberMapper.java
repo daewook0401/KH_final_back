@@ -11,6 +11,6 @@ import com.nomnom.onnomnom.member.model.vo.MemberInsertVo;
 @Mapper
 public interface MemberMapper {
     List<MemberEntity> selectMemberByInput(MemberSelectDTO memberInput);
-    int insertMember(MemberInsertVo member);
+    void insertMember(MemberInsertVo member);
 
 }
