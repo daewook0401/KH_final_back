@@ -31,7 +31,7 @@ public enum ErrorCode {
     
     BUSINESS_INFO_REGISTER_FAIL("E915", "운영정보등록 실패"),
     
-    BRAKE_TIME_RANGE_ERROR("E916", "브레이크타임 범위 오류"),
+    BREAK_TIME_RANGE_ERROR("E916", "브레이크타임 범위 오류"),
     
     BUSINESS_INFO_UPDATE_FAIL("E917", "운영정보수정 실패"),
     
@@ -73,7 +73,12 @@ public enum ErrorCode {
     
     INVALID_REFRESH_TOKEN("E936", "유효하지 않은 리프레쉬 토큰입니다."),
     
-    ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다.");
+    ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다."),
+    
+    BREAK_STARTTIME_ERROR("E938", "브레이크 시작 시간을 잘못 입력하셨습니다."),
+	
+    BREAK_ENDTIME_ERROR("E939", "브레이크 종료 시간을 잘못 입력하셨습니다.");
+	
 
     private final String code;
     private final String defaultMessage;
