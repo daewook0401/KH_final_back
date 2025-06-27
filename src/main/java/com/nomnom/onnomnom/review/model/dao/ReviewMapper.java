@@ -6,13 +6,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.nomnom.onnomnom.review.model.dto.ReviewDTO;
+import com.nomnom.onnomnom.review.model.dto.ReviewPaginationDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO;
 
 @Mapper
 public interface ReviewMapper {
   int selectReviewCount(String restaurantNo);
   
-  List<ReviewDTO> selectReview(ReviewDTO reviewDTO);
+  List<ReviewDTO> selectReview(ReviewPaginationDTO searchDTO);
 
   void insertReview(ReviewDTO reviewDTO);
 

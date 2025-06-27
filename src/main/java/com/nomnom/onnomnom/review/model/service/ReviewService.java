@@ -3,13 +3,15 @@ package com.nomnom.onnomnom.review.model.service;
 import java.util.List;
 
 
-import com.nomnom.onnomnom.global.response.ListResponseWrapper;
+
+import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.review.model.dto.ReviewDTO;
+import com.nomnom.onnomnom.review.model.dto.ReviewPaginationDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO;
 
 public interface ReviewService {
    // 리뷰 목록 조회
-    ListResponseWrapper<ReviewDTO> selectReview(String restaurantNo);
+    ObjectResponseWrapper<ReviewPaginationDTO> selectReview(String restaurantNo,int currentPage);
 
     // 리뷰 작성
     void insertReview(ReviewDTO reviewDTO);
