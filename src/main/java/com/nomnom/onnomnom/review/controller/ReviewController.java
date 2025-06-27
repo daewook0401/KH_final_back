@@ -29,42 +29,41 @@ public class ReviewController {
   private final ReviewService reviewService;
   private final ResponseWrapperService responseWrapperService;
 
-@GetMapping
-public ResponseEntity<ObjectResponseWrapper<ReviewPaginationDTO>> getReviews(
-        @PathVariable String restaurantNo,
-        @RequestParam(name = "page", defaultValue = "1") int page
-) {
-    return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
-}
- 
-@PostMapping
-public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
-        @PathVariable String restaurantNo,
-        @RequestBody ReviewDTO reviewDTO
-) {
-    reviewDTO.setRestaurantNo(restaurantNo);
-    reviewService.insertReview(reviewDTO);
-    return ResponseEntity.ok(responseWrapperService.wrapperCreate("S100", "리뷰 등록 성공", "success"));
-}    
-
-@PutMapping("/{reviewNo}")
-public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
-        @PathVariable String restaurantNo,
-        @PathVariable String reviewNo,
-        @RequestBody ReviewDTO reviewDTO
-) {
-    reviewDTO.setRestaurantNo(restaurantNo);
-    reviewDTO.setReviewNo(reviewNo);
-    
-    reviewService.updateReview(reviewDTO);
-    return ResponseEntity.ok(responseWrapperService.wrapperCreate("S102","리뷰 수정 성공","success"));
+  @GetMapping
+  public ResponseEntity<ObjectResponseWrapper<ReviewPaginationDTO>> getReviews(
+          @PathVariable String restaurantNo,
+          @RequestParam(name = "page", defaultValue = "1") int page
+  ) {
+      return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
   }
-@DeleteMapping("/{reviewNo}")
-public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
-        @PathVariable String restaurantNo,
-        @PathVariable String reviewNo) {
+  
+  @PostMapping
+  public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
+          @PathVariable String restaurantNo,
+          @RequestBody ReviewDTO reviewDTO
+  ) {
+      reviewDTO.setRestaurantNo(restaurantNo);
+      reviewService.insertReview(reviewDTO);
+      return ResponseEntity.ok(responseWrapperService.wrapperCreate("S100", "리뷰 등록 성공", "success"));
+  }    
 
-    reviewService.deleteReview(reviewNo);
-    return ResponseEntity.ok(responseWrapperService.wrapperCreate("S103", "리뷰 삭제 성공", "success"));
-}
+  @PutMapping("/{reviewNo}")
+  public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
+          @PathVariable String restaurantNo,
+          @PathVariable String reviewNo,
+          @RequestBody ReviewDTO reviewDTO
+  ) {
+      reviewDTO.setRestaurantNo(restaurantNo);
+      reviewDTO.setReviewNo(reviewNo);
+      
+      reviewService.updateReview(reviewDTO);
+      return ResponseEntity.ok(responseWrapperService.wrapperCreate("S102","리뷰 수정 성공","success"));
+    }
+  @DeleteMapping("/{reviewNo}")
+  public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
+          @PathVariable String reviewNo) {
+
+      reviewService.deleteReview(reviewNo);
+      return ResponseEntity.ok(responseWrapperService.wrapperCreate("S103", "리뷰 삭제 성공", "success"));
+  }
 }
