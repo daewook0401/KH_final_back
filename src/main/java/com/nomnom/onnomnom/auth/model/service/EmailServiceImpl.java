@@ -1,6 +1,5 @@
 package com.nomnom.onnomnom.auth.model.service;
 
-import java.util.Date;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,7 +11,6 @@ import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
-import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.service.MemberService;
 
 import jakarta.mail.MessagingException;

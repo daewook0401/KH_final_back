@@ -1,7 +1,5 @@
 package com.nomnom.onnomnom.auth.model.service;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,18 +11,14 @@ import com.nomnom.onnomnom.auth.model.dao.AuthMapper;
 import com.nomnom.onnomnom.auth.model.dto.LoginInfo;
 import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
 import com.nomnom.onnomnom.auth.model.dto.MemberLoginDTO;
-import com.nomnom.onnomnom.auth.model.dto.VerifyCodeDTO;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
-import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.exception.CustomAuthenticationException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 import com.nomnom.onnomnom.member.model.service.MemberService;
 import com.nomnom.onnomnom.token.model.service.TokenService;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
 @Service
