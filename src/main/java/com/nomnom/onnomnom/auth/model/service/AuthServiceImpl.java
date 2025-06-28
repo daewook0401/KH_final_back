@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
     private final TokenService tokenService;
     private final ResponseWrapperService responseWrapperService;
     private final MemberService memberService;
-    private final JavaMailSender sender;
+
     private final AuthMapper authMapper;
 
     @Override
@@ -66,54 +66,7 @@ public class AuthServiceImpl implements AuthService{
         return responseWrapperService.wrapperCreate("E100", "로그인 성공", loginResponse);
     }
 
-    @Override
-    public ObjectResponseWrapper<String> selectCheckEmail(String email){
-        if (memberService.selectMemberByEmail(email) != null){
-            throw new BaseException(ErrorCode.DUPLICATE_MEMBER_EMAIL);
-        }
-        return sendVerifyCode(email);
-    }
 
-    private ObjectResponseWrapper<String> sendVerifyCode(String email){
-        int verifyCode = verifyCodeCreate();
-        MimeMessage message = sender.createMimeMessage();
-        try{
-            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
-            helper.setTo(email);
-            helper.setSubject("뇸뇸 이메일 인증 번호입니다.");
-            helper.setText("""
-            <div style="width:100%; background:#f4f4f4; padding:20px; font-family:Arial,sans-serif;">
-                <div style="max-width:600px; margin:0 auto; background:#fff; border-radius:8px; overflow:hidden;">
-                    <div style="background:#4CAF50; color:#fff; padding:20px; text-align:center;">
-                        <h1>Eco-Insight 이메일 인증</h1>
-                    </div>
-                    <div style="padding:20px; color:#333;">
-                        <p>안녕하세요,</p>
-                        <p>아래 인증 코드를 입력하여 이메일 인증을 완료해주세요.</p>
-                        <div style="text-align:center; margin:20px 0;">
-                            <span style="display:inline-block; font-size:24px; font-weight:bold; color:#4CAF50;
-                                        padding:10px 20px; border:2px dashed #4CAF50; border-radius:4px;">
-                                """ + verifyCode + """
-                            </span>
-                        </div>
-                        <p>인증 코드는 <strong>3분</strong> 동안 유효합니다.</p>
-                        <p>감사합니다.</p>
-                    </div>
-                </div>
-            </div>
-                    """, true);
-            sender.send(message);
-        } catch(MessagingException e){
-            e.printStackTrace();
-            throw new BaseException(ErrorCode.EMAIL_VERIFICATION_MISMATCH, "메일 발송 실패");
-        }
-        VerifyCodeDTO verifyDTO = VerifyCodeDTO.builder().email(email).verifyCode(String.valueOf(verifyCode)).build();
-        authMapper.sendVerifyCode(verifyDTO);
-        return responseWrapperService.wrapperCreate("E100", "인증코드 발송 성공");
-    }
 
-    private int verifyCodeCreate(){
-        int verifyCode = (int)(Math.random() * (90000))+ 100000;
-        return verifyCode;
-    }
+    
 }

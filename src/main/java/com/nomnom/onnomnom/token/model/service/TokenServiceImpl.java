@@ -3,7 +3,6 @@ package com.nomnom.onnomnom.token.model.service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -47,8 +46,9 @@ public class TokenServiceImpl implements TokenService {
             throw new BaseException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
         String memberId = getIdByToken(refreshToken);
-        String memberNo = responseToken.getMemberNo();
-        return generateToken(memberId, memberNo);
+        tokenUtil.getAccessToken(memberId);
+        TokenDTO.builder().accessToken(tokenUtil.getAccessToken(memberId)).build();
+        return TokenDTO.builder().accessToken(tokenUtil.getAccessToken(memberId)).build();
     }
 
     private String getIdByToken(String refreshToken){

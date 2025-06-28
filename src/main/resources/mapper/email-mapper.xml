@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nomnom.onnomnom.auth.model.dao.EmailMapper">
+  <insert id="insertVerifyCode"
+  parameterType="com.nomnom.onnomnom.auth.model.dto.VerifyCodeDTO">
+    INSERT INTO TB_EMAIL_AUTH(
+      MEMBER_EMAIL,
+      VERIFY_CODE
+    ) VALUES (
+      #{email},
+      #{verifyCode}
+    )
+  </insert>
+  <select id="selectVerifyCode"
+  parameterType="com.nomnom.onnomnom.auth.model.dto.VerifyCodeDTO"
+  resultType="com.nomnom.onnomnom.auth.model.dto.VerifyCodeDTO">
+    SELECT 
+      VERIFY_CODE_NO AS verifyCodeNo,
+      MEMBER_EMAIL AS email,
+      VERIFY_CODE AS verifyCode,
+      CREATE_DATE AS createDate
+    FROM TB_EMAIL_AUTH
+    WHERE MEMBER_EMAIL = #{email}
+    ORDER BY CREATE_DATE DESC
+    FETCH FIRST 1 ROWS ONLY
+  </select>
+
+</mapper>

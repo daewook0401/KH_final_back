@@ -13,8 +13,6 @@ import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.member.model.dao.MemberMapper;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberSelectDTO;
-import com.nomnom.onnomnom.member.model.entity.MemberEntity;
-import com.nomnom.onnomnom.member.model.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
