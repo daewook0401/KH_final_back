@@ -1,4 +1,4 @@
-package com.nomnom.onnomnom.operatingHours.model.dto;
+package com.nomnom.onnomnom.operating.model.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class OperatingHoursDTO {
+public class OperatingDTO {
 
 	private String operatingHoursNo;
 	private String restaurantNo;

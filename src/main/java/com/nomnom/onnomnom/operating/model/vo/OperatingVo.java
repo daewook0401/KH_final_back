@@ -1,11 +1,11 @@
-package com.nomnom.onnomnom.operatingHours.model.vo;
+package com.nomnom.onnomnom.operating.model.vo;
 
 import lombok.Builder;
 import lombok.Value;
 
 @Value
 @Builder
-public class OpeningHoursVo {
+public class OperatingVo {
 
 	private String operatingHoursNo;
 	private String restaurantNo;
