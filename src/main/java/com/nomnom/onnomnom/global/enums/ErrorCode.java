@@ -73,7 +73,9 @@ public enum ErrorCode {
     
     INVALID_REFRESH_TOKEN("E936", "유효하지 않은 리프레쉬 토큰입니다."),
     
-    ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다.");
+    ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다."),
+
+    REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음");
 
     private final String code;
     private final String defaultMessage;
