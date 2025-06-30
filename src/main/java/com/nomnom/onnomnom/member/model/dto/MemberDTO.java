@@ -24,7 +24,7 @@ public class MemberDTO {
 
     @NotBlank(message = "아이디는 필수 입력값입니다.")
     @Pattern(
-        regexp = "^(?=[a-z]*[a-z0-9])[a-z0-9]{4,20}$",
+        regexp = "^(?=.*[a-z])[a-z0-9]{4,20}$",
         message = "아이디는 소문자 영문과 숫자를 포함하여 4~20자 이내여야 합니다. 숫자만으로는 구성할 수 없습니다."
     )
     private String memberId;

@@ -82,7 +82,7 @@ parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
         MEMBER_NAME,
         MEMBER_NICKNAME,
         MEMBER_PH,
-        MEMBER_ROLE
+        MEMBER_ROLE,
         MEMBER_SELFIE
     ) VALUES (
         #{memberId},
