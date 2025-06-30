@@ -19,12 +19,12 @@ public class FileService {
     private final S3Service s3Service;
 
     public List<String> imageUpLoad(List<MultipartFile> files){
-        if (files == null || files.isEmpty()){
-            throw new BaseException(ErrorCode.INVALID_FILE_FORMAT, "업로드할 파일이 없습니다.");
-        }
-        if (files.size() > 8){
-            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
-        }
+        // if (files == null || files.isEmpty()){
+        //     throw new BaseException(ErrorCode.INVALID_FILE_FORMAT, "업로드할 파일이 없습니다.");
+        // }
+        // if (files.size() > 8){
+        //     throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
+        // }
         return files.stream()
                     .map(this::upLoad)
                     .collect(Collectors.toList());

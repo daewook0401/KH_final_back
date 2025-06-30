@@ -1,5 +1,6 @@
 package com.nomnom.onnomnom.member.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,11 @@ import com.nomnom.onnomnom.member.model.entity.MemberEntity;
 import com.nomnom.onnomnom.member.model.vo.MemberInsertVo;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 
     private final ResponseWrapperService responseWrapperService;
@@ -32,7 +35,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDTO> selectMemberByInput(MemberSelectDTO member) {
         List<MemberEntity> memberResult = memberMapper.selectMemberByInput(member);
-
+        if(memberResult.size() <= 0){
+            return null;
+        }
         return memberResult.stream().map(MemberDTO::fromEntity).collect(Collectors.toList());
     }
 
@@ -40,49 +45,81 @@ public class MemberServiceImpl implements MemberService {
     public MemberDTO selectMemberByNo(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberNo(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
-        
+        if (memberResult == null){
+            return null;
+        }
         return memberResult.get(0);
     }
     @Override
     public MemberDTO selectMemberById(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberId(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult.get(0);
     }
     @Override
     public MemberDTO selectMemberByEmail(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberEmail(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult.get(0);
     }
     @Override
     public MemberDTO selectMemberByName(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberName(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult.get(0);
     }
     @Override
     public MemberDTO selectMemberByNickName(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberNickName(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult.get(0);
     }
     @Override
     public MemberDTO selectMemberByPh(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberPh(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult.get(0);
     }
     @Override
     public List<MemberDTO> selectMemberByRole(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().memberRole(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult;
     }
     @Override
     public List<MemberDTO> selectMemberByIsActive(String memberInput) {
         MemberSelectDTO member = MemberSelectDTO.builder().isActive(memberInput).build();
         List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
+        return memberResult;
+    }
+    @Override
+    public List<MemberDTO> selectMemberByIsStoreOwner(String memberInput){
+        MemberSelectDTO member = MemberSelectDTO.builder().isStoreOwner(memberInput).build();
+        List<MemberDTO> memberResult = selectMemberByInput(member);
+        if (memberResult == null){
+            return null;
+        }
         return memberResult;
     }
     
@@ -91,6 +128,7 @@ public class MemberServiceImpl implements MemberService {
         if(selectMemberById(memberId) != null){
             throw new BaseException(ErrorCode.DUPLICATE_MEMBER_ID);
         }
+        log.info("{}",memberId);
         return responseWrapperService.wrapperCreate("S104", "사용할 수 있는 아이디");
     }
     @Override
@@ -103,7 +141,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ObjectResponseWrapper<String> insertMember(MemberDTO member, List<MultipartFile> memberSelfie){
-        List<String> url = fileService.imageUpLoad(memberSelfie);
+        
+        List<String> url = new ArrayList<>();
+        if (memberSelfie.size()==1){
+            url = fileService.imageUpLoad(memberSelfie);
+        } else if(memberSelfie.size()>1) {
+            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
+        }
+
+        
         MemberInsertVo memberValue = MemberInsertVo.builder()
                                                     .memberId(member.getMemberId())
                                                     .memberPw(passwordEncoder.encode(member.getMemberPw()))
@@ -111,7 +157,7 @@ public class MemberServiceImpl implements MemberService {
                                                     .memberName(member.getMemberName())
                                                     .memberNickName(member.getMemberNickName())
                                                     .memberPh(member.getMemberPh())
-                                                    .memberRole(member.getMemberRole())
+                                                    .memberRole("ROLE_COMMON")
                                                     .memberSelfie(url.get(0))
                                                     .build();
         memberMapper.insertMember(memberValue);

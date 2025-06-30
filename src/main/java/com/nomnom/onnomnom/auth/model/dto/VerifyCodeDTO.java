@@ -1,6 +1,7 @@
 package com.nomnom.onnomnom.auth.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,5 @@ public class VerifyCodeDTO {
     private String verifyCodeNo;
     private String email;
     private String verifyCode;
-    private LocalDateTime createDate;
+    private Date createDate;
 }
