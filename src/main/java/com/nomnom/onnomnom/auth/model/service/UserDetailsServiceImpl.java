@@ -15,9 +15,11 @@ import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberSelectDTO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService{
 
     private final MemberMapper memberMapper;
@@ -27,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         if(member == null){
             throw new UsernameNotFoundException("존재하지 않는 사용자 입니다.");
         }
-
+        log.info("member : {}",member);
         return CustomUserDetails.builder()
                 .memberNo(member.getMemberNo())
                 .username(member.getMemberId())

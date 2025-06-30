@@ -45,14 +45,18 @@ public class TokenServiceImpl implements TokenService {
         if(responseToken == null || responseToken.getExpiredDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() < System.currentTimeMillis()){
             throw new BaseException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
+
         String memberId = getIdByToken(refreshToken);
-        tokenUtil.getAccessToken(memberId);
-        TokenDTO.builder().accessToken(tokenUtil.getAccessToken(memberId)).build();
-        return TokenDTO.builder().accessToken(tokenUtil.getAccessToken(memberId)).build();
+        return TokenDTO.builder().accessToken(tokenUtil.getAccessToken(memberId)).refreshToken(refreshToken).build();
     }
 
     private String getIdByToken(String refreshToken){
         Claims claims = tokenUtil.parseJwt(refreshToken);
         return claims.getSubject();
+    }
+
+    @Override
+    public void deleteRefreshToken(String memberNo) {
+        tokenMapper.deleteRefreshToken(memberNo);
     }
 }

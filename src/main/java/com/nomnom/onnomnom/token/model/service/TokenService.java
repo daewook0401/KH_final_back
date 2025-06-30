@@ -6,4 +6,6 @@ public interface TokenService {
     TokenDTO generateToken(String memberId, String memberNo);
 
     TokenDTO refreshToken(String refreshToken);
+
+    void deleteRefreshToken(String memberNo);
 }

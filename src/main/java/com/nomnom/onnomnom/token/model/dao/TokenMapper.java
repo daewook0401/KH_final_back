@@ -8,4 +8,5 @@ import com.nomnom.onnomnom.token.model.dto.RefreshToken;
 public interface TokenMapper {
     void saveToken(RefreshToken token);
     RefreshToken selectByToken(String RefreshToken);
+    void deleteRefreshToken(String memberNo);
 }

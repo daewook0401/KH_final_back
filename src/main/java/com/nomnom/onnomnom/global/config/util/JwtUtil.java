@@ -31,7 +31,8 @@ public class JwtUtil {
         return Jwts.builder()
                     .subject(memberId)
                     .issuedAt(new Date())
-                    .expiration(new Date(System.currentTimeMillis() + (3600000L*1)))
+                    // .expiration(new Date(System.currentTimeMillis() + (3600000L*1)))
+                    .expiration(new Date(System.currentTimeMillis() + (5 * 60_000L)))
                     .signWith(key)
                     .compact();
     }
