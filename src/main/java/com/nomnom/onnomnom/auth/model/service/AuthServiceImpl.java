@@ -1,7 +1,9 @@
 package com.nomnom.onnomnom.auth.model.service;
 
+import java.time.Duration;
 import java.util.Collections;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,7 +47,6 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ObjectResponseWrapper<LoginResponseDTO> tokens(MemberLoginDTO memberLoginInfo) {
         Authentication authentication = null;
-        log.debug("여기에요 여기 Attempt login for id={} / pw={}", memberLoginInfo.getMemberId(), memberLoginInfo.getMemberPw());
         try{
             authentication =
             authenticationManager.authenticate(
@@ -56,7 +57,7 @@ public class AuthServiceImpl implements AuthService{
             throw new CustomAuthenticationException(ErrorCode.ID_PASSWORD_MISMATCH);
         }
         CustomUserDetails loginMember = (CustomUserDetails)authentication.getPrincipal();
-
+        TokenDTO tokens = tokenService.generateToken(loginMember.getUsername(), loginMember.getMemberNo(), memberLoginInfo.getAuthLogin());
         LoginResponseDTO loginResponse = LoginResponseDTO
                 .builder()
                 .loginInfo(LoginInfo.builder()
@@ -65,9 +66,9 @@ public class AuthServiceImpl implements AuthService{
                                     .memberRole(loginMember.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("ROLE_USER"))
                                     .isStoreOwner(loginMember.getIsStoreOwner())
                                     .build())
-                .tokens(tokenService.generateToken(loginMember.getUsername(), loginMember.getMemberNo()))
+                .tokens(tokens)
                 .build();
-        log.debug("여기에요 여기 Attempt login for id={} / pw={}", memberLoginInfo.getMemberId(), memberLoginInfo.getMemberPw());
+
         return responseWrapperService.wrapperCreate("S100", "로그인 성공", loginResponse);
     }
 

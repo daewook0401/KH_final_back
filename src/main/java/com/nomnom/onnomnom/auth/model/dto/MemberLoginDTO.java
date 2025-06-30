@@ -29,4 +29,5 @@ public class MemberLoginDTO {
         message = "비밀번호는 대소문자, 숫자, 특수문자 중 3가지 이상을 포함해야 합니다."
     )
     private String memberPw;
+    private String authLogin;
 }

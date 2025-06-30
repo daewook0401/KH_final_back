@@ -45,6 +45,14 @@ public class JwtUtil {
                     .signWith(key) // 서명
                     .compact();
     }
+    public String getRefreshToken(String memberId, String authLogin){
+        return Jwts.builder()
+                    .subject(memberId) // 사용자이름
+                    .issuedAt(new Date()) // 발급일
+                    .expiration(new Date(System.currentTimeMillis() + (3600000L*24*30))) // 만료일
+                    .signWith(key) // 서명
+                    .compact();
+    }
     public Claims parseJwt(String token){
         return Jwts.parser()
                     .verifyWith(key)

@@ -1,9 +1,13 @@
 package com.nomnom.onnomnom.auth.controller;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,14 +34,47 @@ public class AuthController {
 
     @PostMapping("/tokens")
     public ResponseEntity<ObjectResponseWrapper<LoginResponseDTO>> tokens(@Valid @RequestBody MemberLoginDTO memberLoginInfo) {
-        return ResponseEntity.ok(authService.tokens(memberLoginInfo));
+        ObjectResponseWrapper<LoginResponseDTO> response = authService.tokens(memberLoginInfo);
+        if (memberLoginInfo.getAuthLogin().equals("Y")){
+            LoginResponseDTO body = response.getBody().getItems();
+            ResponseCookie cookie = ResponseCookie
+                .from("Refresh-Token", body.getTokens().getRefreshToken())
+                .domain("localhost")
+                .httpOnly(true)
+                .secure(false) // https 환경일 때 true로 변경
+                .path("/")
+                .maxAge(Duration.ofDays(30))
+                .sameSite("Lax")
+                .build();
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/refresh")
     public ResponseEntity<ObjectResponseWrapper<LoginResponseDTO>> refreshTokens(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+        @CookieValue(value = "Refresh-Token", required = false) String refreshTokenCookie
     ) {
-        String refreshToken = authorizationHeader.replaceFirst("Bearer ", "");
+        String refreshToken;
+        if (refreshTokenCookie != null){
+            refreshToken = refreshTokenCookie;
+        } else {
+            refreshToken = authorizationHeader.replaceFirst("Bearer ", "");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.refreshAccessToken(refreshToken));
+    }
+    @PostMapping("/status")
+    public ResponseEntity<ObjectResponseWrapper<LoginResponseDTO>> tokenStatus(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+        @CookieValue(value = "Refresh-Token", required = false) String refreshTokenCookie
+    ) {
+        String refreshToken;
+        if (refreshTokenCookie != null){
+            refreshToken = refreshTokenCookie;
+        } else {
+            refreshToken = authorizationHeader.replaceFirst("Bearer ", "");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.refreshAccessToken(refreshToken));
     }
 
@@ -45,7 +82,17 @@ public class AuthController {
     public ResponseEntity<ObjectResponseWrapper<String>> logout(
         @AuthenticationPrincipal CustomUserDetails userDetails
     ){
-        return ResponseEntity.ok(authService.logout(userDetails));
+        ResponseCookie deleteCookie = ResponseCookie
+                .from("Refresh-Token", "")
+                .domain("localhost")
+                .httpOnly(true)
+                .secure(false) // https 환경일 때 true로 변경
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, deleteCookie.toString()).body(authService.logout(userDetails));
     }
     
+
 }

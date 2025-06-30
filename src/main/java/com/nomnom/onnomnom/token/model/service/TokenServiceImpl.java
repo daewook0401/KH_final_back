@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import com.nomnom.onnomnom.global.config.util.JwtUtil;
@@ -22,17 +23,31 @@ public class TokenServiceImpl implements TokenService {
 
     private final JwtUtil tokenUtil;
     private final TokenMapper tokenMapper;
+
     @Override
-    public TokenDTO generateToken(String memberId, String memberNo) {
+    public TokenDTO generateToken(String memberId, String memberNo, String authLogin) {
         String accessToken = tokenUtil.getAccessToken(memberId);
-        String refreshToken = tokenUtil.getRefreshToken(memberId);
-        saveToken(refreshToken, memberNo);
+        String refreshToken;
+        if (authLogin.equals("Y")){
+            refreshToken = tokenUtil.getRefreshToken(memberId, authLogin);
+            saveToken(refreshToken, memberNo, authLogin);
+        } else {
+            refreshToken = tokenUtil.getRefreshToken(memberId);
+            saveToken(refreshToken, memberNo);
+        }
         
         return TokenDTO.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     private void saveToken(String refreshToken, String memberNo){
         long expiryMillis = System.currentTimeMillis() + (3600000L * 24);
+        Instant expiryInstant = Instant.ofEpochMilli(expiryMillis);
+        LocalDateTime expiryDateTime = expiryInstant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+        RefreshToken token = RefreshToken.builder().memberNo(memberNo).refreshToken(refreshToken).expiredDate(expiryDateTime).build();
+        tokenMapper.saveToken(token);
+    }
+    private void saveToken(String refreshToken, String memberNo, String authLogin){
+        long expiryMillis = System.currentTimeMillis() + (3600000L * 24 * 30);
         Instant expiryInstant = Instant.ofEpochMilli(expiryMillis);
         LocalDateTime expiryDateTime = expiryInstant.atZone(ZoneId.systemDefault()).toLocalDateTime();
         RefreshToken token = RefreshToken.builder().memberNo(memberNo).refreshToken(refreshToken).expiredDate(expiryDateTime).build();
