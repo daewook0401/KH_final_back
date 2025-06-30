@@ -30,27 +30,21 @@
 </resultMap>
 
 
-  <select id="selectReviewPage" resultMap="reviewWithPhotosResultMap">
-  SELECT * FROM (
-    SELECT ROWNUM rn, a.* FROM (
-      SELECT
-        R.REVIEW_NO,
-        M.MEMBER_NICKNAME,
-        R.REVIEW_CONTENT,
-        R.REVIEW_SCORE,
-        R.CREATE_DATE,
-        P.REVIEW_PHOTO_NO,
-        P.REVIEW_PHOTO_URL
-      FROM TB_REVIEW R
-      JOIN TB_MEMBER M ON R.MEMBER_NO = M.MEMBER_NO
-      LEFT JOIN TB_REVIEW_PHOTO P ON R.REVIEW_NO = P.REVIEW_NO
-      WHERE R.RESTAURANT_NO = #{restaurantNo}
-        AND R.IS_ACTIVE = 'Y'
-      ORDER BY R.CREATE_DATE DESC
-    ) a
-    WHERE ROWNUM <= #{endRow}
-  )
-  WHERE rn > #{startRow}
+  <select id="selectReview" resultMap="reviewWithPhotosResultMap">
+    SELECT
+      R.REVIEW_NO,
+      M.MEMBER_NICKNAME,
+      R.REVIEW_CONTENT,
+      R.REVIEW_SCORE,
+      R.CREATE_DATE,
+      P.REVIEW_PHOTO_NO,
+      P.REVIEW_PHOTO_URL
+    FROM TB_REVIEW R
+    JOIN TB_MEMBER M ON R.MEMBER_NO = M.MEMBER_NO
+    LEFT JOIN TB_REVIEW_PHOTO P ON R.REVIEW_NO = P.REVIEW_NO
+    WHERE R.RESTAURANT_NO = #{restaurantNo}
+      AND R.IS_ACTIVE = 'Y'
+    ORDER BY R.CREATE_DATE DESC
   </select>
 
   <insert id="insertReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO"
@@ -94,6 +88,12 @@
       REVIEW_NO = #{reviewNo}
   </update>
 
+  <select id="selectReviewPhoto" resultType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
+    SELECT *
+    FROM TB_REVIEW_PHOTO
+    WHERE REVIEW_NO = #{reviewNo}
+  </select>
+
   <insert id="insertReviewPhoto" parameterType="java.util.List">
     INSERT INTO 
       TB_REVIEW_PHOTO (
@@ -114,4 +114,12 @@
       REVIEW_NO = #{reviewNo}
   </delete>
 
+  <select id="selectReviewWriterId" parameterType="String" resultType="String">
+    SELECT
+      MEMBER_NO
+    FROM
+      TB_REVIEW
+    WHERE
+      REVIEW_NO = #{reviewNo}
+  </select>
 </mapper>

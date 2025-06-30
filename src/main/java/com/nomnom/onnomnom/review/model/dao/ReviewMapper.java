@@ -21,9 +21,12 @@ public interface ReviewMapper {
 
   void deleteReview(String reviewNo);
 
+  List<ReviewPhotoDTO> selectReviewPhoto(String reviewNo);
+
   void insertReviewPhoto(List<ReviewPhotoDTO> reviewPhotoDTO);
 
   void deleteReviewPhoto(String reviewNo);
 
+  String selectReviewWriterId(String reviewNo);
 
 }

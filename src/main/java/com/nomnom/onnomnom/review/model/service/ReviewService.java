@@ -2,6 +2,8 @@ package com.nomnom.onnomnom.review.model.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.review.model.dto.ReviewDTO;
 
@@ -13,17 +15,17 @@ public interface ReviewService {
     ObjectResponseWrapper<ReviewResponseDTO> selectReview(String restaurantNo,int currentPage);
 
     // 리뷰 작성
-    void insertReview(ReviewDTO reviewDTO);
+    ObjectResponseWrapper<String>  insertReview(ReviewDTO reviewDTO, List<MultipartFile> photos);
 
     // 리뷰 수정
-    void updateReview(ReviewDTO reviewDTO);
+    ObjectResponseWrapper<String> updateReview(ReviewDTO reviewDTO, List<MultipartFile> photos);
 
     // 리뷰 삭제
-    void deleteReview(String reviewNo);
+    ObjectResponseWrapper<String> deleteReview(String reviewNo);
 
     // 리뷰 사진 등록
-    void insertReviewPhoto(List<ReviewPhotoDTO> reviewPhotoDTO);
+    ObjectResponseWrapper<String> insertReviewPhoto(List<ReviewPhotoDTO> reviewPhotoDTO);
 
     // 리뷰 사진 삭제
-    void deleteReviewPhoto(String reviewNo);
+    ObjectResponseWrapper<String> deleteReviewPhoto(String reviewNo);
 }
