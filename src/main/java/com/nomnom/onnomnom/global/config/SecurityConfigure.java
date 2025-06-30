@@ -1,9 +1,7 @@
 package com.nomnom.onnomnom.global.config;
 
 import java.util.Arrays;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,9 +31,6 @@ public class SecurityConfigure {
 
     private final JwtFilter jwtFilter;
     
-    // @Value("${cors.allowed-origins}")
-    // private List<String> allowedOrigins;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.formLogin(AbstractHttpConfigurer::disable)

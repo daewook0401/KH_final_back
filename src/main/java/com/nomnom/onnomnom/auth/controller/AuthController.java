@@ -1,7 +1,6 @@
 package com.nomnom.onnomnom.auth.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +26,5 @@ public class AuthController {
         return ResponseEntity.ok(authService.tokens(memberLoginInfo));
     }
     
-    @PostMapping("/verify-email")
-    public ResponseEntity<ObjectResponseWrapper<?>> verifyEmail(@RequestBody String Email){
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.selectCheckEmail(Email));
-    }
+
 }
