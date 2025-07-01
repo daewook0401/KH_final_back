@@ -153,49 +153,50 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ObjectResponseWrapper<LoginResponseDTO> googleLogin(Map<String, String> body){
         String code = body.get("code");
-        GoogleTokenResponse tokens = googleService.exchangeCodeForTokens(code);
-        // String token = body.get("token");
-        // log.info("{}", body);
-        // log.info("{}", token);
-        // GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-        //     new NetHttpTransport(),
-        //     GsonFactory.getDefaultInstance()
-        // )
-        // .setAudience(Collections.singletonList("1070671526490-nke8ohh1a4dc3kg5hesdof5t6cdq8v2j.apps.googleusercontent.com"))
-        // .build();
-        // log.info("{}", verifier);
-        // try{
-        //     log.info("트라이 안");
-        //     GoogleIdToken idToken = verifier.verify(token);
-        //     log.info("{}", idToken);
-        //     if (idToken == null){
-        //         throw new BaseException(ErrorCode.INVALID_TOKEN,"유효하지 않은 Google 토큰입니다.");
-        //     }
+        // GoogleTokenResponse tokens = googleService.exchangeCodeForTokens(code);
 
-        //     Payload payload = idToken.getPayload();
+        String token = body.get("token");
+        log.info("{}", body);
+        log.info("{}", token);
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+            new NetHttpTransport(),
+            GsonFactory.getDefaultInstance()
+        )
+        .setAudience(Collections.singletonList("1070671526490-nke8ohh1a4dc3kg5hesdof5t6cdq8v2j.apps.googleusercontent.com"))
+        .build();
+        log.info("{}", verifier);
+        try{
+            log.info("트라이 안");
+            GoogleIdToken idToken = verifier.verify(token);
+            log.info("{}", idToken);
+            if (idToken == null){
+                throw new BaseException(ErrorCode.INVALID_TOKEN,"유효하지 않은 Google 토큰입니다.");
+            }
 
-        //     String email = payload.getEmail();
-        //     String name = (String) payload.get("name");
-        //     String googleSub = payload.getSubject();
-        //     log.info("{}", email);
-        //     // 기존 회원 확인
-        //     MemberDTO member = memberService.selectMemberByEmail(email);
-        //     if (member == null){
-        //         MemberInsertVo memberValue = MemberInsertVo.builder()
-        //             .memberId(email)
-        //             .memberPw(passwordEncoder.encode(googleSub))
-        //             .memberEmail(email)
-        //             .memberName(name)
-        //             .memberNickName(name)
-        //             .memberRole("ROLE_COMMON")
-        //             .build();
-        //         memberService.insertMember(memberValue, null);
-        //         member = memberService.selectMemberByEmail(email);
-        //     }
-        //     return responseWrapperService.wrapperCreate("S100", "구글 로그인 성공", googleLoginSection(member));
-        // } catch(Exception e) {
-        //     throw new CustomAuthenticationException(ErrorCode.DB_INSERT_FAILURE, "구글 로그인 처리 실패");
-        // }
+            Payload payload = idToken.getPayload();
+
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+            String googleSub = payload.getSubject();
+            log.info("{}", email);
+            // 기존 회원 확인
+            MemberDTO member = memberService.selectMemberByEmail(email);
+            if (member == null){
+                MemberInsertVo memberValue = MemberInsertVo.builder()
+                    .memberId(email)
+                    .memberPw(passwordEncoder.encode(googleSub))
+                    .memberEmail(email)
+                    .memberName(name)
+                    .memberNickName(name)
+                    .memberRole("ROLE_COMMON")
+                    .build();
+                memberService.insertMember(memberValue, null);
+                member = memberService.selectMemberByEmail(email);
+            }
+            return responseWrapperService.wrapperCreate("S100", "구글 로그인 성공", googleLoginSection(member));
+        } catch(Exception e) {
+            throw new CustomAuthenticationException(ErrorCode.DB_INSERT_FAILURE, "구글 로그인 처리 실패");
+        }
     }
 
     private LoginResponseDTO googleLoginSection(MemberDTO member){
