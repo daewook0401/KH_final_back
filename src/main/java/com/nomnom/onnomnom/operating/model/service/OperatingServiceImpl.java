@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.data.util.Lock;
 import org.springframework.stereotype.Service;
 
 import com.nomnom.onnomnom.global.enums.ErrorCode;
@@ -16,6 +17,7 @@ import com.nomnom.onnomnom.global.exception.DeleteOperatingInfoFailedException;
 import com.nomnom.onnomnom.global.exception.OperatingHoursEnrollFailedException;
 import com.nomnom.onnomnom.global.exception.OperatingHoursUpdateFailedException;
 import com.nomnom.onnomnom.global.exception.TimeValueException;
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 import com.nomnom.onnomnom.operating.model.dao.OperatingMapper;
@@ -23,18 +25,29 @@ import com.nomnom.onnomnom.operating.model.dto.OperatingDTO;
 import com.nomnom.onnomnom.operating.model.vo.OperatingVo;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OperatingServiceImpl implements OperatingService {
 	
 	private final ResponseWrapperService responseWrapperService;
 	private final OperatingMapper operatingMapper;
 	
+	/* 1. 예외처리 미리 하기 => int count 없애기
+	 * 2. 10분단위 확인 다시/ 함수호출 한번만
+	 * 3. 24시간더하기 앞에서 하기
+	 * 4. 트랜잭션 처리 => 애노테이션?
+	 * 5. 메서드 따로 빼서 예외처리 다 하기
+	 */
+	
 	@Override
 	public ObjectResponseWrapper<String> insertOperating(List<OperatingDTO> operatingHours) throws ParseException {
 		
 		int count = 0;
+		
+		log.info("operatingHours : {}",operatingHours);
 		
 		for(OperatingDTO operatingHoursInfo : operatingHours) {
 			
@@ -43,20 +56,20 @@ public class OperatingServiceImpl implements OperatingService {
 			String breakStart = operatingHoursInfo.getBreakStartTime();
 			String breakEnd = operatingHoursInfo.getBreakEndTime();
 			
-			if(!open.isEmpty() && !close.isEmpty()) {
+			if(!open.isEmpty() && !close.isEmpty() && open != null && close != null) {
 				
 				count+=1;
-				
 				checkMinutes(open);
 				checkMinutes(close);
-				
 				String endTime = (calculateTime(open,close) == 2) ? plusTime(close) : close;    
 				OperatingVo operatingVo = getOperatingVo(operatingHoursInfo.getRestaurantNo(),operatingHoursInfo.getWeekDay(),open,endTime);
 			
 				// 운영시각 insert
 				int operatingInsertResult = operatingMapper.insertOperatingHours(operatingVo);
 				
-				if(!breakStart.isEmpty() && !breakEnd.isEmpty()) {
+				System.out.println(operatingVo.getOperatingHoursNo());
+				
+				if(!breakStart.isEmpty() && !breakEnd.isEmpty() && breakStart != null && breakEnd != null) {
 					checkMinutes(breakStart);
 					checkMinutes(breakEnd);
 					
@@ -137,8 +150,8 @@ public class OperatingServiceImpl implements OperatingService {
 	}
 
 	@Override
-	public ObjectResponseWrapper<OperatingDTO> selectOperating(String restaurantNo) {
-		OperatingDTO operatingInfo = operatingMapper.selectOperatingInfo(restaurantNo);
+	public ListResponseWrapper<OperatingDTO> selectOperating(String restaurantNo) {
+		List<OperatingDTO> operatingInfo = operatingMapper.selectOperatingInfo(restaurantNo);
 		return responseWrapperService.wrapperCreate("S102", "운영정보 조회 성공",operatingInfo);
 	}
 
@@ -165,7 +178,7 @@ public class OperatingServiceImpl implements OperatingService {
 			String breakStart = operatingHoursInfo.getBreakStartTime();
 			String breakEnd = operatingHoursInfo.getBreakEndTime();
 			
-			if(!open.isEmpty() && !close.isEmpty()) {
+			if(!open.isEmpty() && !close.isEmpty() && open != null && close != null) {
 				
 				count+=1;
 				
@@ -180,7 +193,7 @@ public class OperatingServiceImpl implements OperatingService {
 				int operatingInsertResult = result == 0 ? operatingMapper.insertOperatingHours(operatingVo) : 
 															operatingMapper.updateOperatingHours(operatingVo);
 				
-				if(!breakStart.isEmpty() && !breakEnd.isEmpty()) {
+				if(!breakStart.isEmpty() && !breakEnd.isEmpty() && breakStart != null && breakEnd != null) {
 					checkMinutes(breakStart);
 					checkMinutes(breakEnd);
 					

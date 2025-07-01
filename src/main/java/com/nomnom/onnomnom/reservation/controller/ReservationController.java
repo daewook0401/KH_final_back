@@ -30,6 +30,7 @@ public class ReservationController {
 	
 	@PostMapping
 	public ResponseEntity<ObjectResponseWrapper<String>> insertReservation(@RequestBody ReservationDTO reservationDTO) {
+		log.info("reservationDTO : {}",reservationDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.insertReservation(reservationDTO));
 	} 
 	

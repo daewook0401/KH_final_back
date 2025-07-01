@@ -1,5 +1,7 @@
 package com.nomnom.onnomnom.operating.model.vo;
 
+import java.time.LocalDateTime;
+
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,4 +16,5 @@ public class OperatingVo {
 	private String endTime;
 	private String breakStartTime;
 	private String breakEndTime;
+	private LocalDateTime createDate;
 }

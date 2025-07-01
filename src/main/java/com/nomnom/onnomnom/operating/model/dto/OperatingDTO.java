@@ -1,6 +1,8 @@
 package com.nomnom.onnomnom.operating.model.dto;
 
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +23,6 @@ public class OperatingDTO {
 	private String endTime;
 	private String breakStartTime;
 	private String breakEndTime;
+	private LocalDateTime createDate;
 	
 }

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.operating.model.dto.OperatingDTO;
 import com.nomnom.onnomnom.operating.model.service.OperatingService;
@@ -25,15 +27,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("api/operatings")
 public class OperatingController {
 
-	private OperatingService operatingService;
+	private final OperatingService operatingService;
 	
 	@PostMapping
 	public ResponseEntity<ObjectResponseWrapper<String>> insertOperatingHours(@RequestBody List<OperatingDTO> operatingHours) throws ParseException{
-		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.insertOperating(operatingHours));
+		log.info("operatingHours : {}",operatingHours);
+		return ResponseEntity.ok(operatingService.insertOperating(operatingHours));
 	}
 	
 	@GetMapping
-	public ResponseEntity<ObjectResponseWrapper<OperatingDTO>> selectOperatingHours(@RequestBody String restaurantNo) {
+	public ResponseEntity<ListResponseWrapper<OperatingDTO>> selectOperatingHours(@RequestParam String restaurantNo) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.selectOperating(restaurantNo));
 	}
 	
@@ -43,7 +46,7 @@ public class OperatingController {
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<ObjectResponseWrapper<String>> deleteOperatingHours(@RequestBody String restaurantNo) {
+	public ResponseEntity<ObjectResponseWrapper<String>> deleteOperatingHours(@RequestParam String restaurantNo) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.deleteOperating(restaurantNo));
 	}
 	

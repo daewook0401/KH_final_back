@@ -1,5 +1,7 @@
 package com.nomnom.onnomnom.operating.model.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.nomnom.onnomnom.operating.model.dto.OperatingDTO;
@@ -12,7 +14,7 @@ public interface OperatingMapper {
 
 	int insertBreaktime(OperatingVo breakTimeVo);
 
-	OperatingDTO selectOperatingInfo(String restaurantNo);
+	List<OperatingDTO> selectOperatingInfo(String restaurantNo);
 
 	int deleteOperatingInfo(String restaurantNo);
 	int deleteBreaktimeInfo(String restaurantNo);
