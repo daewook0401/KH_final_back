@@ -23,4 +23,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE
             REFRESH_TOKEN = #{refreshToken}
     </select>
+    <delete id="deleteRefreshToken"
+            parameterType="string">
+        DELETE FROM TB_TOKEN
+        WHERE MEMBER_NO = #{memberNo}
+    </delete>
 </mapper>
