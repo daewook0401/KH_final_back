@@ -42,7 +42,7 @@ public class SecurityConfigure {
                     requests.requestMatchers(HttpMethod.POST, "/api/test").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout").authenticated();
                     requests.requestMatchers(HttpMethod.GET).authenticated();
-                    requests.requestMatchers(HttpMethod.PUT).authenticated();
+                    requests.requestMatchers(HttpMethod.PUT, "/api/social-update").authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();
                     requests.requestMatchers(HttpMethod.GET).permitAll();
                     requests.requestMatchers(HttpMethod.POST).permitAll();

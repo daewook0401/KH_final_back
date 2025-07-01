@@ -5,10 +5,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,18 +14,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.nomnom.onnomnom.auth.model.dao.AuthMapper;
+import com.nomnom.onnomnom.auth.model.dto.GoogleTokenResponse;
 import com.nomnom.onnomnom.auth.model.dto.LoginInfo;
 import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
 import com.nomnom.onnomnom.auth.model.dto.MemberLoginDTO;
@@ -60,20 +53,8 @@ public class AuthServiceImpl implements AuthService{
     private final ResponseWrapperService responseWrapperService;
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
-    private final AuthMapper authMapper;
     private final PasswordEncoder passwordEncoder;
     private final GoogleOAuthService googleService;
-    private static final String TOKEN_URI = "https://oauth2.googleapis.com/token";
-
-     // application.yml 또는 환경변수에서 주입
-    @Value("${google.client-id}")
-    private String clientId;
-    @Value("${google.client-secret}")
-    private String clientSecret;
-    @Value("${google.redirect-uri}")
-    private String redirectUri;
-
-    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public ObjectResponseWrapper<LoginResponseDTO> tokens(MemberLoginDTO memberLoginInfo) {
@@ -88,6 +69,12 @@ public class AuthServiceImpl implements AuthService{
             throw new CustomAuthenticationException(ErrorCode.ID_PASSWORD_MISMATCH);
         }
         CustomUserDetails loginMember = (CustomUserDetails)authentication.getPrincipal();
+        String isModify;
+        if (memberService.selectMemberById(loginMember.getUsername()).getMemberModifiedDate() != null){
+            isModify = "Y";
+        } else {
+            isModify = "N";
+        }
         TokenDTO tokens = tokenService.generateToken(loginMember.getUsername(), loginMember.getMemberNo(), memberLoginInfo.getAuthLogin());
         LoginResponseDTO loginResponse = LoginResponseDTO
                 .builder()
@@ -96,7 +83,7 @@ public class AuthServiceImpl implements AuthService{
                                     .username(loginMember.getUsername())
                                     .memberRole(loginMember.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("ROLE_USER"))
                                     .isStoreOwner(loginMember.getIsStoreOwner())
-                                    .isModify("Y")
+                                    .isModify(isModify)
                                     .build())
                 .tokens(tokens)
                 .build();
@@ -153,9 +140,9 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ObjectResponseWrapper<LoginResponseDTO> googleLogin(Map<String, String> body){
         String code = body.get("code");
-        // GoogleTokenResponse tokens = googleService.exchangeCodeForTokens(code);
+        GoogleTokenResponse tokens = googleService.exchangeCodeForTokens(code);
 
-        String token = body.get("token");
+        String token = tokens.getIdToken();
         log.info("{}", body);
         log.info("{}", token);
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(

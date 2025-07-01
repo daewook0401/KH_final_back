@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +15,7 @@ import com.nomnom.onnomnom.auth.model.dto.GoogleTokenResponse;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 
+@Service
 public class GoogleOAuthService {
     private static final String TOKEN_URI = "https://oauth2.googleapis.com/token";
 

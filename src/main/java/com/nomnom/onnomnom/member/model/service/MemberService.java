@@ -24,4 +24,5 @@ public interface MemberService {
     ObjectResponseWrapper<String> selectCheckNickName(String memberNickName);
     ObjectResponseWrapper<String> insertMember(MemberDTO member, List<MultipartFile> memberSelfie);
     ObjectResponseWrapper<String> insertMember(MemberInsertVo member, List<MultipartFile> memberSelfie);
+    ObjectResponseWrapper<String> updateSocialInfo(MemberInsertVo socialInfo, List<MultipartFile> memberProFiles);
 }

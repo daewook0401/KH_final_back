@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
+import com.nomnom.onnomnom.auth.model.service.AuthService;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
@@ -31,7 +35,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final FileService fileService;
     private final PasswordEncoder passwordEncoder;
-
     @Override
     public List<MemberDTO> selectMemberByInput(MemberSelectDTO member) {
         List<MemberEntity> memberResult = memberMapper.selectMemberByInput(member);
@@ -190,5 +193,32 @@ public class MemberServiceImpl implements MemberService {
                                                     .build();
         memberMapper.insertMember(memberValue);
         return responseWrapperService.wrapperCreate("S106", "계정 생성 성공");
+    }
+
+    @Override
+    public ObjectResponseWrapper<String> updateSocialInfo(MemberInsertVo socialInfo,
+            List<MultipartFile> memberSelfie) {
+        
+        String url = "";
+        if (memberSelfie == null){
+            url = "NULL";
+        } else if (memberSelfie.size()==1){
+            url = fileService.imageUpLoad(memberSelfie).get(0);
+        } else if(memberSelfie.size()>1) {
+            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                .getAuthentication()
+                                .getPrincipal();
+        MemberInsertVo memberValue = MemberInsertVo.builder()
+                                                    .memberId(userDetails.getUsername())
+                                                    .memberName(socialInfo.getMemberName())
+                                                    .memberNickName(socialInfo.getMemberNickName())
+                                                    .memberSelfie(url)
+                                                    .build();
+        memberMapper.updateSocialInfo(memberValue);
+
+        return responseWrapperService.wrapperCreate("S106", "소셜 계정 생성 성공");
     }
 }
