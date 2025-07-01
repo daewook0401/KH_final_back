@@ -75,14 +75,15 @@ public enum ErrorCode {
     
     ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다."),
     
-    BREAK_STARTTIME_ERROR("E938", "브레이크 시작 시간을 잘못 입력하셨습니다."),
+    REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음"),
 	
     BREAK_ENDTIME_ERROR("E939", "브레이크 종료 시간을 잘못 입력하셨습니다."),
 	
 	TIME_VALUE_ERROR("E940", "시간은 10분단위로 입력해주세요"),
 	
-	DELETE_OPERATING_INFO_FAILED_ERROR("E941", "운영정보 삭제에 실패하였습니다.");
-	
+	DELETE_OPERATING_INFO_FAILED_ERROR("E941", "운영정보 삭제에 실패하였습니다."),
+
+	BREAK_STARTTIME_ERROR("E942", "브레이크 시작 시간을 잘못 입력하셨습니다.");
 
     private final String code;
     private final String defaultMessage;
