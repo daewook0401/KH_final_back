@@ -1,6 +1,7 @@
 package com.nomnom.onnomnom.auth.controller;
 
 import java.time.Duration;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -92,6 +93,11 @@ public class AuthController {
                 .sameSite("Lax")
                 .build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, deleteCookie.toString()).body(authService.logout(userDetails));
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<ObjectResponseWrapper<LoginResponseDTO>> googleLogin(@RequestBody Map<String, String> body){
+        return ResponseEntity.ok(authService.googleLogin(body));
     }
     
 

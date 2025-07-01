@@ -142,9 +142,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public ObjectResponseWrapper<String> insertMember(MemberDTO member, List<MultipartFile> memberSelfie){
         
-        List<String> url = new ArrayList<>();
-        if (memberSelfie.size()==1){
-            url = fileService.imageUpLoad(memberSelfie);
+        String url = "";
+        if (memberSelfie == null){
+            url = "NULL";
+        } else if (memberSelfie.size()==1){
+            url = fileService.imageUpLoad(memberSelfie).get(0);
         } else if(memberSelfie.size()>1) {
             throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
         }
@@ -158,7 +160,33 @@ public class MemberServiceImpl implements MemberService {
                                                     .memberNickName(member.getMemberNickName())
                                                     .memberPh(member.getMemberPh())
                                                     .memberRole("ROLE_COMMON")
-                                                    .memberSelfie(url.get(0))
+                                                    .memberSelfie(url)
+                                                    .build();
+        memberMapper.insertMember(memberValue);
+        return responseWrapperService.wrapperCreate("S106", "계정 생성 성공");
+    }
+    @Override
+    public ObjectResponseWrapper<String> insertMember(MemberInsertVo member, List<MultipartFile> memberSelfie){
+        
+        String url = "";
+        if (memberSelfie == null){
+            url = "NULL";
+        } else if (memberSelfie.size()==1){
+            url = fileService.imageUpLoad(memberSelfie).get(0);
+        } else if(memberSelfie.size()>1) {
+            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
+        }
+
+        
+        MemberInsertVo memberValue = MemberInsertVo.builder()
+                                                    .memberId(member.getMemberId())
+                                                    .memberPw(passwordEncoder.encode(member.getMemberPw()))
+                                                    .memberEmail(member.getMemberEmail())
+                                                    .memberName(member.getMemberName())
+                                                    .memberNickName(member.getMemberNickName())
+                                                    .memberPh(member.getMemberPh())
+                                                    .memberRole("ROLE_COMMON")
+                                                    .memberSelfie(url)
                                                     .build();
         memberMapper.insertMember(memberValue);
         return responseWrapperService.wrapperCreate("S106", "계정 생성 성공");

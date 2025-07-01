@@ -30,7 +30,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<ObjectResponseWrapper<String>> insertMember(@ModelAttribute MemberDTO member, @RequestPart List<MultipartFile> memberProFiles) {
+    public ResponseEntity<ObjectResponseWrapper<String>> insertMember(@ModelAttribute MemberDTO member, @RequestPart(value = "memberProFiles", required = false) List<MultipartFile> memberProFiles) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.insertMember(member, memberProFiles));
     }
 

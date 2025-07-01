@@ -75,7 +75,9 @@ public enum ErrorCode {
     
     ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다."),
 
-    REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음");
+    REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음"),
+
+    INVALID_TOKEN("E944", "유효하지 않은 토큰");
 
     private final String code;
     private final String defaultMessage;

@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.nomnom.onnomnom.global.config.filter.CoopFilter;
 import com.nomnom.onnomnom.global.config.filter.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfigure {
 
     private final JwtFilter jwtFilter;
-    
+    private final CoopFilter coopFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.formLogin(AbstractHttpConfigurer::disable)
@@ -47,6 +48,7 @@ public class SecurityConfigure {
                     requests.requestMatchers(HttpMethod.POST).permitAll();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(coopFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
