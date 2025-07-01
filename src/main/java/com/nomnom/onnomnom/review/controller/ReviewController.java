@@ -1,7 +1,5 @@
 package com.nomnom.onnomnom.review.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -18,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
+import com.nomnom.onnomnom.review.model.dto.BillDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewResponseDTO;
 import com.nomnom.onnomnom.review.model.service.ReviewService;
@@ -30,46 +29,64 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/restaurants/{restaurantNo}/reviews")
 public class ReviewController {
-  private final ReviewService reviewService;
-  private final ResponseWrapperService responseWrapperService;
+    private final ReviewService reviewService;
+    private final ResponseWrapperService responseWrapperService;
 
-  @GetMapping
-  public ResponseEntity<ObjectResponseWrapper<ReviewResponseDTO>> getReviews(
-          @PathVariable String restaurantNo,
-          @RequestParam(name = "page", defaultValue = "1") int page
-  ) {
-      return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
-  }
-  
-  @PostMapping
-  public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
-          @PathVariable String restaurantNo,
-          @RequestPart("review") ReviewDTO reviewDTO,
-          @RequestPart(value = "photos", required = false) List<MultipartFile> photos
-  ) {
-      reviewDTO.setRestaurantNo(restaurantNo);
-      reviewService.insertReview(reviewDTO, photos);
-      return ResponseEntity.ok(responseWrapperService.wrapperCreate("S100", "리뷰 등록 성공", "success"));
-  }    
-
-  @PutMapping("/{reviewNo}")
-  public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
-      @PathVariable String restaurantNo,
-      @PathVariable String reviewNo,
-      @RequestPart("review") ReviewDTO reviewDTO,
-      @RequestPart(value = "photos", required = false) List<MultipartFile> photos
-  ) {
-      reviewDTO.setRestaurantNo(restaurantNo);
-      reviewDTO.setReviewNo(reviewNo);
-      
-      reviewService.updateReview(reviewDTO, photos);
-      return ResponseEntity.ok(responseWrapperService.wrapperCreate("S102","리뷰 수정 성공","success"));
+    @GetMapping
+    public ResponseEntity<ObjectResponseWrapper<ReviewResponseDTO>> getReviews(
+            @PathVariable String restaurantNo,
+            @RequestParam(name = "page", defaultValue = "1") int page
+    ) {
+        return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
     }
-  @DeleteMapping("/{reviewNo}")
-  public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
-          @PathVariable String reviewNo) {
 
-      reviewService.deleteReview(reviewNo);
-      return ResponseEntity.ok(responseWrapperService.wrapperCreate("S103", "리뷰 삭제 성공", "success"));
-  }
+    @PostMapping
+    public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
+            @PathVariable String restaurantNo,
+            @RequestPart("review") ReviewDTO reviewDTO,
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos
+    ) {
+        reviewDTO.setRestaurantNo(restaurantNo);
+        reviewService.insertReview(reviewDTO, photos, null); // billPhoto는 null 처리
+        return ResponseEntity.ok(responseWrapperService.wrapperCreate("S100", "리뷰 등록 성공", "success"));
+    }
+
+    // 리뷰 수정
+    @PutMapping("/{reviewNo}")
+    public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
+            @PathVariable String restaurantNo,
+            @PathVariable String reviewNo,
+            @RequestPart("review") ReviewDTO reviewDTO,
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos
+    ) {
+        reviewDTO.setRestaurantNo(restaurantNo);
+        reviewDTO.setReviewNo(reviewNo);
+
+        reviewService.updateReview(reviewDTO, photos);
+        return ResponseEntity.ok(responseWrapperService.wrapperCreate("S102", "리뷰 수정 성공", "success"));
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/{reviewNo}")
+    public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
+            @PathVariable String restaurantNo,
+            @PathVariable String reviewNo) {
+
+        reviewService.deleteReview(reviewNo);
+        return ResponseEntity.ok(responseWrapperService.wrapperCreate("S103", "리뷰 삭제 성공", "success"));
+    }
+
+    // 영수증 등록 (리뷰 등록과 별도 API)
+    @PostMapping("/{reviewNo}/bill")
+    public ResponseEntity<ObjectResponseWrapper<String>> insertBill(
+            @PathVariable String restaurantNo,
+            @PathVariable String reviewNo,
+            @RequestPart("bill") MultipartFile billPhoto
+    ) {
+        BillDTO billDTO = new BillDTO();
+        billDTO.setReviewNo(reviewNo);
+
+        reviewService.insertBill(billDTO, billPhoto);
+        return ResponseEntity.ok(responseWrapperService.wrapperCreate("S100", "영수증 등록 성공", "success"));
+    }
 }

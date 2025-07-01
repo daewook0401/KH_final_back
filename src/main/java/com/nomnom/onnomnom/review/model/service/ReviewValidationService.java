@@ -104,6 +104,14 @@ public class ReviewValidationService {
             }
         }
     }
+    public void validateBillPhoto(MultipartFile billPhoto) {
+    if (billPhoto == null || billPhoto.isEmpty()) {
+        throw new BaseException(ErrorCode.FILE_NOT_FOUND, "영수증 이미지를 첨부해주세요.");
+    }
+    if (!isValidExtension(billPhoto.getOriginalFilename())) {
+        throw new BaseException(ErrorCode.INVALID_FILE_FORMAT, "지원하지 않는 이미지 형식입니다.");
+    }
+}
 
     // 허용된 확장자 체크
     private boolean isValidExtension(String filename) {

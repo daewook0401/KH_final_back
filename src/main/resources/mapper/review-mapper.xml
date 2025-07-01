@@ -5,30 +5,26 @@
 
 <mapper namespace="com.nomnom.onnomnom.review.model.dao.ReviewMapper">
 
+  <!-- 리뷰 개수 -->
   <select id="selectReviewCount" resultType="int">
-    SELECT 
-      COUNT(*)
-    FROM 
-      TB_REVIEW
-    WHERE 
-      RESTAURANT_NO = #{restaurantNo}
-    AND 
-      IS_ACTIVE = 'Y'
+    SELECT COUNT(*)
+    FROM TB_REVIEW
+    WHERE RESTAURANT_NO = #{restaurantNo}
+      AND IS_ACTIVE = 'Y'
   </select>
 
+  <!-- 리뷰 + 사진 조인 -->
   <resultMap id="reviewWithPhotosResultMap" type="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
-  <id property="reviewNo" column="REVIEW_NO" />
-  <result property="memberNickname" column="MEMBER_NICKNAME" />
-  <result property="reviewContent" column="REVIEW_CONTENT" />
-  <result property="reviewScore" column="REVIEW_SCORE" />
-  <result property="createDate" column="CREATE_DATE" />
-  
-  <collection property="photos" ofType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
-    <id property="reviewPhotoNo" column="REVIEW_PHOTO_NO" />
-    <result property="reviewPhotoUrl" column="REVIEW_PHOTO_URL" />
-  </collection>
-</resultMap>
-
+    <id property="reviewNo" column="REVIEW_NO" />
+    <result property="memberNickname" column="MEMBER_NICKNAME" />
+    <result property="reviewContent" column="REVIEW_CONTENT" />
+    <result property="reviewScore" column="REVIEW_SCORE" />
+    <result property="createDate" column="CREATE_DATE" />
+    <collection property="photos" ofType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
+      <id property="reviewPhotoNo" column="REVIEW_PHOTO_NO" />
+      <result property="reviewPhotoUrl" column="REVIEW_PHOTO_URL" />
+    </collection>
+  </resultMap>
 
   <select id="selectReview" resultMap="reviewWithPhotosResultMap">
     SELECT
@@ -49,43 +45,33 @@
 
   <insert id="insertReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO"
           useGeneratedKeys="true" keyProperty="reviewNo" keyColumn="REVIEW_NO">
-    INSERT INTO 
-      TB_REVIEW (
-        RESTAURANT_NO,
-        MEMBER_NO,
-        REVIEW_CONTENT,
-        REVIEW_SCORE,
-        CREATE_DATE
+    INSERT INTO TB_REVIEW (
+      RESTAURANT_NO,
+      MEMBER_NO,
+      REVIEW_CONTENT,
+      REVIEW_SCORE,
+      CREATE_DATE
     ) VALUES (
-        #{restaurantNo},
-        #{memberNo},
-        #{reviewContent},
-        #{reviewScore},
-        SYSDATE
+      #{restaurantNo},
+      #{memberNo},
+      #{reviewContent},
+      #{reviewScore},
+      SYSDATE
     )
   </insert>
 
-
   <update id="updateReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
-    UPDATE
-      TB_REVIEW
-    SET 
-      REVIEW_CONTENT = #{reviewContent},
-      REVIEW_SCORE = #{reviewScore}
-    WHERE 
-      REVIEW_NO = #{reviewNo}
-    AND 
-      IS_ACTIVE = 'Y'
+    UPDATE TB_REVIEW
+    SET REVIEW_CONTENT = #{reviewContent},
+        REVIEW_SCORE = #{reviewScore}
+    WHERE REVIEW_NO = #{reviewNo}
+      AND IS_ACTIVE = 'Y'
   </update>
 
-
   <update id="deleteReview" parameterType="String">
-    UPDATE
-      TB_REVIEW
-    SET 
-      IS_ACTIVE = 'N'
-    WHERE 
-      REVIEW_NO = #{reviewNo}
+    UPDATE TB_REVIEW
+    SET IS_ACTIVE = 'N'
+    WHERE REVIEW_NO = #{reviewNo}
   </update>
 
   <select id="selectReviewPhoto" resultType="com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO">
@@ -95,10 +81,9 @@
   </select>
 
   <insert id="insertReviewPhoto" parameterType="java.util.List">
-    INSERT INTO 
-      TB_REVIEW_PHOTO (
-        REVIEW_NO,
-        REVIEW_PHOTO_URL
+    INSERT INTO TB_REVIEW_PHOTO (
+      REVIEW_NO,
+      REVIEW_PHOTO_URL
     )
     VALUES
     <foreach collection="reviewPhotoDTO" item="photo" separator=",">
@@ -106,20 +91,66 @@
     </foreach>
   </insert>
 
-
   <delete id="deleteReviewPhoto" parameterType="String">
-    DELETE FROM 
-      TB_REVIEW_PHOTO
-    WHERE 
-      REVIEW_NO = #{reviewNo}
+    DELETE FROM TB_REVIEW_PHOTO
+    WHERE REVIEW_NO = #{reviewNo}
   </delete>
 
   <select id="selectReviewWriterId" parameterType="String" resultType="String">
-    SELECT
-      MEMBER_NO
-    FROM
-      TB_REVIEW
-    WHERE
-      REVIEW_NO = #{reviewNo}
+    SELECT MEMBER_NO
+    FROM TB_REVIEW
+    WHERE REVIEW_NO = #{reviewNo}
   </select>
+
+
+  <insert id="insertBill" parameterType="com.nomnom.onnomnom.review.model.dto.BillDTO">
+    INSERT INTO TB_BILL (
+      BILL_NO,
+      MEMBER_NO,
+      RESTAURANT_NO,
+      BILL_PASS,
+      BILL_PHOTO_URL
+      <if test="reviewNo != null">
+        , REVIEW_NO
+      </if>
+    ) VALUES (
+      SYS_GUID(),
+      #{memberNo},
+      #{restaurantNo},
+      #{billPass},
+      #{imageUrl}
+      <if test="reviewNo != null">
+        , #{reviewNo}
+      </if>
+    )
+  </insert>
+
+
+  <update id="connectBill" parameterType="com.nomnom.onnomnom.review.model.dto.BillDTO">
+    UPDATE TB_BILL
+    SET REVIEW_NO = #{reviewNo}
+    WHERE BILL_NO = #{billNo}
+  </update>
+
+
+  <select id="selectAvailableBills" resultType="com.nomnom.onnomnom.review.model.dto.BillDTO">
+    SELECT
+      BILL_NO,
+      MEMBER_NO,
+      RESTAURANT_NO,
+      BILL_PASS,
+      BILL_PHOTO_URL AS imageUrl,
+      REVIEW_NO
+    FROM TB_BILL
+    WHERE MEMBER_NO = #{memberNo}
+      AND RESTAURANT_NO = #{restaurantNo}
+      AND BILL_PASS = 'Y'
+      AND REVIEW_NO IS NULL
+  </select>
+
+  <delete id="deleteBill" parameterType="String">
+    DELETE FROM TB_BILL
+    WHERE REVIEW_NO = #{reviewNo}
+  </delete>
+
 </mapper>

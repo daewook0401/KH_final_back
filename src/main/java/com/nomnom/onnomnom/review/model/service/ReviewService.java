@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
+import com.nomnom.onnomnom.review.model.dto.BillDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewDTO;
 
 import com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO;
@@ -15,7 +16,7 @@ public interface ReviewService {
     ObjectResponseWrapper<ReviewResponseDTO> selectReview(String restaurantNo,int currentPage);
 
     // 리뷰 작성
-    ObjectResponseWrapper<String>  insertReview(ReviewDTO reviewDTO, List<MultipartFile> photos);
+    ObjectResponseWrapper<String>  insertReview(ReviewDTO reviewDTO, List<MultipartFile> photos,MultipartFile billPhoto);
 
     // 리뷰 수정
     ObjectResponseWrapper<String> updateReview(ReviewDTO reviewDTO, List<MultipartFile> photos);
@@ -28,4 +29,10 @@ public interface ReviewService {
 
     // 리뷰 사진 삭제
     ObjectResponseWrapper<String> deleteReviewPhoto(String reviewNo);
+
+     // 영수증 등록
+    ObjectResponseWrapper<String> insertBill(BillDTO billDTO,MultipartFile billPhoto);
+
+    // 리뷰 삭제 시 영수증 삭제
+    ObjectResponseWrapper<String> deleteBill(String reviewNo);
 }
