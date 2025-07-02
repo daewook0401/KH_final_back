@@ -41,7 +41,7 @@ public interface ReviewMapper {
 
   void insertBill(BillDTO billDTO);
 
-  void connectBill(BillDTO billDTO);
+  void connectBill(String billNo, String reviewNo);
 
   List<BillDTO> selectAvailableBills(String memberNo, String restaurantNo);
   

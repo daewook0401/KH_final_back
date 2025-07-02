@@ -44,10 +44,11 @@ public class ReviewController {
     public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
             @PathVariable String restaurantNo,
             @RequestPart("review") ReviewDTO reviewDTO,
-            @RequestPart(value = "photos", required = false) List<MultipartFile> photos
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
+            @RequestPart(value = "billPhoto", required = false) MultipartFile billPhoto
     ) {
         reviewDTO.setRestaurantNo(restaurantNo);
-        reviewService.insertReview(reviewDTO, photos, null); // billPhoto는 null 처리
+        reviewService.insertReview(reviewDTO, photos, billPhoto);
         return ResponseEntity.ok(responseWrapperService.wrapperCreate("S100", "리뷰 등록 성공", "success"));
     }
 

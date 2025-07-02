@@ -39,7 +39,6 @@ public class ReviewServiceImpl implements ReviewService {
     int totalReviewCount = reviewMapper.selectReviewCount(restaurantNo);
 
     PageInfo pageInfo = Pagination.getPageInfo(currentPage, pageSize, boardNoPerPage, totalReviewCount);
-
     int offset = (currentPage - 1) * pageSize;
     RowBounds rowBounds = new RowBounds(offset, pageSize);
 
@@ -54,14 +53,11 @@ public class ReviewServiceImpl implements ReviewService {
   public ObjectResponseWrapper<String> insertReview(ReviewDTO reviewDTO, List<MultipartFile> photos, MultipartFile billPhoto) {
     reviewValidationService.checkWritePermission();
     reviewValidationService.validateReviewInsert(reviewDTO, photos);
-    reviewValidationService.validateBillPhoto(billPhoto);
 
     String currentUserId = reviewValidationService.getCurrentUserId();
     reviewDTO.setMemberNo(currentUserId);
 
     reviewMapper.insertReview(reviewDTO);
-
-    uploadBillPhoto(reviewDTO.getReviewNo(), billPhoto);
     uploadReviewPhotos(reviewDTO.getReviewNo(), photos);
 
     return responseWrapperService.wrapperCreate("S100", "리뷰 등록 성공", "success");
@@ -111,12 +107,14 @@ public class ReviewServiceImpl implements ReviewService {
   public ObjectResponseWrapper<String> insertBill(BillDTO billDTO, MultipartFile billPhoto) {
     reviewValidationService.checkWritePermission();
     reviewValidationService.validateBillPhoto(billPhoto);
-
     String url = fileService.imageUpLoad(List.of(billPhoto)).get(0);
     billDTO.setImageUrl(url);
-
     reviewMapper.insertBill(billDTO);
-    return responseWrapperService.wrapperCreate("S102", "영수증 등록 성공", "success");
+    if (billDTO.getBillNo() != null && billDTO.getReviewNo() != null) {
+      reviewMapper.connectBill(billDTO.getBillNo(), billDTO.getReviewNo());
+    }
+
+    return responseWrapperService.wrapperCreate("S102", "영수증 등록 및 연결 성공", "success");
   }
 
   @Override
@@ -125,17 +123,6 @@ public class ReviewServiceImpl implements ReviewService {
     reviewValidationService.checkDeletePermission(reviewNo);
     reviewMapper.deleteBill(reviewNo);
     return responseWrapperService.wrapperCreate("S103", "영수증 삭제 성공", "success");
-  }
-
-  private void uploadBillPhoto(String reviewNo, MultipartFile billPhoto) {
-    if (billPhoto == null || billPhoto.isEmpty()) return;
-
-    String billImageUrl = fileService.imageUpLoad(List.of(billPhoto)).get(0);
-    BillDTO billDTO = new BillDTO();
-    billDTO.setBillPass("Y");
-    billDTO.setReviewNo(reviewNo);
-    billDTO.setImageUrl(billImageUrl);
-    reviewMapper.insertBill(billDTO);
   }
 
   private void uploadReviewPhotos(String reviewNo, List<MultipartFile> photos) {

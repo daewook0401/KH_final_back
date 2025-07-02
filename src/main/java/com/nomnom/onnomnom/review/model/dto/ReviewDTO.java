@@ -23,4 +23,5 @@ public class ReviewDTO {
   private Double reviewScore;
   private Date createDate;
   private List<ReviewPhotoDTO> photos;
+  private String billNo;
 }
