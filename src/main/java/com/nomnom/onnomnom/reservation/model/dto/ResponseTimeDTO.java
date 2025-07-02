@@ -1,4 +1,4 @@
-package com.nomnom.onnomnom.reservationSetting.model.dto;
+package com.nomnom.onnomnom.reservation.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,13 +11,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ReservationSettingDTO {
+public class ResponseTimeDTO {
 
-	private String restaurantNo;
+	private String breakStartTime;
+	private String breakEndTime;
+	private String reservationStartTime;
+	private String reservationEndTime;
 	private int interval;
-	private int maxNum;
-	private int minNum;
-	private int maxTeamNum;
-	private String description;
 	
 }

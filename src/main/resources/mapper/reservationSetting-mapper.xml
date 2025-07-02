@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nomnom.onnomnom.reservationSetting.model.dao.ReservationSettingMapper">
+
+	<insert id="insertAvailableTime"
+				parameterType="AvailableTimeVo">
+	    INSERT 
+	      INTO 
+	           TB_AVAILABLE_TIME
+	           (
+			        OPERATING_HOURS_NO,
+			        RESERVATION_START_TIME,
+			        RESERVATION_END_TIME
+			        )
+	    VALUES (
+			        (SELECT
+			        		OPERATING_HOURS_NO
+			          FROM
+			                TB_OPERATING_HOURS
+			         WHERE
+			                WEEKDAY = #{weekDay}
+			          AND
+			                RESTAURANT_NO = #{restaurantNo}       
+			         ),
+			        #{startTime},
+			        #{endTime}
+	           		)
+	</insert>
+	
+	<insert id="insertSettingInfo"
+				parameterType="ReservationSettingVo">
+	    INSERT 
+	      INTO 
+	           TB_RESERVATION_SETTING
+	           (
+			        RESTAURANT_NO,
+			        INTERVAL,
+			        MAX_NUM,
+			        MIN_NUM,
+			        MAX_TEAM_NUM,
+			        DESCRIPTION
+			        )
+	    VALUES (
+			        #{restaurantNo},
+			        #{interval},
+			        #{maxNum},
+			        #{minNum},
+			        #{maxTeamNum},
+			        #{description}
+	           		)
+	</insert>
+	
+	<select id="selectAvailableTime" parameterType="String" resultType="AvailableTimeDTO">
+		SELECT
+		       AT.OPERATING_HOURS_NO,
+		       OH.RESTAURANT_NO,
+		       OH.WEEKDAY,
+		       AT.RESERVATION_START_TIME,
+		       AT.RESERVATION_END_TIME
+		 FROM
+		       TB_AVAILABLE_TIME AT
+	RIGHT JOIN
+	           TB_OPERATING_HOURS OH ON (OH.OPERATING_HOURS_NO = AT.OPERATING_HOURS_NO)
+		 WHERE
+		       OH.RESTAURANT_NO = #{restaurantNo}
+	</select>
+	
+	<select id="selectSettingInfo" parameterType="String" resultType="reservationSettingDTO">
+		SELECT
+		       RESERVATION_NO,
+		       INTERVAL,
+		       MAX_NUM,
+		       MIN_NUM,
+		       MAX_TEAM_NUM,
+		       DESCRIPTION
+		 FROM
+		       TB_RESERVATION_SETTING
+		 WHERE
+		       OH.RESTAURANT_NO = #{restaurantNo}
+	</select>
+	
+	
+	<update id="updateAvailableTime" parameterType="AvailableTimeVo">
+		UPDATE
+		   		TB_AVAILABLE_TIME
+		   SET (
+				RESERVATION_START_TIME = #{reservationStartTime},
+			    RESERVATION_END_TIME = #{reservationEndTime}
+			     )
+	 	 WHERE
+	 	 		OPERATING_HOURS_NO = SELECT
+	 	 									OPERATING_HOURS_NO
+	 	 							  FROM
+	 	 							        TB_OPERATING_HOURS
+	 	 							 WHERE
+	 	 							        WEEKDAY = #{weekDay}
+	 	 							   AND
+	 	 							        RESTAURANT_NO = #{restaurantNo}	
+	</update>
+	
+	<update id="updateSettingInfo" parameterType="ReservationSettingVo">
+		UPDATE
+		   		TB_RESERVATION_SETTING
+		   SET (
+				INTERVAL =  #{interval},
+		        MAX_NUM = #{maxNum},
+		        MIN_NUM = #{minNum},
+		        MAX_TEAM_NO = #{maxTeamNum},
+		        DESCRIPTION = #{description}
+	 	 WHERE
+	 	 		RESTAURANT_NO = #{restaurantNo}	
+		   )
+	</update>
+	
+	<delete id="deleteAvailableTime" parameterType="String">
+		DELETE
+		  FROM
+		        TB_AVAILABLE_TIME
+		 WHERE
+		        RESTAURANT_NO = #{restaurantNo}	
+	</delete>
+	
+	<delete id="deleteSettingInfo" parameterType="String">
+		DELETE
+		  FROM
+		        TB_RESERVATION_SETTING
+		 WHERE
+		        RESTAURANT_NO = #{restaurantNo}	
+	</delete>
+
+</mapper>
+
+
+
+

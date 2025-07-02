@@ -1,6 +1,9 @@
 package com.nomnom.onnomnom.reservationSetting.model.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,13 +14,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ReservationSettingDTO {
-
-	private String restaurantNo;
-	private int interval;
-	private int maxNum;
-	private int minNum;
-	private int maxTeamNum;
-	private String description;
+@Builder
+public class ReservationSettingRequestDTO {
 	
+	    private List<AvailableTimeDTO> reservation;      
+	    private ReservationSettingDTO  settingInfo;     
 }

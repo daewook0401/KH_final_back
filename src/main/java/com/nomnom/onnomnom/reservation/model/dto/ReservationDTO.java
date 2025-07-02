@@ -18,9 +18,10 @@ public class ReservationDTO {
 	private String reservationNo;
 	private String restaurantNo;
 	private String memberNo;
-	private Date reserveDay;
+	private String reserveDay;
 	private String reserveTime;
-	private int numberofGuests;
+	private int numberOfGuests;
 	private Date createDate;
 	private String status;
+	private int count;
 }

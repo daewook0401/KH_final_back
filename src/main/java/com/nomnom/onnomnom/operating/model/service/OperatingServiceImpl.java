@@ -61,8 +61,7 @@ public class OperatingServiceImpl implements OperatingService {
 				count+=1;
 				checkMinutes(open);
 				checkMinutes(close);
-				String endTime = (calculateTime(open,close) == 2) ? plusTime(close) : close;    
-				OperatingVo operatingVo = getOperatingVo(operatingHoursInfo.getRestaurantNo(),operatingHoursInfo.getWeekDay(),open,endTime);
+				OperatingVo operatingVo = getOperatingVo(operatingHoursInfo.getRestaurantNo(),operatingHoursInfo.getWeekDay(),open,close);
 			
 				// 운영시각 insert
 				int operatingInsertResult = operatingMapper.insertOperatingHours(operatingVo);
@@ -73,10 +72,9 @@ public class OperatingServiceImpl implements OperatingService {
 					checkMinutes(breakStart);
 					checkMinutes(breakEnd);
 					
-					String breakEndTime = (calculateTime(breakStart,breakEnd) == 2) ? plusTime(breakEnd) : breakEnd;    
-					breakExceptionHandler(open,endTime,breakStart,breakEndTime);
+					breakExceptionHandler(open,close,breakStart,breakEnd);
 					String operatingNo = operatingVo.getOperatingHoursNo();
-					OperatingVo breakTimeVo = getBreakTimeVo(operatingNo,breakStart,breakEndTime);
+					OperatingVo breakTimeVo = getBreakTimeVo(operatingNo,breakStart,breakEnd);
 					int breakInsertResult = operatingMapper.insertBreaktime(breakTimeVo);
 				}
 			}
@@ -101,13 +99,7 @@ public class OperatingServiceImpl implements OperatingService {
 		return Duration.between(startTime, endTime).toMinutes() > 0 ? 1 : 2; 
 	}
 	
-	private String plusTime(String time) {
-	    int originalHour = Integer.parseInt(time.split(":")[0]);
-	    int minute = Integer.parseInt(time.split(":")[1]);
-	    int newHour = originalHour + 24;
-	    return String.format("%02d:%02d", newHour, minute);
-	}
-	
+
 	private LocalTime stringToLocalTimeFormatter(String time)  {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
 		LocalTime localTime =  LocalTime.parse(time, formatter);
@@ -185,8 +177,7 @@ public class OperatingServiceImpl implements OperatingService {
 				checkMinutes(open);
 				checkMinutes(close);
 				
-				String endTime = (calculateTime(open,close) == 2) ? plusTime(close) : close;    
-				OperatingVo operatingVo = getOperatingVo(operatingHoursInfo.getRestaurantNo(),operatingHoursInfo.getWeekDay(),open,endTime);
+				OperatingVo operatingVo = getOperatingVo(operatingHoursInfo.getRestaurantNo(),operatingHoursInfo.getWeekDay(),open,close);
 				
 				// 운영시각 insert
 				int result = operatingMapper.findOperatingHours(operatingVo);
@@ -197,10 +188,9 @@ public class OperatingServiceImpl implements OperatingService {
 					checkMinutes(breakStart);
 					checkMinutes(breakEnd);
 					
-					String breakEndTime = (calculateTime(breakStart,breakEnd) == 2) ? plusTime(breakEnd) : breakEnd;    
-					breakExceptionHandler(open,endTime,breakStart,breakEndTime);
+					breakExceptionHandler(open,close,breakStart,breakEnd);
 					String operatingNo = result == 0 ? operatingVo.getOperatingHoursNo() : operatingMapper.findOperatingNo(operatingVo);
-					OperatingVo breakTimeVo = getBreakTimeVo(operatingNo,breakStart,breakEndTime);
+					OperatingVo breakTimeVo = getBreakTimeVo(operatingNo,breakStart,breakEnd);
 					int result1 = operatingMapper.findBreaktime(operatingVo);
 					
 					int breakInsertResult = result1 == 0 ? operatingMapper.insertBreaktime(breakTimeVo)

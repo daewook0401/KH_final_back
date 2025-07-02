@@ -11,13 +11,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ReservationSettingDTO {
+public class AvailableTimeDTO {
 
+	private String operatingHoursNo;
 	private String restaurantNo;
-	private int interval;
-	private int maxNum;
-	private int minNum;
-	private int maxTeamNum;
-	private String description;
+	private String weekDay;
+	private String reservationStartTime;
+	private String reservationEndTime;
 	
 }
