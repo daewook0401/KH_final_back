@@ -83,7 +83,9 @@ public enum ErrorCode {
 	
 	DELETE_OPERATING_INFO_FAILED_ERROR("E941", "운영정보 삭제에 실패하였습니다."),
 
-	BREAK_STARTTIME_ERROR("E942", "브레이크 시작 시간을 잘못 입력하셨습니다.");
+	BREAK_STARTTIME_ERROR("E942", "브레이크 시작 시간을 잘못 입력하셨습니다."),
+	
+	UNAVAILABLE_RESERVATION_ERROR("E945", "잘못된 예약입니다.");
 
     private final String code;
     private final String defaultMessage;

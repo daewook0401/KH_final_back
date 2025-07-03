@@ -58,12 +58,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                parameterType="String"
                resultType="OperatingDTO">
     SELECT
-             OH.OPERATING_HOURS_NO,
-             OH.RESTAURANT_NO,
-             OH.START_TIME,
-             OH.END_TIME,
-             BT.BREAK_START_TIME,
-             BT.BREAK_END_TIME
+             OH.OPERATING_HOURS_NO operatingHoursNo,
+             OH.RESTAURANT_NO restaurantNo,
+             OH.WEEKDAY weekDay,
+             OH.START_TIME startTime,
+             OH.END_TIME endTime,
+             BT.BREAK_START_TIME breakStartTime,
+             BT.BREAK_END_TIME breakEndTime
       FROM
              TB_OPERATING_HOURS OH
  LEFT JOIN

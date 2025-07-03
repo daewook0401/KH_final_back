@@ -144,6 +144,7 @@ public class OperatingServiceImpl implements OperatingService {
 	@Override
 	public ListResponseWrapper<OperatingDTO> selectOperating(String restaurantNo) {
 		List<OperatingDTO> operatingInfo = operatingMapper.selectOperatingInfo(restaurantNo);
+		log.info("operatingInfo: {}",operatingInfo);
 		return responseWrapperService.wrapperCreate("S102", "운영정보 조회 성공",operatingInfo);
 	}
 

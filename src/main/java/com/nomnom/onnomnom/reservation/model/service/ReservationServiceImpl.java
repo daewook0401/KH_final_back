@@ -1,17 +1,26 @@
 package com.nomnom.onnomnom.reservation.model.service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.nomnom.onnomnom.global.enums.ErrorCode;
+import com.nomnom.onnomnom.global.exception.UnavailableReservationException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 import com.nomnom.onnomnom.operating.model.vo.OperatingVo;
 import com.nomnom.onnomnom.reservation.model.dao.ReservationMapper;
 import com.nomnom.onnomnom.reservation.model.dto.ReservationDTO;
+import com.nomnom.onnomnom.reservation.model.dto.ResponseResultDTO;
 import com.nomnom.onnomnom.reservation.model.dto.ResponseTimeDTO;
 import com.nomnom.onnomnom.reservation.model.vo.ReservationVo;
 import com.nomnom.onnomnom.reservationSetting.model.dto.ReservationSettingDTO;
@@ -29,7 +38,6 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	@Override
 	public ObjectResponseWrapper<String> insertReservation(ReservationDTO reservationDTO) {
-		
 		/*
 		 * restauratnNo,reserveDay,reserveTime로 조회했을 때 조회된 행이 MAX_TEAM_NUM보다 작으면 insert하기
 		 */
@@ -38,12 +46,12 @@ public class ReservationServiceImpl implements ReservationService {
 				.memberNo("a")
 				.reserveDay(reservationDTO.getReserveDay())
 				.reserveTime(reservationDTO.getReserveTime())
-				.numberofGuests(reservationDTO.getNumberOfGuests())
+				.numberOfGuests(reservationDTO.getNumberOfGuests())
 				.build();
-		
 		ReservationDTO reservationCheck = reservationMapper.selectCheckAvailableTimes(reservationVo);
 		if(reservationCheck != null ) {
 			// 예외처리
+			throw new UnavailableReservationException(ErrorCode.UNAVAILABLE_RESERVATION_ERROR);
 		}
 								
 		int result = reservationMapper.insertReservationInfo(reservationVo);
@@ -61,7 +69,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 	
 	@Override
-	public ObjectResponseWrapper<String> selectReservation(String restaurantNo, String reserveDay) {
+	public ObjectResponseWrapper<ResponseResultDTO> selectReservation(String restaurantNo, String reserveDay) {
 		/*
 		 * 선택한 날짜와 식당 번호로 1. 예약이 가능한 시간대와, 2. 예약이 가능한 시간대 중에 예약이 차지 않은 시간대들을 반환해야함
 		 * 
@@ -80,9 +88,10 @@ public class ReservationServiceImpl implements ReservationService {
 		 */
 		log.info("reserveDay : {}",reserveDay);
 		log.info("restaurantNo : {}",restaurantNo);
+		String weekDay = getDayOfWeek(reserveDay);
 		OperatingVo operatingVo = OperatingVo.builder()
 	              .restaurantNo(restaurantNo)
-	              .weekDay(reserveDay)
+	              .weekDay(weekDay)
 	              .build();
 		ResponseTimeDTO timesInfo = reservationMapper.selectTimesInfo(operatingVo);
 		
@@ -93,12 +102,13 @@ public class ReservationServiceImpl implements ReservationService {
 		int interval = timesInfo.getInterval();
 		
 		List<String> times = new ArrayList<String>();
-		if(!breakStartTime.isEmpty() && !breakEndTime.isEmpty()) {
+		if(breakStartTime != null && breakEndTime != null) {
 			times = availableTimes(breakStartTime,breakEndTime,reservationStartTime,reservationEndTime,interval);
 		} else {
 			times = availableTimes(reservationStartTime,reservationEndTime,interval);
 		}
-		
+		ResponseResultDTO responseDTO = new ResponseResultDTO();
+		Map<String, Boolean> resultMap = new HashMap<>();
 		for(String time : times) {
 			ReservationVo reservationVo = ReservationVo.builder()
 					.restaurantNo(restaurantNo)
@@ -106,9 +116,25 @@ public class ReservationServiceImpl implements ReservationService {
 					.reserveTime(time)
 					.build();
 			ReservationDTO reservationDTO = reservationMapper.selectCheckAvailableTimes(reservationVo);
+			
 			// 이거 조회 값이 나오면 예약 가득찬거임
+			if(reservationDTO != null ) {
+				
+				resultMap.put(reservationDTO.getReserveTime(),false);
+			} else {
+				resultMap.put(time,true);
+			}
+			responseDTO.setResultMap(resultMap);	
 		}
-		return responseWrapperService.wrapperCreate("S101", "운영정보 조회 성공");
+		log.info("responseDTO : {}",responseDTO);
+		return responseWrapperService.wrapperCreate("S101", "운영정보 조회 성공",responseDTO);
+	}
+	
+	private String getDayOfWeek(String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        String weekDay = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        return weekDay;
 	}
 
 	private List<String> availableTimes(String breakStart,String breakEnd,String reserveStart,String reserveEnd,int timeInterval) {

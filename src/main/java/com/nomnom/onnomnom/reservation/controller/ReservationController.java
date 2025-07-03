@@ -1,8 +1,5 @@
 package com.nomnom.onnomnom.reservation.controller;
 
-import java.text.ParseException;
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
-import com.nomnom.onnomnom.operating.model.dto.OperatingDTO;
 import com.nomnom.onnomnom.reservation.model.dto.ReservationDTO;
+import com.nomnom.onnomnom.reservation.model.dto.ResponseResultDTO;
 import com.nomnom.onnomnom.reservation.model.service.ReservationService;
 import com.nomnom.onnomnom.reservationSetting.model.dto.ReservationSettingDTO;
 
@@ -44,14 +41,14 @@ public class ReservationController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ObjectResponseWrapper<String>> selectReservation(@RequestParam(name="restaurantNo") String restaurantNo,
+	public ResponseEntity<ObjectResponseWrapper<ResponseResultDTO>> selectReservation(@RequestParam(name="restaurantNo") String restaurantNo,
 																		   @RequestParam(name="reserveDay") String reserveDay) {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.selectReservation(restaurantNo,reserveDay));
 	} 
 	
 	@PutMapping
-	public ResponseEntity<ObjectResponseWrapper<String>> deleteReservation(@PathVariable String reservationNo) {
+	public ResponseEntity<ObjectResponseWrapper<String>> deleteReservation(@RequestParam(name="restaurantNo") String reservationNo) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.deleteReservation(reservationNo));
 	} 
 	

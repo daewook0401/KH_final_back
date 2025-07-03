@@ -14,40 +14,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				MEMBER_NO,
 				RESERVE_DAY,
 				RESERVE_TIME,
-				NUMBER_OF_GUESTS,
+				NUMBER_OF_GUESTS
 			    )
 		VALUES  (
 			    #{restaurantNo},
 			    #{memberNo},
 			    #{reserveDay},
 			    #{reserveTime},
-			    #{numberOfGuests},
+			    #{numberOfGuests}
 			    )
 	      
 	     		
 	</insert>
 
-	<select id="selectReservationInfo" parameterType="String" resultType="ReservationSettingDTO">
-		(SELECT
-		       		   COUNT(*)
-		 		  FROM
-		   	           TB_RESERVATION_LIST RL
-	              JOIN
-	                   TB_RESERVATION_SETTING RS ON (RS.RESTAURANT_NO = RL.RESTAURANT_NO)
-	             WHERE
-	                   RL.RESTAURANT_NO = #{restaurantNo}
-	               AND
-	                   RL.RESERVE_DAY = #{reserveDay}
-	               AND
-	                   RL.RESERVE_TIME = #{reserveTime})
-	                   &lt;
-	      		(SELECT 
-	      		  	    MAX_TEAM_NUM 
-	      		   FROM 
-	      			    TB_RESERVATION_SETTING 
-	      		  WHERE 
-	      		 	    RESTAURANT_NO = #{restaurantNo})
-	</select>
 	<select id="selectReservationInfo" parameterType="String" resultType="ReservationSettingDTO">
 		SELECT
 		       RESTAURANT_NO restaurantNo,
@@ -84,14 +63,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				B.BREAK_START_TIME breakStartTime,
 				B.BREAK_END_TIME breakEndTime,
 				AT.RESERVATION_START_TIME reservationStartTime,
-				AT.RESERVATION_START_END reservationEndTime,
+				AT.RESERVATION_END_TIME reservationEndTime,
 				RS.INTERVAL interval
 		  FROM
 		        TB_BREAKTIME B
 	RIGHT JOIN
 		        TB_OPERATING_HOURS OH ON (OH.OPERATING_HOURS_NO = B.OPERATING_HOURS_NO)
 	 	  JOIN
-		        TB_AVAILABLE_TIME AT ON (AT.OPERATING_HOUR_NO = OH.OPERATING_HOURS_NO)
+		        TB_AVAILABLE_TIME AT ON (AT.OPERATING_HOURS_NO = OH.OPERATING_HOURS_NO)
 	 LEFT JOIN
 		        TB_RESERVATION_SETTING RS ON (RS.RESTAURANT_NO = OH.RESTAURANT_NO)
 		 WHERE	    

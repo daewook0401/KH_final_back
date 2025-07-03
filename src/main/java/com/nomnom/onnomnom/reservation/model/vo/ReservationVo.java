@@ -14,7 +14,7 @@ public class ReservationVo {
 	private String memberNo;
 	private String reserveDay;
 	private String reserveTime;
-	private int numberofGuests;
+	private int numberOfGuests;
 	private Date createDate;
 	private String status;
 }

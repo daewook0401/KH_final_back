@@ -36,7 +36,7 @@ public class OperatingController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ListResponseWrapper<OperatingDTO>> selectOperatingHours(@RequestParam String restaurantNo) {
+	public ResponseEntity<ListResponseWrapper<OperatingDTO>> selectOperatingHours(@RequestParam(name="restaurantNo") String restaurantNo) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.selectOperating(restaurantNo));
 	}
 	
@@ -46,7 +46,7 @@ public class OperatingController {
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<ObjectResponseWrapper<String>> deleteOperatingHours(@RequestParam String restaurantNo) {
+	public ResponseEntity<ObjectResponseWrapper<String>> deleteOperatingHours(@RequestParam(name="restaurantNo") String restaurantNo) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.deleteOperating(restaurantNo));
 	}
 	
