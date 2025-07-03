@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.member.model.dto.CheckInfoDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
