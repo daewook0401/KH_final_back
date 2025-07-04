@@ -3,7 +3,6 @@ package com.nomnom.onnomnom.reservation.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +42,8 @@ public class ReservationController {
 	@GetMapping
 	public ResponseEntity<ObjectResponseWrapper<ResponseResultDTO>> selectReservation(@RequestParam(name="restaurantNo") String restaurantNo,
 																		   @RequestParam(name="reserveDay") String reserveDay) {
-
+		
+		System.out.println("요청 확인!!!!");
 		return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.selectReservation(restaurantNo,reserveDay));
 	} 
 	

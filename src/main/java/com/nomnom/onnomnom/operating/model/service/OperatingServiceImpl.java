@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.data.util.Lock;
 import org.springframework.stereotype.Service;
 
 import com.nomnom.onnomnom.global.enums.ErrorCode;
@@ -14,6 +13,7 @@ import com.nomnom.onnomnom.global.exception.BreakEndTimeException;
 import com.nomnom.onnomnom.global.exception.BreakStartTimeException;
 import com.nomnom.onnomnom.global.exception.BreakTimeException;
 import com.nomnom.onnomnom.global.exception.DeleteOperatingInfoFailedException;
+import com.nomnom.onnomnom.global.exception.ExistingOperatingHoursException;
 import com.nomnom.onnomnom.global.exception.OperatingHoursEnrollFailedException;
 import com.nomnom.onnomnom.global.exception.OperatingHoursUpdateFailedException;
 import com.nomnom.onnomnom.global.exception.TimeValueException;
@@ -49,12 +49,18 @@ public class OperatingServiceImpl implements OperatingService {
 		
 		log.info("operatingHours : {}",operatingHours);
 		
+	
+		
 		for(OperatingDTO operatingHoursInfo : operatingHours) {
 			
 			String open = operatingHoursInfo.getStartTime();
 			String close = operatingHoursInfo.getEndTime();
 			String breakStart = operatingHoursInfo.getBreakStartTime();
 			String breakEnd = operatingHoursInfo.getBreakEndTime();
+			
+			if(operatingMapper.selectCountByRestaurantNo(operatingHoursInfo.getRestaurantNo()) != 0) {
+				throw new ExistingOperatingHoursException(ErrorCode.EXISTING_OPERATING_HOURS_ERROR);
+			};
 			
 			if(!open.isEmpty() && !close.isEmpty() && open != null && close != null) {
 				

@@ -139,41 +139,46 @@ public class ReservationServiceImpl implements ReservationService {
 
 	private List<String> availableTimes(String breakStart,String breakEnd,String reserveStart,String reserveEnd,int timeInterval) {
 		List<String> times = new ArrayList<String>();
-		LocalTime reserveStartTime = toLocalTime(reserveStart);
-		LocalTime reserveEndTime = toLocalTime(reserveEnd);
-		LocalTime breakStartTime = toLocalTime(breakStart);
-		LocalTime breakEndTime = toLocalTime(breakEnd);
-		while (reserveStartTime.isBefore(reserveEndTime)) {
-			if(reserveStartTime.isBefore(breakStartTime) || reserveStartTime.isAfter(breakEndTime) ) {
-				 times.add(toString(reserveStartTime));
+		int reserveStartMinute = toMinute(reserveStart);
+		int reserveEndMinute = toMinute(reserveEnd);
+		int breakStartMinute = toMinute(breakStart);
+		int breakEndMinute = toMinute(breakEnd);
+		while (reserveStartMinute < reserveEndMinute) {
+			if(reserveStartMinute < breakStartMinute || reserveStartMinute > breakEndMinute ) {
+				 times.add(toTimeString(reserveStartMinute));
 			  };
-			reserveStartTime = reserveStartTime.plusMinutes(timeInterval);
+			reserveStartMinute += timeInterval;
 		 	}; 
 		return times;
 	}
 	
 	private List<String> availableTimes(String reserveStart,String reserveEnd,int timeInterval) {
 		List<String> times = new ArrayList<String>();
-		LocalTime reserveStartTime = toLocalTime(reserveStart);
-		LocalTime reserveEndTime = toLocalTime(reserveEnd);
-		while (reserveStartTime.isBefore(reserveEndTime)) {
-			times.add(toString(reserveStartTime));
-			reserveStartTime = reserveStartTime.plusMinutes(timeInterval);
+		int reserveStartMinute = toMinute(reserveStart);
+		int reserveEndMinute = toMinute(reserveEnd);
+		while (reserveStartMinute < reserveEndMinute) {
+			 times.add(toTimeString(reserveStartMinute));
+			reserveStartMinute += timeInterval;
 		 }; 
 		return times;
 	}
 	
-	private LocalTime toLocalTime(String timeStr) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-		LocalTime time = LocalTime.parse(timeStr, formatter);
-		return time;
+	
+	
+	private int toMinute(String timeStr) {
+	    String[] split = timeStr.split(":");
+	    int hour   = Integer.parseInt(split[0]);  
+	    int minute = Integer.parseInt(split[1]);   
+	    return hour * 60 + minute;
 	}
 	
-	private String toString(LocalTime localTime) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-		 String time = localTime.format(formatter);
-		return time;
+	private String toTimeString(int totalMinutes) {
+	    int hour   = totalMinutes / 60;
+	    int minute = totalMinutes % 60;
+	    return String.format("%02d:%02d", hour, minute);
 	}
+	
+
 	
 	@Override
 	public ObjectResponseWrapper<String> deleteReservation(String reservationNo) {

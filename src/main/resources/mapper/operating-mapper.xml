@@ -5,150 +5,159 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.nomnom.onnomnom.operating.model.dao.OperatingMapper">
 
 
-<insert id="insertOperatingHours"
-			parameterType="OperatingVo">
-			
-	<selectKey keyProperty="operatingHoursNo" order="AFTER"
-	resultType="String">
-		 SELECT
-				       OPERATING_HOURS_NO operatingHoursNo
-				 FROM
-				       TB_OPERATING_HOURS
-				 ORDER
-				    BY
-				       SEQUENCE DESC
-				 FETCH FIRST 1 ROWS ONLY
-	</selectKey>
+	<insert id="insertOperatingHours"
+				parameterType="OperatingVo">
+				
+		<selectKey keyProperty="operatingHoursNo" order="AFTER"
+		resultType="String">
+			 SELECT
+					       OPERATING_HOURS_NO operatingHoursNo
+					 FROM
+					       TB_OPERATING_HOURS
+					 ORDER
+					    BY
+					       SEQUENCE DESC
+					 FETCH FIRST 1 ROWS ONLY
+		</selectKey>
+		
+	    INSERT 
+	      INTO 
+	           TB_OPERATING_HOURS
+	           (
+			        RESTAURANT_NO,
+			        WEEKDAY,
+			        START_TIME,
+			        END_TIME
+			        )
+	    VALUES (
+			        #{restaurantNo},
+			        #{weekDay},
+			        #{startTime},
+			        #{endTime}
+	           		)
+	</insert>
 	
-    INSERT 
-      INTO 
-           TB_OPERATING_HOURS
-           (
-		        RESTAURANT_NO,
-		        WEEKDAY,
-		        START_TIME,
-		        END_TIME
-		        )
-    VALUES (
-		        #{restaurantNo},
-		        #{weekDay},
-		        #{startTime},
-		        #{endTime}
-           		)
-</insert>
-
-<insert id="insertBreaktime"
-			parameterType="OperatingVo">
-    INSERT 
-      INTO 
-           TB_BREAKTIME
-           (
-		        OPERATING_HOURS_NO,
-		        BREAK_START_TIME,
-		        BREAK_END_TIME
-		        )
-    VALUES (
-		        #{operatingHoursNo},
-		        #{breakStartTime},
-		        #{breakEndTime}
-           		)
-</insert>
-
-<select id = "selectOperatingInfo"
-               parameterType="String"
-               resultType="OperatingDTO">
-    SELECT
-             OH.OPERATING_HOURS_NO operatingHoursNo,
-             OH.RESTAURANT_NO restaurantNo,
-             OH.WEEKDAY weekDay,
-             OH.START_TIME startTime,
-             OH.END_TIME endTime,
-             BT.BREAK_START_TIME breakStartTime,
-             BT.BREAK_END_TIME breakEndTime
-      FROM
-             TB_OPERATING_HOURS OH
- LEFT JOIN
-             TB_BREAKTIME BT ON (OH.OPERATING_HOURS_NO = BT.OPERATING_HOURS_NO)
-     WHERE
-    		 OH.RESTAURANT_NO = #{restaurantNo}          
-</select>
-
-<select id="findOperatingHours" parameterType="OperatingVo" resultType="int">
-	SELECT
-	 		COUNT(*)
-	  FROM
-	        TB_OPERATING_HOURS
-	 WHERE
-	        RESTAURANT_NO = #{restaurantNo}
-	   AND
-	        WEEKDAY = #{weekDay}
-</select>
-
-<select id="findBreaktime" parameterType="OperatingVo" resultType="int">
-	SELECT
-	 		COUNT(*)
-	  FROM
-	        TB_BREAKTIME
-	 WHERE
-	        OPERATING_HOURS_NO = #{operatingHoursNo}
-</select>
-
-<update id="updateOperatingHours" parameterType="OperatingVo">
-	UPDATE
-	  		TB_OPERATING_HOURS
-	  SET(
-			START_TIME = #{startTime},
-			END_TIME = #{endTime}
-	  )
-	 WHERE
-	        RESTAURANT_NO = #{restaurantNo}
-	  AND
-	        WEEKDAY = #{weekDay}
-</update>
-
-<update id="updateBreaktime" parameterType="OperatingVo">
-	UPDATE
-	  		TB_BREAKTIME
-	  SET(
-			BREAK_START_TIME = #{breakStartTime},
-			BREAK_END_TIME = #{breakEndTime}
-	  )
-	 WHERE
-			OPERATING_HOURS_NO = #{operatingHoursNo}
-</update>
-
-<delete id="deleteBreaktimeInfo" parameterType="String">
-	DELETE
-	  FROM
-	       TB_BREAKTIME
-	 WHERE
-	       OPERATING_HOURS_NO IN (
-			SELECT
-					OPERATING_HOURS_NO
-			  FROM
-					TB_OPERATING_HOURS
-		     WHERE
-					RESTAURANT_NO = #{restaurantNo})
-</delete>  
-
-<delete id="deleteOperatingInfo" parameterType="String">
-	DELETE
-	  FROM
-	       TB_OPERATING_HOURS
-	 WHERE
-	       RESTAURANT_NO = #{restaurantNo}
-</delete>
-
-<select id="findOperatingNo">
-	SELECT
-	       OPERATING_HOURS_NO
-	 FROM
-	       TB_OPERATING_HOURS
-	 WHERE
-	       RESTAURANT_NO = #{restaurantNo}
-	  AND
-	       WEEKDAY = #{weekDay}
-</select>
+	<select id="selectCountByRestaurantNo" parameterType="String" resultType="int">
+		SELECT
+		       COUNT(*)
+		  FROM
+		       TB_OPERATING_HOURS
+		 WHERE
+		       RESTAURANT_NO = #{restaurantNo}
+	</select>
+	
+	<insert id="insertBreaktime"
+				parameterType="OperatingVo">
+	    INSERT 
+	      INTO 
+	           TB_BREAKTIME
+	           (
+			        OPERATING_HOURS_NO,
+			        BREAK_START_TIME,
+			        BREAK_END_TIME
+			        )
+	    VALUES (
+			        #{operatingHoursNo},
+			        #{breakStartTime},
+			        #{breakEndTime}
+	           		)
+	</insert>
+	
+	<select id = "selectOperatingInfo"
+	               parameterType="String"
+	               resultType="OperatingDTO">
+	    SELECT
+	             OH.OPERATING_HOURS_NO operatingHoursNo,
+	             OH.RESTAURANT_NO restaurantNo,
+	             OH.WEEKDAY weekDay,
+	             OH.START_TIME startTime,
+	             OH.END_TIME endTime,
+	             BT.BREAK_START_TIME breakStartTime,
+	             BT.BREAK_END_TIME breakEndTime
+	      FROM
+	             TB_OPERATING_HOURS OH
+	 LEFT JOIN
+	             TB_BREAKTIME BT ON (OH.OPERATING_HOURS_NO = BT.OPERATING_HOURS_NO)
+	     WHERE
+	    		 OH.RESTAURANT_NO = #{restaurantNo}          
+	</select>
+	
+	<select id="findOperatingHours" parameterType="OperatingVo" resultType="int">
+		SELECT
+		 		COUNT(*)
+		  FROM
+		        TB_OPERATING_HOURS
+		 WHERE
+		        RESTAURANT_NO = #{restaurantNo}
+		   AND
+		        WEEKDAY = #{weekDay}
+	</select>
+	
+	<select id="findBreaktime" parameterType="OperatingVo" resultType="int">
+		SELECT
+		 		COUNT(*)
+		  FROM
+		        TB_BREAKTIME
+		 WHERE
+		        OPERATING_HOURS_NO = #{operatingHoursNo}
+	</select>
+	
+	<update id="updateOperatingHours" parameterType="OperatingVo">
+		UPDATE
+		  		TB_OPERATING_HOURS
+		  SET(
+				START_TIME = #{startTime},
+				END_TIME = #{endTime}
+		  )
+		 WHERE
+		        RESTAURANT_NO = #{restaurantNo}
+		  AND
+		        WEEKDAY = #{weekDay}
+	</update>
+	
+	<update id="updateBreaktime" parameterType="OperatingVo">
+		UPDATE
+		  		TB_BREAKTIME
+		  SET(
+				BREAK_START_TIME = #{breakStartTime},
+				BREAK_END_TIME = #{breakEndTime}
+		  )
+		 WHERE
+				OPERATING_HOURS_NO = #{operatingHoursNo}
+	</update>
+	
+	<delete id="deleteBreaktimeInfo" parameterType="String">
+		DELETE
+		  FROM
+		       TB_BREAKTIME
+		 WHERE
+		       OPERATING_HOURS_NO IN (
+				SELECT
+						OPERATING_HOURS_NO
+				  FROM
+						TB_OPERATING_HOURS
+			     WHERE
+						RESTAURANT_NO = #{restaurantNo})
+	</delete>  
+	
+	<delete id="deleteOperatingInfo" parameterType="String">
+		DELETE
+		  FROM
+		       TB_OPERATING_HOURS
+		 WHERE
+		       RESTAURANT_NO = #{restaurantNo}
+	</delete>
+	
+	<select id="findOperatingNo">
+		SELECT
+		       OPERATING_HOURS_NO
+		 FROM
+		       TB_OPERATING_HOURS
+		 WHERE
+		       RESTAURANT_NO = #{restaurantNo}
+		  AND
+		       WEEKDAY = #{weekDay}
+	</select>
 
 
 </mapper>

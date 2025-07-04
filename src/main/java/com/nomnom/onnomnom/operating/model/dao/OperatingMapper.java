@@ -26,4 +26,6 @@ public interface OperatingMapper {
 
 	String findOperatingNo(OperatingVo operatingVo);
 
+	int selectCountByRestaurantNo(String restaurantNo);
+
 }
