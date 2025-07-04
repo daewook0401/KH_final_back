@@ -5,14 +5,12 @@
 
 <mapper namespace="com.nomnom.onnomnom.review.model.dao.ReviewMapper">
 
-
   <select id="selectReviewCount" resultType="int">
     SELECT COUNT(*)
     FROM TB_REVIEW
     WHERE RESTAURANT_NO = #{restaurantNo}
       AND IS_ACTIVE = 'Y'
   </select>
-
 
   <resultMap id="reviewWithPhotosResultMap" type="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
     <id property="reviewNo" column="REVIEW_NO" />
@@ -86,7 +84,7 @@
       REVIEW_PHOTO_URL
     )
     VALUES
-    <foreach collection="reviewPhotoDTO" item="photo" separator=",">
+    <foreach collection="list" item="photo" separator=",">
       (#{photo.reviewNo}, #{photo.reviewPhotoUrl})
     </foreach>
   </insert>
@@ -102,7 +100,7 @@
     WHERE REVIEW_NO = #{reviewNo}
   </select>
 
-   <insert id="insertBill" parameterType="com.nomnom.onnomnom.review.model.dto.BillDTO">
+  <insert id="insertBill" parameterType="com.nomnom.onnomnom.review.model.dto.BillDTO">
     <selectKey keyProperty="billNo" resultType="String" order="BEFORE">
       SELECT SYS_GUID() FROM DUAL
     </selectKey>
@@ -127,14 +125,12 @@
     )
   </insert>
 
-  <!-- 영수증과 리뷰 연결 -->
   <update id="connectBill">
     UPDATE TB_BILL
     SET REVIEW_NO = #{reviewNo}
     WHERE BILL_NO = #{billNo}
   </update>
 
-  <!-- 사용 가능한 영수증 조회 -->
   <select id="selectAvailableBills" resultType="com.nomnom.onnomnom.review.model.dto.BillDTO">
     SELECT
       BILL_NO,
@@ -150,7 +146,6 @@
       AND REVIEW_NO IS NULL
   </select>
 
-  <!-- 리뷰 삭제 시 연결된 영수증 삭제 -->
   <delete id="deleteBill" parameterType="String">
     DELETE FROM TB_BILL
     WHERE REVIEW_NO = #{reviewNo}

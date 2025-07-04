@@ -39,11 +39,10 @@ public interface ReviewMapper {
   // 리뷰 작성자 ID 조회 (권한 체크용)
   String selectReviewWriterId(String reviewNo);
 
+  // 영수증 등록
   void insertBill(BillDTO billDTO);
 
-  void connectBill(String billNo, String reviewNo);
-
-  List<BillDTO> selectAvailableBills(String memberNo, String restaurantNo);
-  
+  // 리뷰 삭제 시 연결된 영수증 삭제
   void deleteBill(String reviewNo);
+
 }
