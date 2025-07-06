@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(AuthenticationException e, ErrorCode code){
         return ResponseEntity.ok().body(service.errorCreate(code, e.getMessage()));
     }
-
+    
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(BaseException e){
         return makeResponseEntity(e, e.getErrorCode());
@@ -36,5 +36,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomAuthenticationException.class)
     public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(CustomAuthenticationException e){
         return makeResponseEntity(e, e.getErrorCode());
+    }
+    
+    @ExceptionHandler(ExistingOperatingHoursException.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(ExistingOperatingHoursException e){
+    	return makeResponseEntity(e, e.getErrorCode());
+    }
+    
+    @ExceptionHandler(BreakEndTimeException.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(BreakEndTimeException e){
+    	return makeResponseEntity(e, e.getErrorCode());
+    }
+    
+    @ExceptionHandler(BreakStartTimeException.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(BreakStartTimeException e){
+    	return makeResponseEntity(e, e.getErrorCode());
     }
 }

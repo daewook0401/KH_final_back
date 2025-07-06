@@ -85,7 +85,9 @@ public enum ErrorCode {
 
 	BREAK_STARTTIME_ERROR("E942", "브레이크 시작 시간을 잘못 입력하셨습니다."),
 	
-	UNAVAILABLE_RESERVATION_ERROR("E945", "잘못된 예약입니다.");
+	UNAVAILABLE_RESERVATION_ERROR("E945", "잘못된 예약입니다."),
+	
+	EXISTING_OPERATING_HOURS_ERROR("E946", "운영시간이 이미 등록되었습니다.");
 
     private final String code;
     private final String defaultMessage;
