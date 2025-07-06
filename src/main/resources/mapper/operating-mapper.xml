@@ -61,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              OH.OPERATING_HOURS_NO operatingHoursNo,
              OH.RESTAURANT_NO restaurantNo,
              OH.WEEKDAY weekDay,
+      
              OH.START_TIME startTime,
              OH.END_TIME endTime,
              BT.BREAK_START_TIME breakStartTime,
