@@ -1,6 +1,5 @@
 package com.nomnom.onnomnom.auth.model.service;
 
-import java.util.Map;
 
 import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
 import com.nomnom.onnomnom.auth.model.dto.MemberLoginDTO;
@@ -12,5 +11,4 @@ public interface AuthService {
     ObjectResponseWrapper<LoginResponseDTO> refreshAccessToken (String refreshToken);
     CustomUserDetails getUserDetails();
     ObjectResponseWrapper<String> logout(CustomUserDetails userDetails);
-    ObjectResponseWrapper<LoginResponseDTO> googleLogin(Map<String, String> body);
 }

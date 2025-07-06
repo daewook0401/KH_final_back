@@ -100,10 +100,10 @@ parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
 parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
 UPDATE TB_MEMBER
 SET MEMBER_NAME = #{memberName},
-    MEMBER_NICKNAME = #{memberNickNAme},
+    MEMBER_NICKNAME = #{memberNickName},
     MEMBER_SELFIE = #{memberSelfie},
     MEMBER_MODIFIED_DATE = SYSDATE
 WHERE
-    MEMBER_ID = #{memberNo}
+    MEMBER_ID = #{memberId}
 </update>
 </mapper>
