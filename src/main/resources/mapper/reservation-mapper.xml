@@ -99,8 +99,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	   HAVING
 	     	   COUNT(*) >= RS.MAX_TEAM_NUM
 	</select>
-
 	
+	<select id="selectReservationCheck" parameterType="ReservationVo" resultType="ReservationDTO">
+		SELECT
+		       RESERVATION_NO reservationNo,
+		       RESTAURANT_NO restaurantNo,
+		       MEMBER_NO memberNo,
+		       RESERVE_DAY reserveDay,
+		       RESERVE_TIME reserveTime,
+		       NUMBER_OF_GUESTS numberOfGuests,
+		       CREATE_DATE createDate
+		 FROM
+		   	   TB_RESERVATION_LIST
+	    WHERE
+	           RESTAURANT_NO = #{restaurantNo}
+	      AND
+	           MEMBER_NO = #{memberNo}
+	    ORDER
+	       BY
+	           CREATE_DATE DESC
+	</select>
+
+	<delete id="deleteReservation" parameterType="String">
+		DELETE
+		  FROM
+		  		TB_RESERVATION_LIST
+		 WHERE
+		        RESERVATION_NO = #{reservationNo}
+	</delete>
 			
 
 </mapper>

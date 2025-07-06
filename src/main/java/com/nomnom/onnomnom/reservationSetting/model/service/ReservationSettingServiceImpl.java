@@ -90,6 +90,9 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 				.settingInfo(reservationSettingDTO)
 				.build();
 		
+		log.info("AvailableTimeList : {} ",AvailableTimeList);
+		log.info("reservationSettingRequestDTO : {} ",reservationSettingRequestDTO);
+		
 		return responseWrapperService.wrapperCreate("S101", "예약설정 조회 성공",reservationSettingRequestDTO);
 	}
 	

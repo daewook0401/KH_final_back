@@ -13,8 +13,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.nomnom.onnomnom.auth.model.service.AuthService;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.UnavailableReservationException;
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 import com.nomnom.onnomnom.operating.model.vo.OperatingVo;
@@ -35,15 +38,18 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	private final ResponseWrapperService responseWrapperService;
 	private final ReservationMapper reservationMapper;
+	private final AuthService authService;
 	
 	@Override
 	public ObjectResponseWrapper<String> insertReservation(ReservationDTO reservationDTO) {
 		/*
 		 * restauratnNo,reserveDay,reserveTime로 조회했을 때 조회된 행이 MAX_TEAM_NUM보다 작으면 insert하기
 		 */
+		CustomUserDetails memeber = authService.getUserDetails();
+		String memberNo = memeber.getMemberNo();
 		ReservationVo reservationVo = ReservationVo.builder()
 				.restaurantNo(reservationDTO.getRestaurantNo())
-				.memberNo("a")
+				.memberNo(memberNo)
 				.reserveDay(reservationDTO.getReserveDay())
 				.reserveTime(reservationDTO.getReserveTime())
 				.numberOfGuests(reservationDTO.getNumberOfGuests())
@@ -56,14 +62,14 @@ public class ReservationServiceImpl implements ReservationService {
 								
 		int result = reservationMapper.insertReservationInfo(reservationVo);
 		
-		return responseWrapperService.wrapperCreate("S101", "운영정보 조회 성공");
+		return responseWrapperService.wrapperCreate("S101", "예약 성공");
 	}
 	
 	@Override
 	public ObjectResponseWrapper<ReservationSettingDTO> selectReservationInfo(String restaurantNo) {
 		// 최대 최소 인원수, 설명 조회
 		ReservationSettingDTO reservationInfo = reservationMapper.selectReservationInfo(restaurantNo);
-		return responseWrapperService.wrapperCreate("S101", "운영정보 조회 성공",reservationInfo);
+		return responseWrapperService.wrapperCreate("S101", "예약설정 정보 성공",reservationInfo);
 	}
 
 
@@ -127,7 +133,7 @@ public class ReservationServiceImpl implements ReservationService {
 			responseDTO.setResultMap(resultMap);	
 		}
 		log.info("responseDTO : {}",responseDTO);
-		return responseWrapperService.wrapperCreate("S101", "운영정보 조회 성공",responseDTO);
+		return responseWrapperService.wrapperCreate("S101", "예약 가능한 시각 성공",responseDTO);
 	}
 	
 	private String getDayOfWeek(String date) {
@@ -179,11 +185,24 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 
+	@Override
+	public ListResponseWrapper<ReservationDTO> selectReservationCheck(String restaurantNo) {
+		CustomUserDetails memeber = authService.getUserDetails();
+		String memberNo = memeber.getMemberNo();
+		ReservationVo reservationVo = ReservationVo.builder()
+													.restaurantNo(restaurantNo)
+													.memberNo(memberNo)
+													.build();
+		List<ReservationDTO> myReservation = reservationMapper.selectReservationCheck(reservationVo);
+		return responseWrapperService.wrapperCreate("S101", "내 예약 취소 성공",myReservation);
+	}
 	
 	@Override
 	public ObjectResponseWrapper<String> deleteReservation(String reservationNo) {
-		return responseWrapperService.wrapperCreate("S101", "운영정보 조회 성공");
+		int deleteResult = reservationMapper.deleteReservation(reservationNo);
+		return responseWrapperService.wrapperCreate("S101", "예약 삭제 성공");
 	}
+
 
 
 

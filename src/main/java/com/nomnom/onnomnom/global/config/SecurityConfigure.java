@@ -40,6 +40,7 @@ public class SecurityConfigure {
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers(HttpMethod.POST, "/api/test").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout").authenticated();
+                    requests.requestMatchers(HttpMethod.DELETE, "/api/reservation/**").authenticated();
                     //requests.requestMatchers(HttpMethod.GET).authenticated();
                     requests.requestMatchers(HttpMethod.PUT).authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();

@@ -21,6 +21,10 @@ public interface ReservationMapper {
 
 	ReservationDTO selectCheckAvailableTimes(ReservationVo reservationVo);
 
+	List<ReservationDTO> selectReservationCheck(ReservationVo reservationVo);
+
+	int deleteReservation(String reservationNo);
+
 
 
 }

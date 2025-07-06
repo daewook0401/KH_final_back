@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
@@ -37,7 +38,7 @@ public class ReservationSettingController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSetting(@PathVariable String restaurantNo) {
+	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSetting(@RequestParam("restaurantNo") String restaurantNo) {
 		log.info("restaurantNo : {}",restaurantNo);
 		return ResponseEntity.ok(reservationSettingService.selectSetting(restaurantNo));
 	}
@@ -49,7 +50,7 @@ public class ReservationSettingController {
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<ObjectResponseWrapper<String>> deleteSetting(@PathVariable String restaurantNo){
+	public ResponseEntity<ObjectResponseWrapper<String>> deleteSetting(@RequestParam("restaurantNo") String restaurantNo){
 		log.info("restaurantNo : {}",restaurantNo);
 		return ResponseEntity.ok(reservationSettingService.deleteSetting(restaurantNo));
 	}
