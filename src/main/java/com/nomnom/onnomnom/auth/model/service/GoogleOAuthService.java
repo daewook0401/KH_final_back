@@ -20,11 +20,11 @@ public class GoogleOAuthService {
     private static final String TOKEN_URI = "https://oauth2.googleapis.com/token";
 
     // application.yml 또는 환경변수에서 주입
-    @Value("${google.client-id}")
+    @Value("${oauth2.google.client-id}")
     private String clientId;
-    @Value("${google.client-secret}")
+    @Value("${oauth2.google.client-secret}")
     private String clientSecret;
-    @Value("${google.redirect-uri}")
+    @Value("${oauth2.google.redirect-uri}")
     private String redirectUri;
 
     private final RestTemplate restTemplate = new RestTemplate();

@@ -1,11 +1,13 @@
 package com.nomnom.onnomnom.member.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.member.model.dto.CheckInfoDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,5 +52,10 @@ public class MemberController {
     @PutMapping("/social-update")
     public ResponseEntity<ObjectResponseWrapper<String>> updateSocialInfo(@ModelAttribute MemberInsertVo socialInfo, @RequestPart(value = "memberProFiles", required = false) List<MultipartFile> memberProFiles){
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.updateSocialInfo(socialInfo, memberProFiles));
+    }
+
+    @PostMapping("/mypage-info")
+    public ResponseEntity<ObjectResponseWrapper<MemberDTO>> selectMypageInfo(@AuthenticationPrincipal CustomUserDetails userDetail ){
+        return ResponseEntity.ok(memberService.selectMypageInfo(userDetail.getMemberNo()));
     }
 }

@@ -221,4 +221,9 @@ public class MemberServiceImpl implements MemberService {
 
         return responseWrapperService.wrapperCreate("S106", "소셜 계정 생성 성공");
     }
+
+    @Override
+    public ObjectResponseWrapper<MemberDTO> selectMypageInfo(String memberNo){
+        return responseWrapperService.wrapperCreate("S100", "마이페이지 정보 조회 성공", selectMemberByNo(memberNo));
+    }
 }
