@@ -17,8 +17,12 @@ import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.restaurant.model.dao.CategoryMapper;
 import com.nomnom.onnomnom.restaurant.model.dao.RestaurantCategoryMapMapper;
 import com.nomnom.onnomnom.restaurant.model.dao.RestaurantMapper;
+import com.nomnom.onnomnom.restaurant.model.dao.ReviewMapper2;
 import com.nomnom.onnomnom.restaurant.model.dto.MinorCategoryDTO;
+import com.nomnom.onnomnom.restaurant.model.dto.RatingInfoDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
+import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDetailDTO;
+import com.nomnom.onnomnom.restaurant.model.dto.SimpleRestaurantDTO;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -29,6 +33,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @Slf4j
 public class RestaurantServiceImpl implements RestaurantService {
 
+	private final ReviewMapper2 reviewMapper;
+	
 	private final RestaurantMapper restaurantMapper;
     // private final RestaurantTagMapper restaurantTagMapper; // 기존 매퍼는 삭제
     private final RestaurantCategoryMapMapper restaurantCategoryMapMapper; // 새 매퍼로 교체
@@ -124,5 +130,20 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         log.info("🎉 [완료] 식당 등록 전체 완료 - 식당번호: {}", restaurantNo);
         return restaurantNo;
+    }
+    
+    @Override
+    public List<SimpleRestaurantDTO> findRestaurantsByMajorCategory(String categoryName) {
+        return restaurantMapper.findRestaurantsByMajorCategory(categoryName);
+    }
+    
+    @Override
+    public RestaurantDetailDTO findRestaurantById(String restaurantId) {
+        return restaurantMapper.findRestaurantById(restaurantId);
+    }
+
+    @Override
+    public RatingInfoDTO getRatingInfoByRestaurantId(String restaurantId) {
+        return reviewMapper.getRatingInfoByRestaurantId(restaurantId);
     }
 }

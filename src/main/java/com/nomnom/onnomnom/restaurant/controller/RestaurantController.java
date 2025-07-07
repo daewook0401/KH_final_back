@@ -2,6 +2,7 @@ package com.nomnom.onnomnom.restaurant.controller;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
-import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.service.RestaurantService;
 
@@ -29,7 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
-
+    
     @PostMapping
     public ResponseEntity<Map<String, Map<String, String>>> insertRestaurant(
             @Valid @ModelAttribute RestaurantDTO restaurant,
