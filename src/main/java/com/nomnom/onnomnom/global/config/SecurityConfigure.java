@@ -47,6 +47,7 @@ public class SecurityConfigure {
                     requests.requestMatchers(HttpMethod.DELETE, "/api/settings/**").authenticated();
                     //requests.requestMatchers(HttpMethod.GET).authenticated();
                     requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update").authenticated();
+                    requests.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();
                     requests.requestMatchers(HttpMethod.GET).permitAll();
                     requests.requestMatchers(HttpMethod.POST).permitAll();
