@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nomnom.onnomnom.chat.model.dao.ChatMapper">
+
+	<select id="selectRoomNo" parameterType="String" resultType="ChattingRoom">
+		SELECT
+				ROOM_NO roomNo,
+				MEMBER_NO memberNo,
+				CREATE_DATE creadeDate
+	      FROM
+	            TB_CHATTING_ROOM
+	     WHERE
+	            MEMBER_NO = #{memberNo}
+	</select>
+	
+	<insert id="insertRoomNo" parameterType="ChattingRoomVo">
+		<selectKey keyProperty="roomNo" order="AFTER"
+		resultType="String">
+			SELECT
+					ROOM_NO roomNo
+			  FROM
+			 		TB_CHATTING_ROOM
+		     ORDER
+				BY
+				    CREATE_DATE DESC
+			FETCH FIRST 1 ROWS ONLY
+		</selectKey>
+		INSERT
+		  INTO
+		        TB_CHATTING_ROOM
+		        (
+				 MEMBER_NO
+				)
+		VALUES(
+				#{memberNo}
+		)
+	</insert>
+	
+		<insert id="insertChatting" parameterType="ChattingListVo">
+		INSERT
+		  INTO
+		        TB_CHATTING_LIST
+		    	(
+				  ROOM_NO,
+				  MEMBER_NO,
+				  CONTENT
+				)
+		 VALUES (
+				  #{roomNo},
+				  #{memberNo},
+				  #{content}
+		 )
+	</insert>
+
+	
+	<select id="selectCheckChatting" parameterType="String" resultType="int">
+		SELECT
+				COUNT(*)
+	      FROM
+	            TB_CHATTING_LIST
+	     WHERE
+	            ROOM_NO = #{roomNo}
+	</select>
+	
+	<select id="selectChatList" parameterType="String" resultType="ChattingList">
+		SELECT
+				CHAT_NO chatNo,
+				ROOM_NO roomNo,
+				MEMBER_NO memberNo,
+				CONTENT content,
+				CREATE_DATE createDate
+	      FROM
+	            TB_CHATTING_LIST
+	     WHERE
+	            ROOM_NO = #{roomNo}
+	</select>
+	
+	<select id="selectAdminChatList" parameterType="String" resultType="ChattingList">
+		SELECT
+				C.CHAT_NO chatNo,
+				C.ROOM_NO roomNo,
+				C.MEMBER_NO memberNo,
+				C.CONTENT content,
+				C.CREATE_DATE createDate,
+				M.MEMBER_NICKNAME  memberNickname
+	      FROM
+                (SELECT 
+                         CHAT_NO ,
+						 ROOM_NO ,
+						 MEMBER_NO ,
+						 CONTENT ,
+						 CREATE_DATE ,
+                         ROW_NUMBER() OVER (PARTITION BY ROOM_NO ORDER BY CREATE_DATE DESC) AS RN
+                  FROM
+                         TB_CHATTING_LIST) C
+         JOIN
+         		TB_MEMBER M ON (M.MEMBER_NO = C.MEMBER_NO)
+		 WHERE
+                C.RN = 1
+		 ORDER
+            BY
+                C.CREATE_DATE DESC
+	</select>
+	
+
+
+</mapper>
+
+
+
+
