@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.FileService;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
@@ -222,5 +223,25 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public ObjectResponseWrapper<MemberDTO> selectMypageInfo(String memberNo){
         return responseWrapperService.wrapperCreate("S100", "마이페이지 정보 조회 성공", selectMemberByNo(memberNo));
+    }
+
+    @Override
+    public ListResponseWrapper<MemberDTO> selectMemberList(MemberSelectDTO member) {
+        List<MemberEntity> memberResult = memberMapper.selectMemberList(member);
+        if(memberResult.size() <= 0){
+            throw new BaseException(ErrorCode.MEMBER_NOT_FOUND, "조회 멤버가 없습니다.");
+        }
+        return responseWrapperService.wrapperCreate("S100", "멤버 조회 성공", memberResult.stream().map(MemberDTO::fromEntity).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ObjectResponseWrapper<String> updateAdminMember(MemberSelectDTO member){
+        MemberInsertVo memberValue = MemberInsertVo.builder()
+                                            .memberId(member.getMemberId())
+                                            .isActive(member.getIsActive())
+                                            .isStoreOwner(member.getIsStoreOwner())
+                                            .build();
+        memberMapper.updateAdminMember(memberValue);
+        return responseWrapperService.wrapperCreate("S100", "수정 성공");
     }
 }

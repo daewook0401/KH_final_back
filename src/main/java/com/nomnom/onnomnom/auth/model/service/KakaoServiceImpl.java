@@ -190,6 +190,7 @@ public class KakaoServiceImpl implements KakaoService {
                                     .memberRole(loginMember.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("ROLE_USER"))
                                     .isStoreOwner(loginMember.getIsStoreOwner())
                                     .isModify(isModify)
+                                    .isActive(loginMember.getIsActive())
                                     .build())
                 .tokens(tokens)
                 .build();

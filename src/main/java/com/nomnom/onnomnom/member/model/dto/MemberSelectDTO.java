@@ -23,4 +23,5 @@ public class MemberSelectDTO {
     private String memberRole;
     private String isActive;
     private String isStoreOwner;
+    private String search;
 }

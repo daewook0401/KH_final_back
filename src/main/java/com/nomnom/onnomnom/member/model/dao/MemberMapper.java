@@ -13,4 +13,6 @@ public interface MemberMapper {
     List<MemberEntity> selectMemberByInput(MemberSelectDTO memberInput);
     void insertMember(MemberInsertVo member);
     void updateSocialInfo(MemberInsertVo member);
+    List<MemberEntity> selectMemberList(MemberSelectDTO memberInput);
+    void updateAdminMember(MemberInsertVo member);
 }

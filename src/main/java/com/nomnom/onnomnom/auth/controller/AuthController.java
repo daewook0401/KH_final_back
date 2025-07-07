@@ -58,6 +58,8 @@ public class AuthController {
         @CookieValue(value = "Refresh-Token", required = false) String refreshTokenCookie
     ) {
         String refreshToken;
+        log.info("{}",authorizationHeader);
+        log.info("{}", refreshTokenCookie);
         if (refreshTokenCookie != null){
             refreshToken = refreshTokenCookie;
         } else {
