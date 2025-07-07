@@ -71,6 +71,7 @@ public class AuthServiceImpl implements AuthService{
                                     .memberRole(loginMember.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("ROLE_USER"))
                                     .isStoreOwner(loginMember.getIsStoreOwner())
                                     .isModify(isModify)
+                                    .isActive(loginMember.getIsActive())
                                     .build())
                 .tokens(tokens)
                 .build();
@@ -106,6 +107,7 @@ public class AuthServiceImpl implements AuthService{
                                     .memberRole(loginMember.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("ROLE_USER"))
                                     .isStoreOwner(loginMember.getIsStoreOwner())
                                     .isModify(isModify)
+                                    .isActive(loginMember.getIsActive())
                                     .build())
                 .tokens(newTokens)
                 .build();
