@@ -16,7 +16,8 @@ SELECT
         MEMBER_MODIFIED_DATE AS memberModifiedDate,
         MEMBER_ROLE AS memberRole,
         IS_ACTIVE AS isActive,
-        MEMBER_SELFIE AS memberSelfie
+        MEMBER_SELFIE AS memberSelfie,
+        IS_STORE_OWNER AS isStoreOwner
 FROM
         TB_MEMBER
 </sql>

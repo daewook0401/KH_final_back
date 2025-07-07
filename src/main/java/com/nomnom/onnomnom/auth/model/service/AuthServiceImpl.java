@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService{
                                     .build())
                 .tokens(tokens)
                 .build();
-
+        log.info("loginResponse : {}",loginResponse);
         return responseWrapperService.wrapperCreate("S100", "로그인 성공", loginResponse);
     }
 
