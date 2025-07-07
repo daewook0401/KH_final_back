@@ -132,7 +132,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<String> urls = photos.stream()
             .filter(photo -> !photo.isEmpty())
-            .map(photo -> "https://temp-url.com/" + UUID.randomUUID())  // 임시 URL 생성
+            .map(photo -> "https://temp-url.com/" + UUID.randomUUID())
             .toList();
 
         List<ReviewPhotoDTO> photoDTOs = IntStream.range(0, urls.size())
