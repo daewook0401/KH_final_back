@@ -43,8 +43,11 @@ public class SecurityConfigure {
                     requests.requestMatchers(HttpMethod.POST, "/api/test", "/api/member/mypage-info", "/api/auth/password-confirm").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/api/reservation/**").authenticated();
+                    requests.requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").authenticated();
+                    //requests.requestMatchers(HttpMethod.DELETE, "/restaurants/**").permitAll();
                     //requests.requestMatchers(HttpMethod.GET).authenticated();
                     requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update").authenticated();
+                    requests.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();
                     requests.requestMatchers(HttpMethod.GET).permitAll();
                     requests.requestMatchers(HttpMethod.POST).permitAll();

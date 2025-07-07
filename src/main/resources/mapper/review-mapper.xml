@@ -14,6 +14,8 @@
 
   <resultMap id="reviewWithPhotosResultMap" type="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
     <id property="reviewNo" column="REVIEW_NO" />
+    <result property="restaurantNo" column="RESTAURANT_NO" />
+    <result property="memberNo" column="MEMBER_NO" />
     <result property="memberNickname" column="MEMBER_NICKNAME" />
     <result property="reviewContent" column="REVIEW_CONTENT" />
     <result property="reviewScore" column="REVIEW_SCORE" />
@@ -27,6 +29,8 @@
   <select id="selectReview" resultMap="reviewWithPhotosResultMap">
     SELECT
       R.REVIEW_NO,
+      R.RESTAURANT_NO,
+      R.MEMBER_NO,
       M.MEMBER_NICKNAME,
       R.REVIEW_CONTENT,
       R.REVIEW_SCORE,
@@ -79,14 +83,12 @@
   </select>
 
   <insert id="insertReviewPhoto" parameterType="java.util.List">
-    INSERT INTO TB_REVIEW_PHOTO (
-      REVIEW_NO,
-      REVIEW_PHOTO_URL
-    )
-    VALUES
-    <foreach collection="list" item="photo" separator=",">
-      (#{photo.reviewNo}, #{photo.reviewPhotoUrl})
+    INSERT ALL
+    <foreach collection="list" item="photo">
+      INTO TB_REVIEW_PHOTO (REVIEW_NO, REVIEW_PHOTO_URL)
+      VALUES (#{photo.reviewNo}, #{photo.reviewPhotoUrl})
     </foreach>
+    SELECT * FROM dual
   </insert>
 
   <delete id="deleteReviewPhoto" parameterType="String">
@@ -150,5 +152,19 @@
     DELETE FROM TB_BILL
     WHERE REVIEW_NO = #{reviewNo}
   </delete>
+
+  <select id="selectReviewPhotoUrls" resultType="String">
+    SELECT REVIEW_PHOTO_URL
+    FROM TB_REVIEW_PHOTO
+    WHERE REVIEW_NO = #{reviewNo}
+  </select>
+
+  <select id="selectBillPhotoUrl" resultType="String">
+    SELECT BILL_PHOTO_URL
+    FROM TB_BILL
+    WHERE REVIEW_NO = #{reviewNo}
+  </select>
+
+
 
 </mapper>
