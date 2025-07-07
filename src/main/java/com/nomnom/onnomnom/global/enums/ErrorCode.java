@@ -31,7 +31,7 @@ public enum ErrorCode {
     
     BUSINESS_INFO_REGISTER_FAIL("E915", "운영정보등록 실패"),
     
-    BRAKE_TIME_RANGE_ERROR("E916", "브레이크타임 범위 오류"),
+    BREAK_TIME_RANGE_ERROR("E916", "브레이크타임 범위 오류"),
     
     BUSINESS_INFO_UPDATE_FAIL("E917", "운영정보수정 실패"),
     
@@ -74,10 +74,24 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN("E936", "유효하지 않은 리프레쉬 토큰입니다."),
     
     ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다."),
-
-    REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음"),
     
-    FILE_NOT_FOUND("E943", "파일이 존재하지 않음");
+    REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음"),
+
+    BREAK_ENDTIME_ERROR("E939", "브레이크 종료 시간을 잘못 입력하셨습니다."),
+	
+	TIME_VALUE_ERROR("E940", "시간은 10분단위로 입력해주세요"),
+	
+	DELETE_OPERATING_INFO_FAILED_ERROR("E941", "운영정보 삭제에 실패하였습니다."),
+
+	BREAK_STARTTIME_ERROR("E942", "브레이크 시작 시간을 잘못 입력하셨습니다."),
+
+	FILE_NOT_FOUND("E943", "파일이 존재하지 않음"),
+
+    INVALID_TOKEN("E944", "유효하지 않은 토큰"),
+    
+	UNAVAILABLE_RESERVATION_ERROR("E945", "잘못된 예약입니다."),
+	
+	EXISTING_OPERATING_HOURS_ERROR("E946", "운영시간이 이미 등록되었습니다.");
 
     private final String code;
     private final String defaultMessage;
