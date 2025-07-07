@@ -90,6 +90,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		       RESTAURANT_NO = (SELECT RESTAURANT_NO FROM TB_RESTAURANT WHERE MEMBER_NO = #{memberNo})
 	</select>
 	
+	<select id="selectAvailableTimeByRestaurantNo" parameterType="String" resultType="AvailableTimeDTO">
+		SELECT
+		       AT.OPERATING_HOURS_NO operatingHoursNo,
+		       OH.RESTAURANT_NO restaurantNo,
+		       OH.WEEKDAY weekDay,
+		       AT.RESERVATION_START_TIME reservationStartTime,
+		       AT.RESERVATION_END_TIME reservationEndTime
+		 FROM
+		       TB_AVAILABLE_TIME AT
+	RIGHT JOIN
+	           TB_OPERATING_HOURS OH ON (OH.OPERATING_HOURS_NO = AT.OPERATING_HOURS_NO)
+		 WHERE
+		       OH.RESTAURANT_NO = #{restaurantNo}
+	</select>
+	
+	<select id="selectSettingInfoByRestaurantNo" parameterType="String" resultType="reservationSettingDTO">
+		SELECT
+		       RESTAURANT_NO restaurantNo,
+		       INTERVAL interval,
+		       MAX_NUM maxNum,
+		       MIN_NUM minNum,
+		       MAX_TEAM_NUM maxTeamNum,
+		       DESCRIPTION description
+		 FROM
+		       TB_RESERVATION_SETTING
+		 WHERE
+		       RESTAURANT_NO = #{restaurantNo}
+	</select>
+	
 	
 	<update id="updateAvailableTime" parameterType="AvailableTimeVo">
 		UPDATE

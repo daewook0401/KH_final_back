@@ -100,6 +100,7 @@ public class ReservationServiceImpl implements ReservationService {
 	              .weekDay(weekDay)
 	              .build();
 		ResponseTimeDTO timesInfo = reservationMapper.selectTimesInfo(operatingVo);
+		log.info("timesInfo : {}",timesInfo);
 		
 		String breakStartTime = timesInfo.getBreakStartTime();
 		String breakEndTime = timesInfo.getBreakEndTime();

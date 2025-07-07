@@ -10,12 +10,15 @@ public interface ReservationSettingService {
 
 	ObjectResponseWrapper<String> insertSetting(ReservationSettingRequestDTO request);
 
-	ObjectResponseWrapper<ReservationSettingRequestDTO> selectSetting();
-
+	ObjectResponseWrapper<ReservationSettingRequestDTO> selectSettingByMemberNo();
+	ObjectResponseWrapper<ReservationSettingRequestDTO> selectSettingByRestaurantNo(String restaurantNo);
+	
 	ObjectResponseWrapper<String> updateSetting(ReservationSettingRequestDTO request);
 
 	ObjectResponseWrapper<String> deleteSetting(String restaurantNo);
 
 	ObjectResponseWrapper<RestaurantDTO> selectMyRestaurant();
+
+	
 
 }

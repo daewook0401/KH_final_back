@@ -21,6 +21,9 @@ public interface ReservationSettingMapper {
 	List<AvailableTimeDTO> selectAvailableTime(String memberNo);
 	ReservationSettingDTO selectSettingInfo(String memberNo);
 	
+	List<AvailableTimeDTO> selectAvailableTimeByRestaurantNo(String restaurantNo);
+	ReservationSettingDTO selectSettingInfoByRestaurantNo(String restaurantNo);
+	
 	int updateSettingInfo(ReservationSettingVo reservationSettingVo);
 	int updateAvailableTime(AvailableTimeVo availableTimeVo);
 
@@ -28,5 +31,7 @@ public interface ReservationSettingMapper {
 	int deleteSettingInfo(String restaurantNo);
 	
 	RestaurantDTO selectMyRestaurant(String memberNo);
+
+
 	
 }

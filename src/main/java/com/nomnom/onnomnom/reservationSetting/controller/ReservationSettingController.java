@@ -38,9 +38,14 @@ public class ReservationSettingController {
 		return ResponseEntity.ok(reservationSettingService.insertSetting(request));
 	}
 	
-	@GetMapping
-	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSetting() {
-		return ResponseEntity.ok(reservationSettingService.selectSetting());
+	@GetMapping("/byMemberNo")
+	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSettingByMemberNo() {
+		return ResponseEntity.ok(reservationSettingService.selectSettingByMemberNo());
+	}
+	
+	@GetMapping("/byRestaurantNo")
+	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSettingByRestaurantNo(@RequestParam("restaurantNo") String restaurantNo) {
+		return ResponseEntity.ok(reservationSettingService.selectSettingByRestaurantNo(restaurantNo));
 	}
 	
 	@PutMapping

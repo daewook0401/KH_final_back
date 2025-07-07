@@ -100,7 +100,7 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 	
 
 	@Override
-	public ObjectResponseWrapper<ReservationSettingRequestDTO> selectSetting() {
+	public ObjectResponseWrapper<ReservationSettingRequestDTO> selectSettingByMemberNo() {
 		CustomUserDetails memeber = authService.getUserDetails();
 		String memberNo = memeber.getMemberNo();
 		List<AvailableTimeDTO> AvailableTimeList = reservationSettingMapper.selectAvailableTime(memberNo);
@@ -116,6 +116,23 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 		
 		return responseWrapperService.wrapperCreate("S101", "예약설정 조회 성공",reservationSettingRequestDTO);
 	}
+	
+	@Override
+	public ObjectResponseWrapper<ReservationSettingRequestDTO> selectSettingByRestaurantNo(String restaurantNo) {
+		List<AvailableTimeDTO> AvailableTimeList = reservationSettingMapper.selectAvailableTimeByRestaurantNo(restaurantNo);
+		ReservationSettingDTO reservationSettingDTO = reservationSettingMapper.selectSettingInfoByRestaurantNo(restaurantNo);
+		
+		ReservationSettingRequestDTO reservationSettingRequestDTO = ReservationSettingRequestDTO.builder()
+				.reservation(AvailableTimeList)
+				.settingInfo(reservationSettingDTO)
+				.build();
+		
+		log.info("AvailableTimeList : {} ",AvailableTimeList);
+		log.info("reservationSettingRequestDTO : {} ",reservationSettingRequestDTO);
+		
+		return responseWrapperService.wrapperCreate("S101", "예약설정 조회 성공",reservationSettingRequestDTO);
+	}
+
 	
 	
 	
@@ -177,6 +194,7 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 		log.info("myRestaurantInfo :{}",myRestaurantInfo);
 		return responseWrapperService.wrapperCreate("S101", "내 가게 조회 성공",myRestaurantInfo);
 	}
+
 
 
 }
