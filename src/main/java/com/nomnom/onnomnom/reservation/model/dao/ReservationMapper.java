@@ -23,7 +23,10 @@ public interface ReservationMapper {
 
 	List<ReservationDTO> selectReservationCheck(ReservationVo reservationVo);
 
+	List<ReservationDTO> selectAllReservation();
+	
 	int deleteReservation(String reservationNo);
+
 
 
 

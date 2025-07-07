@@ -1,6 +1,5 @@
 package com.nomnom.onnomnom.reservationSetting.controller;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.operating.model.dto.OperatingDTO;
+import com.nomnom.onnomnom.reservation.model.dto.ReservationDTO;
 import com.nomnom.onnomnom.reservationSetting.model.dto.ReservationSettingRequestDTO;
 import com.nomnom.onnomnom.reservationSetting.model.service.ReservationSettingService;
+import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,8 @@ public class ReservationSettingController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSetting(@RequestParam("restaurantNo") String restaurantNo) {
-		log.info("restaurantNo : {}",restaurantNo);
-		return ResponseEntity.ok(reservationSettingService.selectSetting(restaurantNo));
+	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSetting() {
+		return ResponseEntity.ok(reservationSettingService.selectSetting());
 	}
 	
 	@PutMapping
@@ -53,5 +53,11 @@ public class ReservationSettingController {
 	public ResponseEntity<ObjectResponseWrapper<String>> deleteSetting(@RequestParam("restaurantNo") String restaurantNo){
 		log.info("restaurantNo : {}",restaurantNo);
 		return ResponseEntity.ok(reservationSettingService.deleteSetting(restaurantNo));
+	}
+	
+	@GetMapping("/restaurant")
+	public ResponseEntity<ObjectResponseWrapper<RestaurantDTO>> selectMyRestaurant() {
+		log.info("잘 들어 오나아ㅛ???");
+		return ResponseEntity.ok(reservationSettingService.selectMyRestaurant());
 	}
 }

@@ -4,6 +4,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nomnom.onnomnom.reservationSetting.model.dao.ReservationSettingMapper">
 
+	<select id="selectCheckOperatingInfo" parameterType="String" resultType="int">
+		SELECT
+			 	COUNT(*)
+		  FROM
+		  		TB_OPERATING_HOURS
+		 WHERE
+		 		RESTAURANT_NO = #{restaurantNo}
+	</select>
+
 	<insert id="insertAvailableTime"
 				parameterType="AvailableTimeVo">
 	    INSERT 
@@ -24,8 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			          AND
 			                RESTAURANT_NO = #{restaurantNo}       
 			         ),
-			        #{startTime},
-			        #{endTime}
+			        #{reservationStartTime},
+			        #{reservationEndTime}
 	           		)
 	</insert>
 	
@@ -64,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	RIGHT JOIN
 	           TB_OPERATING_HOURS OH ON (OH.OPERATING_HOURS_NO = AT.OPERATING_HOURS_NO)
 		 WHERE
-		       OH.RESTAURANT_NO = #{restaurantNo}
+		       OH.RESTAURANT_NO = (SELECT RESTAURANT_NO FROM TB_RESTAURANT WHERE MEMBER_NO = #{memberNo})
 	</select>
 	
 	<select id="selectSettingInfo" parameterType="String" resultType="reservationSettingDTO">
@@ -78,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 FROM
 		       TB_RESERVATION_SETTING
 		 WHERE
-		       RESTAURANT_NO = #{restaurantNo}
+		       RESTAURANT_NO = (SELECT RESTAURANT_NO FROM TB_RESTAURANT WHERE MEMBER_NO = #{memberNo})
 	</select>
 	
 	
@@ -119,7 +128,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM
 		        TB_AVAILABLE_TIME
 		 WHERE
-		        RESTAURANT_NO = #{restaurantNo}	
+		        OPERATING_HOURS_NO IN (
+			      SELECT 
+			      		 OPERATING_HOURS_NO
+			        FROM   
+			        	 TB_OPERATING_HOURS
+			      WHERE  
+			             RESTAURANT_NO = #{restaurantNo})
 	</delete>
 	
 	<delete id="deleteSettingInfo" parameterType="String">
@@ -127,9 +142,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  FROM
 		        TB_RESERVATION_SETTING
 		 WHERE
-		        RESTAURANT_NO = #{restaurantNo}	
+			    RESTAURANT_NO = #{restaurantNo}
 	</delete>
 
+	<select id="selectMyRestaurant" parameterType="String" resultType="RestaurantDTO">
+		SELECT
+			   RESTAURANT_NO restaurantNo,
+		       RESTAURANT_NAME restaurantName,
+		       RESTAURANT_ADDRESS restaurantAddress,
+		       RESTAURANT_PHONE_NUMBER restaurantPhoneNumber,
+		       RESTAURANT_DESCRIPTION restaurantDescription,
+		       MEMBER_NO memberNo
+		 FROM
+		       TB_RESTAURANT
+		 WHERE
+		       MEMBER_NO = #{memberNo}
+	</select>
+	
 </mapper>
 
 

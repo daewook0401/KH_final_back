@@ -82,6 +82,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    		 OH.RESTAURANT_NO = #{restaurantNo}          
 	</select>
 	
+	<select id = "selectOperatingByMemberNo"
+	               parameterType="String"
+	               resultType="OperatingDTO">
+	    SELECT
+	             OH.OPERATING_HOURS_NO operatingHoursNo,
+	             OH.RESTAURANT_NO restaurantNo,
+	             OH.WEEKDAY weekDay,
+	             OH.START_TIME startTime,
+	             OH.END_TIME endTime,
+	             BT.BREAK_START_TIME breakStartTime,
+	             BT.BREAK_END_TIME breakEndTime
+	      FROM
+	             TB_OPERATING_HOURS OH
+	 LEFT JOIN
+	             TB_BREAKTIME BT ON (OH.OPERATING_HOURS_NO = BT.OPERATING_HOURS_NO)
+	     WHERE
+	    		 OH.RESTAURANT_NO = (SELECT RESTAURANT_NO FROM TB_RESTAURANT WHERE MEMBER_NO = #{memberNo})   
+		 ORDER 
+		    BY CASE OH.WEEKDAY           
+	            WHEN 'Monday'    THEN 1
+	            WHEN 'Tuesday'   THEN 2
+	            WHEN 'Wednesday' THEN 3
+	            WHEN 'Thursday'  THEN 4
+	            WHEN 'Friday'    THEN 5
+	            WHEN 'Saturday'  THEN 6
+	            WHEN 'Sunday'    THEN 7
+	         END   
+	</select>
+	
 	<select id="findOperatingHours" parameterType="OperatingVo" resultType="int">
 		SELECT
 		 		COUNT(*)
@@ -125,6 +154,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 WHERE
 				OPERATING_HOURS_NO = #{operatingHoursNo}
 	</update>
+	
+	<select id="selectReservationSetting" parameterType="String" resultType="int">
+		SELECT
+				COUNT(*)
+		  FROM
+		  	    TB_RESERVATION_SETTING
+		 WHERE
+		 		RESTAURANT_NO = #{restaurantNo}
+	</select>
 	
 	<delete id="deleteBreaktimeInfo" parameterType="String">
 		DELETE
