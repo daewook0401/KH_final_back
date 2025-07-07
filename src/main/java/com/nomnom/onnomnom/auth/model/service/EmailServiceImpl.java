@@ -42,24 +42,28 @@ public class EmailServiceImpl implements EmailService{
             helper.setTo(email);
             helper.setSubject("뇸뇸 이메일 인증 번호입니다.");
             helper.setText("""
-            <div style="width:100%; background:#f4f4f4; padding:20px; font-family:Arial,sans-serif;">
-                <div style="max-width:600px; margin:0 auto; background:#fff; border-radius:8px; overflow:hidden;">
-                    <div style="background:#4CAF50; color:#fff; padding:20px; text-align:center;">
-                        <h1>Eco-Insight 이메일 인증</h1>
-                    </div>
-                    <div style="padding:20px; color:#333;">
-                        <p>안녕하세요,</p>
-                        <p>아래 인증 코드를 입력하여 이메일 인증을 완료해주세요.</p>
-                        <div style="text-align:center; margin:20px 0;">
-                            <span style="display:inline-block; font-size:24px; font-weight:bold; color:#4CAF50;
-                                        padding:10px 20px; border:2px dashed #4CAF50; border-radius:4px;">
-                                """ + verifyCode + """
-                            </span>
-                        </div>
-                        <p>인증 코드는 <strong>3분</strong> 동안 유효합니다.</p>
-                        <p>감사합니다.</p>
-                    </div>
-                </div>
+            <div style="width:100%; background:#fff8f0; padding:20px; font-family:'Segoe UI', Arial, sans-serif;">
+            	<div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 8px rgba(0,0,0,0.1);">
+            	<div style="background:#f28c38; color:#ffffff; padding:20px; text-align:center;">
+            		<h1 style="margin:0; font-size:28px;">맛집찾기 이메일 인증</h1>
+            	</div>
+            	<div style="padding:30px; color:#333;">
+            		<p style="font-size:16px; margin:0 0 15px;">안녕하세요, 회원님!</p>
+            		<p style="font-size:16px; line-height:1.5;">맛있는 여정을 시작하기 위해 아래 인증 코드를 입력하여 이메일 인증을 완료해주세요.</p>
+            		<div style="text-align:center; margin:25px 0;">
+            		    <span style="display:inline-block; font-size:26px; font-weight:bold; color:#f28c38; 
+                            padding:12px 24px; border:2px dashed #f28c38; border-radius:6px; background:#fff3e6;">
+            		        """ + verifyCode + """
+            		    </span>
+            		</div>
+            		  	  <p style="font-size:16px; margin:15px 0;">인증 코드는 <strong>3분</strong> 동안 유효합니다.</p>
+            		  	  <p style="font-size:16px; margin:0;">맛있는 경험을 함께 만들어가요!</p>
+            		  	  <p style="font-size:16px; margin:15px 0 0;">nomnom 팀 드림</p>
+            		  </div>
+            		  <div style="background:#f28c38; color:#ffffff; text-align:center; padding:10px; font-size:14px;">
+            		  	  <p style="margin:0;">맛집찾기 | 최고의 맛집을 찾아드립니다!</p>
+            		  </div>
+            	</div>
             </div>
                     """, true);
             sender.send(message);
