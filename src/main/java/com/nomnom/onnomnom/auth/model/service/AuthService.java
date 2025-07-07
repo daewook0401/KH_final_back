@@ -11,4 +11,5 @@ public interface AuthService {
     ObjectResponseWrapper<LoginResponseDTO> refreshAccessToken (String refreshToken);
     CustomUserDetails getUserDetails();
     ObjectResponseWrapper<String> logout(CustomUserDetails userDetails);
+    ObjectResponseWrapper<String> passwordConfirm(String password);
 }

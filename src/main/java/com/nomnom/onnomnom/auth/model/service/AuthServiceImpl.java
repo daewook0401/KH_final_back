@@ -18,6 +18,7 @@ import com.nomnom.onnomnom.auth.model.dto.MemberLoginDTO;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.config.util.JwtUtil;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
+import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.exception.CustomAuthenticationException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
@@ -127,5 +128,14 @@ public class AuthServiceImpl implements AuthService{
     public ObjectResponseWrapper<String> logout(CustomUserDetails userDetails) {
         tokenService.deleteRefreshToken(userDetails.getMemberNo());
         return responseWrapperService.wrapperCreate("S109", "로그아웃 성공");
+    }
+
+    @Override
+    public ObjectResponseWrapper<String> passwordConfirm(String password){
+        CustomUserDetails user = getUserDetails();
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return responseWrapperService.wrapperCreate("S100", "비밀번호 성공");
+        }
+        throw new BaseException(ErrorCode.INVALID_PASSWORD_FORMAT, "비밀번호 잘못 입력함");
     }
 }

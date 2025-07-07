@@ -1,6 +1,7 @@
 package com.nomnom.onnomnom.auth.controller;
 
 import java.time.Duration;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -80,4 +81,10 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, deleteCookie.toString()).body(authService.logout(userDetails));
     }
+
+    @PostMapping("password-confirm")
+    public ResponseEntity<ObjectResponseWrapper<String>> passwordConfirm(@RequestBody Map<String, String> password){
+        return ResponseEntity.ok(authService.passwordConfirm(password.get("password")));
+    }
+
 }
