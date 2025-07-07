@@ -70,8 +70,8 @@ public class MemberDTO {
             e.getMemberEnrollDate(),
             e.getMemberModifiedDate(),
             e.getMemberRole(),
-            e.getIsActive(),
             e.getMemberSelfie(),
+            e.getIsActive(),
             e.getIsStoreOwner()
         );
     }

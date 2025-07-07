@@ -1,5 +1,6 @@
 package com.nomnom.onnomnom.auth.model.service;
 
+
 import com.nomnom.onnomnom.auth.model.dto.LoginResponseDTO;
 import com.nomnom.onnomnom.auth.model.dto.MemberLoginDTO;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
@@ -10,4 +11,5 @@ public interface AuthService {
     ObjectResponseWrapper<LoginResponseDTO> refreshAccessToken (String refreshToken);
     CustomUserDetails getUserDetails();
     ObjectResponseWrapper<String> logout(CustomUserDetails userDetails);
+    ObjectResponseWrapper<String> passwordConfirm(String password);
 }

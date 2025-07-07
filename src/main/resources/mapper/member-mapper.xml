@@ -15,8 +15,8 @@ SELECT
         MEMBER_ENROLL_DATE AS memberEnrollDate,
         MEMBER_MODIFIED_DATE AS memberModifiedDate,
         MEMBER_ROLE AS memberRole,
-        IS_ACTIVE AS isActive,
         MEMBER_SELFIE AS memberSelfie,
+        IS_ACTIVE AS isActive,
         IS_STORE_OWNER AS isStoreOwner
 FROM
         TB_MEMBER
@@ -96,5 +96,14 @@ parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
         #{memberSelfie}
     )
 </insert>
-
+<update id="updateSocialInfo"
+parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+UPDATE TB_MEMBER
+SET MEMBER_NAME = #{memberName},
+    MEMBER_NICKNAME = #{memberNickName},
+    MEMBER_SELFIE = #{memberSelfie},
+    MEMBER_MODIFIED_DATE = SYSDATE
+WHERE
+    MEMBER_ID = #{memberId}
+</update>
 </mapper>

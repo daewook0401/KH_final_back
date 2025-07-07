@@ -76,6 +76,8 @@ public enum ErrorCode {
     ID_PASSWORD_MISMATCH("E937", "아이디나 비번을 잘못 입력하였습니다."),
     
     REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음"),
+
+    INVALID_TOKEN("E944", "유효하지 않은 토큰"),
 	
     BREAK_ENDTIME_ERROR("E939", "브레이크 종료 시간을 잘못 입력하셨습니다."),
 	

@@ -18,4 +18,5 @@ public class LoginInfo {
     private String username;
     private String memberRole;
     private String isStoreOwner;
+    private String isModify;
 }

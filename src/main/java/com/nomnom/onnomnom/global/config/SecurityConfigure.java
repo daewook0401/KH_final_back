@@ -16,10 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.nomnom.onnomnom.global.config.filter.CoopFilter;
 import com.nomnom.onnomnom.global.config.filter.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfigure {
 
     private final JwtFilter jwtFilter;
-    
+    private final CoopFilter coopFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity.formLogin(AbstractHttpConfigurer::disable)
@@ -38,16 +40,17 @@ public class SecurityConfigure {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers(HttpMethod.POST, "/api/test").authenticated();
+                    requests.requestMatchers(HttpMethod.POST, "/api/test", "/api/member/mypage-info", "/api/auth/password-confirm").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout").authenticated();
                     requests.requestMatchers(HttpMethod.DELETE, "/api/reservation/**").authenticated();
                     //requests.requestMatchers(HttpMethod.GET).authenticated();
-                    requests.requestMatchers(HttpMethod.PUT).authenticated();
+                    requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update").authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();
                     requests.requestMatchers(HttpMethod.GET).permitAll();
                     requests.requestMatchers(HttpMethod.POST).permitAll();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(coopFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -69,6 +72,11 @@ public class SecurityConfigure {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
 		return authConfig.getAuthenticationManager();
 	}
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
     @Bean
 	public PasswordEncoder passwordEncoder() {

@@ -1,6 +1,7 @@
 package com.nomnom.onnomnom.auth.controller;
 
 import java.time.Duration;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -64,19 +65,6 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.refreshAccessToken(refreshToken));
     }
-    @PostMapping("/status")
-    public ResponseEntity<ObjectResponseWrapper<LoginResponseDTO>> tokenStatus(
-        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-        @CookieValue(value = "Refresh-Token", required = false) String refreshTokenCookie
-    ) {
-        String refreshToken;
-        if (refreshTokenCookie != null){
-            refreshToken = refreshTokenCookie;
-        } else {
-            refreshToken = authorizationHeader.replaceFirst("Bearer ", "");
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.refreshAccessToken(refreshToken));
-    }
 
     @DeleteMapping("/logout")
     public ResponseEntity<ObjectResponseWrapper<String>> logout(
@@ -93,6 +81,10 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, deleteCookie.toString()).body(authService.logout(userDetails));
     }
-    
+
+    @PostMapping("password-confirm")
+    public ResponseEntity<ObjectResponseWrapper<String>> passwordConfirm(@RequestBody Map<String, String> password){
+        return ResponseEntity.ok(authService.passwordConfirm(password.get("password")));
+    }
 
 }
