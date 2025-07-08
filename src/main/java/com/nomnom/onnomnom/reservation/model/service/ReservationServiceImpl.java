@@ -100,6 +100,7 @@ public class ReservationServiceImpl implements ReservationService {
 	              .weekDay(weekDay)
 	              .build();
 		ResponseTimeDTO timesInfo = reservationMapper.selectTimesInfo(operatingVo);
+		log.info("timesInfo : {}",timesInfo);
 		
 		String breakStartTime = timesInfo.getBreakStartTime();
 		String breakEndTime = timesInfo.getBreakEndTime();
@@ -190,18 +191,25 @@ public class ReservationServiceImpl implements ReservationService {
 		CustomUserDetails memeber = authService.getUserDetails();
 		String memberNo = memeber.getMemberNo();
 		ReservationVo reservationVo = ReservationVo.builder()
-													.restaurantNo(restaurantNo)
 													.memberNo(memberNo)
 													.build();
 		List<ReservationDTO> myReservation = reservationMapper.selectReservationCheck(reservationVo);
-		return responseWrapperService.wrapperCreate("S101", "내 예약 취소 성공",myReservation);
+		return responseWrapperService.wrapperCreate("S101", "내 예약내역 조회 성공",myReservation);
 	}
+	
+	@Override
+	public ListResponseWrapper<ReservationDTO> selectAllReservation() {
+		List<ReservationDTO> allReservation = reservationMapper.selectAllReservation();
+		return responseWrapperService.wrapperCreate("S101", "모든 예약 조회 성공",allReservation);
+	}
+	
 	
 	@Override
 	public ObjectResponseWrapper<String> deleteReservation(String reservationNo) {
 		int deleteResult = reservationMapper.deleteReservation(reservationNo);
 		return responseWrapperService.wrapperCreate("S101", "예약 삭제 성공");
 	}
+
 
 
 
