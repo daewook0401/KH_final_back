@@ -19,6 +19,7 @@ public class ReviewDTO {
   private String restaurantNo;
   private String memberNo;
   private String memberNickname;
+  private String restaurantName;
   private String reviewContent;
   private Double reviewScore;
   private Date createDate;

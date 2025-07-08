@@ -33,4 +33,6 @@ public interface ReviewService {
 
     // 리뷰 삭제 시 영수증 삭제
     ObjectResponseWrapper<String> deleteBill(String reviewNo);
+
+    ObjectResponseWrapper<ReviewResponseDTO> selectMyReview(int currentPage);
 }
