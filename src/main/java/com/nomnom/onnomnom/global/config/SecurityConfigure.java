@@ -41,13 +41,10 @@ public class SecurityConfigure {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers(HttpMethod.POST, "/api/test", "/api/member/mypage-info", "/api/auth/password-confirm").authenticated();
-                    requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout").authenticated();
-                    requests.requestMatchers(HttpMethod.DELETE, "/api/reservation/**").authenticated();
-                    requests.requestMatchers(HttpMethod.DELETE, "/api/operatings/**").authenticated();
-                    requests.requestMatchers(HttpMethod.DELETE, "/api/settings/**").authenticated();
+                    requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout", "/api/reservation/**","/api/operatings/**","/api/settings/**").authenticated();
+                    //requests.requestMatchers(HttpMethod.DELETE, "/restaurants/**").permitAll();
                     //requests.requestMatchers(HttpMethod.GET).authenticated();
-                    requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update").authenticated();
-                    requests.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").authenticated();
+                    requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update", "/api/member/update").authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();
                     requests.requestMatchers(HttpMethod.GET).permitAll();
                     requests.requestMatchers(HttpMethod.POST).permitAll();
@@ -62,7 +59,7 @@ public class SecurityConfigure {
     public CorsConfigurationSource corsConfigurationSource(){
 		CorsConfiguration configuration = new CorsConfiguration();
 		// configuration.setAllowedOrigins(Arrays.asList("192.168.219.**:**"));
-		configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+		configuration.setAllowedOriginPatterns(Arrays.asList("https://onnomnom.shop"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 		configuration.setAllowCredentials(true);

@@ -15,6 +15,7 @@ import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.FileService;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
+import com.nomnom.onnomnom.global.service.S3Service;
 import com.nomnom.onnomnom.member.model.dao.MemberMapper;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberSelectDTO;
@@ -33,6 +34,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final FileService fileService;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
     @Override
     public List<MemberDTO> selectMemberByInput(MemberSelectDTO member) {
         List<MemberEntity> memberResult = memberMapper.selectMemberByInput(member);
@@ -193,6 +195,44 @@ public class MemberServiceImpl implements MemberService {
         return responseWrapperService.wrapperCreate("S106", "계정 생성 성공");
     }
 
+    @Override
+    public ObjectResponseWrapper<String> updateInfo(MemberInsertVo info,
+            List<MultipartFile> memberSelfie) {
+        
+        String url = "";
+        if (memberSelfie == null){
+            url = "NULL";
+        } else if (memberSelfie.size()==1){
+            url = fileService.imageUpLoad(memberSelfie).get(0);
+        } else if(memberSelfie.size()>1) {
+            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
+        }
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+        MemberInsertVo memberValue;
+        String oldSelfie = selectMemberById(userDetails.getUsername()).getMemberSelfie();
+        if (oldSelfie != "NULL"){
+            s3Service.deleteFile(oldSelfie);
+        }
+        if (info.getMemberPw() != null && !info.getMemberPw().isBlank()) {
+            memberValue = MemberInsertVo.builder()
+                                            .memberId(userDetails.getUsername())
+                                            .memberNickName(info.getMemberNickName())
+                                            .memberPw(passwordEncoder.encode(info.getMemberPw()))
+                                            .memberSelfie(url)
+                                            .build();
+        } else {
+            memberValue = MemberInsertVo.builder()
+                                .memberId(userDetails.getUsername())
+                                .memberNickName(info.getMemberNickName())
+                                .memberSelfie(url)
+                                .build();
+        }
+        memberMapper.updateInfo(memberValue);
+
+        return responseWrapperService.wrapperCreate("S106", "계정 정보 변경");
+    }
     @Override
     public ObjectResponseWrapper<String> updateSocialInfo(MemberInsertVo socialInfo,
             List<MultipartFile> memberSelfie) {

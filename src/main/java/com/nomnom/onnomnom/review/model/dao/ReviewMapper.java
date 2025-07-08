@@ -51,5 +51,9 @@ public interface ReviewMapper {
     //  영수증 이미지 URL 조회 (S3 삭제용)
     String selectBillPhotoUrl(String reviewNo);
 
-    void deleteReviewPhotosByUrls(List<String> photoUrls);
+    // 내 리뷰 개수 조회
+    int selectMyReviewCount(String memberNo);
+
+    // 내 리뷰 리스트 조회 (페이징 처리)
+    List<ReviewDTO> selectMyReview(String memberNo, RowBounds rowBounds);
 }

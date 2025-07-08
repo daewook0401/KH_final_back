@@ -19,7 +19,7 @@ public class CoopFilter implements Filter {
             throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-        response.setHeader("Cross-Origin-<p></p>Embedder-Policy", "unsafe-none");
+        response.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
         chain.doFilter(req, res);
     }
 
