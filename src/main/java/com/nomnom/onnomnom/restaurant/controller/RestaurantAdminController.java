@@ -26,25 +26,25 @@ public class RestaurantAdminController {
 	private final RestaurantService restaurantService;
 
     // 맛집 목록 조회 (필터링, 검색 포함)
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> searchRestaurants(
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String keyword
-    ) {
-        List<AdminRestaurantDTO> restaurantList = restaurantService.searchRestaurants(status, keyword);
-        Map<String, String> header = Map.of("code", "S200", "message", "정상적으로 조회되었습니다.");
-        Map<String, Object> response = Map.of("header", header, "body", restaurantList);
-        return ResponseEntity.ok(response);
-    }
+	@GetMapping
+	public ResponseEntity<Map<String, Object>> searchRestaurants(
+	        @RequestParam(name = "status",  required = false) String status,
+	        @RequestParam(name = "keyword", required = false) String keyword) {
 
-    // 특정 식당의 상태 변경
-    @PatchMapping("/{restaurantId}/status")
-    public ResponseEntity<Map<String, String>> updateRestaurantStatus(
-            @PathVariable String restaurantId,
-            @RequestBody UpdateStatusRequestDTO request) {
-        
-        restaurantService.updateRestaurantStatus(restaurantId, request.getStatus());
-        
-        return ResponseEntity.ok(Map.of("message", "상태가 성공적으로 변경되었습니다."));
-    }
+	    List<AdminRestaurantDTO> list = restaurantService.searchRestaurants(status, keyword);
+	    Map<String, Object> res = Map.of(
+	            "header", Map.of("code", "S200", "message", "정상적으로 조회되었습니다."),
+	            "body",   list
+	    );
+	    return ResponseEntity.ok(res);
+	}
+
+	@PatchMapping("/{restaurantId}/status")
+	public ResponseEntity<Map<String, String>> updateRestaurantStatus(
+	        @PathVariable("restaurantId") String restaurantId,
+	        @RequestBody UpdateStatusRequestDTO req) {
+
+	    restaurantService.updateRestaurantStatus(restaurantId, req.getStatus());
+	    return ResponseEntity.ok(Map.of("message", "상태가 성공적으로 변경되었습니다."));
+	}
 }

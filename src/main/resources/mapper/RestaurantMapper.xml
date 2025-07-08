@@ -6,12 +6,67 @@
 <mapper namespace="com.nomnom.onnomnom.restaurant.model.dao.RestaurantMapper">
 
     
+    <resultMap id="restaurantDetailResultMap" type="com.nomnom.onnomnom.restaurant.model.dto.RestaurantDetailDTO">
+        <result property="restaurantName"        column="RESTAURANT_NAME"/>
+        <result property="restaurantAddress"     column="RESTAURANT_ADDRESS"/>
+        <result property="restaurantDescription" column="RESTAURANT_DESCRIPTION"/>
+        <result property="restaurantMainPhoto"   column="RESTAURANT_MAIN_PHOTO"/>
+        <result property="memberNo"              column="MEMBER_NO"/>
+        <result property="restaurantCuisineType" column="RESTAURANT_CUISINE_TYPE"/>
+    </resultMap>
+
+    <insert id="insertRestaurant" parameterType="com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO"
+            useGeneratedKeys="true" keyProperty="restaurantNo" keyColumn="RESTAURANT_NO">
+        INSERT INTO TB_RESTAURANT (
+            EUPMYEONDONG, MEMBER_NO, RESTAURANT_NAME, RESTAURANT_DESCRIPTION,
+            RESTAURANT_ADDRESS, RESTAURANT_POST_CODE, RESTAURANT_PHONE_NUMBER,
+            RESTAURANT_MAIN_PHOTO
+        ) VALUES (
+            #{restaurantDongCode}, #{memberNo}, #{restaurantName}, #{restaurantDescription},
+            #{restaurantAddress}, #{restaurantPostalCode}, #{restaurantPhoneNumber}, #{photoUrl}
+        )
+    </insert>
+
+    <select id="findRestaurantsByMajorCategory" resultType="com.nomnom.onnomnom.restaurant.model.dto.SimpleRestaurantDTO" parameterType="String">
+        SELECT
+    		"restaurant_no",
+    		"name",
+    		"imageUrl"
+		FROM (
+    		SELECT DISTINCT
+        		R.RESTAURANT_NO as "restaurant_no",
+        		R.RESTAURANT_NAME as "name",
+        		R.RESTAURANT_MAIN_PHOTO as "imageUrl"
+    		FROM TB_RESTAURANT R
+    		JOIN TB_RESTAURANT_CATEGORY_MAP MAP ON R.RESTAURANT_NO = MAP.RESTAURANT_NO
+    		JOIN TB_MINOR_CATEGORY MINOR ON MAP.MINOR_CATEGORY_ID = MINOR.MINOR_CATEGORY_ID
+    		JOIN TB_MAJOR_CATEGORY MAJOR ON MINOR.MAJOR_CATEGORY_ID = MAJOR.MAJOR_CATEGORY_ID
+   			WHERE MAJOR.MAJOR_CATEGORY_NAME = #{categoryName}
+      			AND R.IS_ACTIVE = 'Y'
+		)
+		WHERE <![CDATA[ ROWNUM <= 5 ]]>
+    </select>
+
+    <select id="findRestaurantById" resultMap="restaurantDetailResultMap" parameterType="String">
+        SELECT
+            R.RESTAURANT_NAME, R.RESTAURANT_ADDRESS, R.RESTAURANT_DESCRIPTION,
+            R.RESTAURANT_MAIN_PHOTO, R.MEMBER_NO,
+            (SELECT LISTAGG(MC.MINOR_CATEGORY_NAME, ',') WITHIN GROUP (ORDER BY MC.MINOR_CATEGORY_NAME)
+             FROM TB_RESTAURANT_CATEGORY_MAP MAP
+             JOIN TB_MINOR_CATEGORY MC ON MAP.MINOR_CATEGORY_ID = MC.MINOR_CATEGORY_ID
+             WHERE MAP.RESTAURANT_NO = R.RESTAURANT_NO
+            ) AS RESTAURANT_CUISINE_TYPE
+        FROM TB_RESTAURANT R
+        WHERE R.RESTAURANT_NO = #{restaurantId}
+          AND R.IS_ACTIVE = 'Y'
+    </select>
+    
     <select id="search" resultType="com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO">
         SELECT
-            RESTAURANT_NO as restaurantNo,
-            RESTAURANT_NAME as restaurantName,
-            RESTAURANT_ADDRESS as restaurantAddress,
-            IS_ACTIVE as isActive
+            RESTAURANT_NO      AS restaurantNo,
+            RESTAURANT_NAME    AS restaurantName,
+            RESTAURANT_ADDRESS AS restaurantAddress,
+            IS_ACTIVE          AS isActive
         FROM
             TB_RESTAURANT
         <where>
@@ -23,5 +78,11 @@
             </if>
         </where>
     </select>
+
+    <update id="updateRestaurantStatus">
+        UPDATE TB_RESTAURANT 
+        SET IS_ACTIVE = #{status} 
+        WHERE RESTAURANT_NO = #{restaurantId}
+    </update>
 
 </mapper>
