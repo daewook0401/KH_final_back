@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RatingInfoDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDetailDTO;
@@ -21,4 +22,8 @@ public interface RestaurantService {
     
     RestaurantDetailDTO findRestaurantById(String restaurantId);
     RatingInfoDTO getRatingInfoByRestaurantId(String restaurantId);
+    
+    
+    List<AdminRestaurantDTO> searchRestaurants(String status, String keyword);
+    void updateRestaurantStatus(String restaurantId, String status);
 }
