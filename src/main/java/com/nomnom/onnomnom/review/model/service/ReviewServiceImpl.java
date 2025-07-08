@@ -54,6 +54,25 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public ObjectResponseWrapper<ReviewResponseDTO> selectMyReview(int currentPage) {
+        CustomUserDetails userDetails = authService.getUserDetails();
+        String memberNo = userDetails.getMemberNo();
+
+        int pageSize = 5;
+        int boardNoPerPage = 5;
+        int totalReviewCount = reviewMapper.selectMyReviewCount(memberNo);
+
+        PageInfo pageInfo = Pagination.getPageInfo(currentPage, pageSize, boardNoPerPage, totalReviewCount);
+        int offset = (currentPage - 1) * pageSize;
+        RowBounds rowBounds = new RowBounds(offset, pageSize);
+
+        List<ReviewDTO> reviews = reviewMapper.selectMyReview(memberNo, rowBounds);
+        ReviewResponseDTO reviewResponseDTO = new ReviewResponseDTO(pageInfo, reviews);
+
+        return responseWrapperService.wrapperCreate("S101", "내 리뷰 조회 성공", reviewResponseDTO);
+    }
+
+    @Override
     @Transactional
     public ObjectResponseWrapper<String> insertReview(ReviewDTO reviewDTO, List<MultipartFile> photos, MultipartFile billPhoto) {
         reviewValidationService.checkWritePermission();
@@ -181,4 +200,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewMapper.insertReviewPhoto(photoDTOs);
     }
+
+   
 }

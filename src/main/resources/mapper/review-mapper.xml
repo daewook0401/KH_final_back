@@ -45,6 +45,29 @@
     ORDER BY R.CREATE_DATE DESC
   </select>
 
+  <select id="selectMyReviewCount" parameterType="string" resultType="int">
+    SELECT COUNT(*)
+    FROM TB_REVIEW
+    WHERE MEMBER_NO = #{memberNo}
+      AND IS_ACTIVE = 'Y'
+  </select>
+
+  <select id="selectMyReview" parameterType="String" resultType="com.nomnom.onnomnom.review.model.dto.ReviewDTO">
+    SELECT
+      r.REVIEW_NO AS reviewNo,
+      r.RESTAURANT_NO AS restaurantNo,
+      t.RESTAURANT_NAME AS restaurantName,
+      r.MEMBER_NO AS memberNo,
+      r.REVIEW_CONTENT AS reviewContent,
+      r.REVIEW_SCORE AS reviewScore,
+      r.CREATE_DATE AS createDate
+    FROM TB_REVIEW r
+    JOIN TB_RESTAURANT t ON r.RESTAURANT_NO = t.RESTAURANT_NO
+    WHERE r.MEMBER_NO = #{memberNo}
+      AND r.IS_ACTIVE = 'Y'
+    ORDER BY r.CREATE_DATE DESC
+  </select>
+
   <insert id="insertReview" parameterType="com.nomnom.onnomnom.review.model.dto.ReviewDTO"
           useGeneratedKeys="true" keyProperty="reviewNo" keyColumn="REVIEW_NO">
     INSERT INTO TB_REVIEW (
@@ -165,6 +188,6 @@
     WHERE REVIEW_NO = #{reviewNo}
   </select>
 
-
+  
 
 </mapper>
