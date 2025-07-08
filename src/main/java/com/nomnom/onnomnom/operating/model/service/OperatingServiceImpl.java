@@ -8,10 +8,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.nomnom.onnomnom.auth.model.service.AuthService;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BreakEndTimeException;
 import com.nomnom.onnomnom.global.exception.BreakStartTimeException;
 import com.nomnom.onnomnom.global.exception.BreakTimeException;
+import com.nomnom.onnomnom.global.exception.CantDeleteOperatingInfoException;
 import com.nomnom.onnomnom.global.exception.DeleteOperatingInfoFailedException;
 import com.nomnom.onnomnom.global.exception.ExistingOperatingHoursException;
 import com.nomnom.onnomnom.global.exception.OperatingHoursEnrollFailedException;
@@ -34,6 +37,7 @@ public class OperatingServiceImpl implements OperatingService {
 	
 	private final ResponseWrapperService responseWrapperService;
 	private final OperatingMapper operatingMapper;
+	private final AuthService authService;
 	
 	/* 1. 예외처리 미리 하기 => int count 없애기
 	 * 2. 10분단위 확인 다시/ 함수호출 한번만
@@ -49,7 +53,10 @@ public class OperatingServiceImpl implements OperatingService {
 		
 		log.info("operatingHours : {}",operatingHours);
 		
-	
+	    String restaurantNo = operatingHours.get(0).getRestaurantNo();
+	    if (operatingMapper.selectCountByRestaurantNo(restaurantNo) != 0) {
+	        throw new ExistingOperatingHoursException(ErrorCode.EXISTING_OPERATING_HOURS_ERROR);
+	    }
 		
 		for(OperatingDTO operatingHoursInfo : operatingHours) {
 			
@@ -58,9 +65,7 @@ public class OperatingServiceImpl implements OperatingService {
 			String breakStart = operatingHoursInfo.getBreakStartTime();
 			String breakEnd = operatingHoursInfo.getBreakEndTime();
 			
-			if(operatingMapper.selectCountByRestaurantNo(operatingHoursInfo.getRestaurantNo()) != 0) {
-				throw new ExistingOperatingHoursException(ErrorCode.EXISTING_OPERATING_HOURS_ERROR);
-			};
+			
 			
 			if(!open.isEmpty() && !close.isEmpty() && open != null && close != null) {
 				
@@ -153,9 +158,23 @@ public class OperatingServiceImpl implements OperatingService {
 		log.info("operatingInfo: {}",operatingInfo);
 		return responseWrapperService.wrapperCreate("S102", "운영정보 조회 성공",operatingInfo);
 	}
+	
+	@Override
+	public ListResponseWrapper<OperatingDTO> selectOperatingByMemberNo() {
+		CustomUserDetails memeber = authService.getUserDetails();
+		String memberNo = memeber.getMemberNo();
+		List<OperatingDTO> operatingInfo = operatingMapper.selectOperatingByMemberNo(memberNo);
+		log.info("operatingInfo: {}",operatingInfo);
+		return responseWrapperService.wrapperCreate("S102", "운영정보 조회 성공",operatingInfo);
+	}
+
 
 	@Override
 	public ObjectResponseWrapper<String> deleteOperating(String restaurantNo) {
+		int countSetting = operatingMapper.selectReservationSetting(restaurantNo);
+		if(countSetting != 0 ) {
+			throw new CantDeleteOperatingInfoException(ErrorCode.CANT_DELETE_OPERATING_INFO_ERROR);
+		}
 		int deleteBreaktime = operatingMapper.deleteBreaktimeInfo(restaurantNo);
 		int deleteOperating = operatingMapper.deleteOperatingInfo(restaurantNo);
 		if(deleteOperating == 0) {
@@ -210,5 +229,7 @@ public class OperatingServiceImpl implements OperatingService {
 		}
 		return responseWrapperService.wrapperCreate("S103", "운영정보 수정 성공");
 	}
+
+
 
 }

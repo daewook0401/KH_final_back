@@ -52,4 +52,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(BreakStartTimeException e){
     	return makeResponseEntity(e, e.getErrorCode());
     }
+    
+    @ExceptionHandler(FailedToEnrollSettingException.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(FailedToEnrollSettingException e){
+    	return makeResponseEntity(e, e.getErrorCode());
+    }
+    
+    @ExceptionHandler(NotEnrolledOperatingHours.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(NotEnrolledOperatingHours e){
+    	return makeResponseEntity(e, e.getErrorCode());
+    }
 }

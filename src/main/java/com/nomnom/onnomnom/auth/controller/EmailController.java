@@ -25,6 +25,10 @@ public class EmailController {
     public ResponseEntity<ObjectResponseWrapper<String>> verifyEmail(@Valid @RequestBody CheckInfoDTO checkInfo){
         return ResponseEntity.status(HttpStatus.CREATED).body(emailService.insertVerifyCode(checkInfo.getMemberEmail()));
     }
+    @PostMapping("/editprofile-verify")
+    public ResponseEntity<ObjectResponseWrapper<String>> verifyEditProfile(@Valid @RequestBody CheckInfoDTO checkInfo){
+        return ResponseEntity.status(HttpStatus.CREATED).body(emailService.editProfileVerify(checkInfo.getMemberEmail()));
+    }
     @PostMapping("/check-verifycode")
     public ResponseEntity<ObjectResponseWrapper<String>> checkVerifyCode(@RequestBody VerifyCodeDTO verifyCodeDTO){
         return ResponseEntity.ok(emailService.selectCheckVerifyCode(verifyCodeDTO));

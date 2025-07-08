@@ -53,6 +53,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.selectCheckNickName(checkInfo.getMemberNickName()));
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<ObjectResponseWrapper<String>> updatelInfo(@ModelAttribute MemberInsertVo info, @RequestPart(value = "memberProFiles", required = false) List<MultipartFile> memberProFiles){
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.updateInfo(info, memberProFiles));
+    }
     @PutMapping("/social-update")
     public ResponseEntity<ObjectResponseWrapper<String>> updateSocialInfo(@ModelAttribute MemberInsertVo socialInfo, @RequestPart(value = "memberProFiles", required = false) List<MultipartFile> memberProFiles){
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.updateSocialInfo(socialInfo, memberProFiles));

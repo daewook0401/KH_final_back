@@ -50,8 +50,14 @@ public class ReservationController {
 	@GetMapping("/check")
 	public ResponseEntity<ListResponseWrapper<ReservationDTO>> selectReservationCheck(@RequestParam(name="restaurantNo") String restaurantNo) {
 		
-		System.out.println("요청 확인!!!!");
 		return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.selectReservationCheck(restaurantNo));
+	} 
+	
+	@GetMapping("/all")
+	public ResponseEntity<ListResponseWrapper<ReservationDTO>> selectAllReservation() {
+		
+		System.out.println("요청 확인!!!!");
+		return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.selectAllReservation());
 	} 
 	
 	@DeleteMapping
