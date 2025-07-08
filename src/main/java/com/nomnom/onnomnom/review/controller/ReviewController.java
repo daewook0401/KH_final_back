@@ -19,14 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/restaurants/{restaurantNo}/reviews")
+@RequestMapping("/api")
 public class ReviewController {
 
     private final ReviewService reviewService;
     private final AuthService authService;
 
-    // 리뷰 목록 조회
-    @GetMapping
+    // 식당 리뷰 목록 조회
+    @GetMapping("/restaurants/{restaurantNo}/reviews")
     public ResponseEntity<ObjectResponseWrapper<ReviewResponseDTO>> getReviews(
             @PathVariable String restaurantNo,
             @RequestParam(name = "page", defaultValue = "1") int page) {
@@ -34,8 +34,16 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
     }
 
+    // 내 리뷰 목록 조회 (로그인한 사용자 기준)
+    @GetMapping("/reviews/my")
+    public ResponseEntity<ObjectResponseWrapper<ReviewResponseDTO>> getMyReviews(
+            @RequestParam(name = "page", defaultValue = "1") int page) {
+
+        return ResponseEntity.ok(reviewService.selectMyReview(page));
+    }
+
     // 리뷰 작성
-    @PostMapping
+    @PostMapping("/restaurants/{restaurantNo}/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
             @PathVariable String restaurantNo,
             @RequestPart("review") ReviewDTO reviewDTO,
@@ -47,7 +55,7 @@ public class ReviewController {
     }
 
     // 리뷰 수정
-    @PutMapping("/{reviewNo}")
+    @PutMapping("/restaurants/{restaurantNo}/reviews/{reviewNo}")
     public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
             @PathVariable String restaurantNo,
             @PathVariable String reviewNo,
@@ -60,24 +68,25 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/{reviewNo}")
+    @DeleteMapping("/restaurants/{restaurantNo}/reviews/{reviewNo}")
     public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
-            @PathVariable(name = "restaurantNo") String restaurantNo,
-            @PathVariable(name = "reviewNo") String reviewNo) {
+            @PathVariable String restaurantNo,
+            @PathVariable String reviewNo) {
         return ResponseEntity.ok(reviewService.deleteReview(reviewNo));
     }
 
     // 영수증 등록
-    @PostMapping("/bill")
+    @PostMapping("/restaurants/{restaurantNo}/reviews/bill")
     public ResponseEntity<ObjectResponseWrapper<String>> insertBill(
-            @PathVariable("restaurantNo") String restaurantNo,
+            @PathVariable String restaurantNo,
             @RequestPart("billPhoto") MultipartFile billPhoto,
             @RequestParam String reviewNo) {
 
-        // 로그인 정보에서 memberNo 얻기
         CustomUserDetails userDetails = authService.getUserDetails();
         String memberNo = userDetails.getMemberNo();
 
         return ResponseEntity.ok(reviewService.insertBill(restaurantNo, billPhoto, reviewNo, memberNo));
     }
+
+    
 }
