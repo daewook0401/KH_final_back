@@ -3,33 +3,49 @@ package com.nomnom.onnomnom.global.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nomnom.onnomnom.global.response.Body;
+import org.springframework.stereotype.Service;
+
+import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.response.Header;
-import com.nomnom.onnomnom.global.response.ResponseWrapper;
+import com.nomnom.onnomnom.global.response.ListBody;
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
+import com.nomnom.onnomnom.global.response.ObjectBody;
+import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
 
-
-public class ResponseWrapperServiceImpl<T> implements ResponseWrapperService{
-
-    @Override
-    public ResponseWrapper<String> wrapperCreate(int code, String message) {
-        Header header = new Header(code, message);
-        List<String> list = new ArrayList<>();
-        Body<String> body = new Body<String>(list, 0);
-        return new ResponseWrapper<>(header, body);
-    }
-
-    @Override
-    public <T> ResponseWrapper<T> wrapperCreate(int code, String message, List<T> item) {
-        Header header = new Header(code, message);
-        List<T> safeList = (item != null) ? item : new ArrayList<>();
-        Body<T> body = new Body<>(safeList, safeList.size());
-        return new ResponseWrapper<>(header, body);
-    }
+@Service
+public class ResponseWrapperServiceImpl implements ResponseWrapperService{
     
+    private Header makeHeader(ErrorCode code, String message) {
+        return new Header(code, message);
+    }
+    private Header makeHeader(String code, String message) {
+        return new Header(code, message);
+    }
     @Override
-    public ResponseWrapper<String> errorCreate(int code, String message){
+    public ObjectResponseWrapper<String> wrapperCreate(String code, String message){
+        return new ObjectResponseWrapper<String>(makeHeader(code, message), null);
+    }
+    @Override
+    public ObjectResponseWrapper<String> wrapperCreate(ErrorCode code, String message) {
+        return new ObjectResponseWrapper<String>(makeHeader(code, message), null);
+    }
+
+    @Override
+    public ObjectResponseWrapper<String> errorCreate(ErrorCode code, String message){
         return wrapperCreate(code, message);
     }
 
+    @Override
+    public <U> ListResponseWrapper<U> wrapperCreate(String code, String message, List<U> items) {
+        List<U> safeList = (items != null) ? items : new ArrayList<U>();
+        ListBody<U> body = new ListBody<U>(safeList, safeList.size());
+        return new ListResponseWrapper<U>(makeHeader(code, message), body);
+    }
+    
+    @Override
+    public <U> ObjectResponseWrapper<U> wrapperCreate(String code, String message, U items) {
+        ObjectBody<U> body = new ObjectBody<U>(items, 1);
+        return new ObjectResponseWrapper<U>(makeHeader(code, message), body);
+    }
 }

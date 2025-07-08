@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nomnom.onnomnom.member.model.dao.MemberMapper">
+<sql id="Base_MemberDTO_Select">
+SELECT
+        MEMBER_NO AS memberNo,
+        MEMBER_ID AS memberId,
+        MEMBER_PW AS memberPw,
+        MEMBER_EMAIL AS memberEmail,
+        MEMBER_NAME AS memberName,
+        MEMBER_NICKNAME AS memberNickName,
+        MEMBER_PH AS memberPh,
+        MEMBER_ENROLL_DATE AS memberEnrollDate,
+        MEMBER_MODIFIED_DATE AS memberModifiedDate,
+        MEMBER_ROLE AS memberRole,
+        MEMBER_SELFIE AS memberSelfie,
+        IS_ACTIVE AS isActive,
+        IS_STORE_OWNER AS isStoreOwner
+FROM
+        TB_MEMBER
+</sql>
+<select id="selectMemberByInput"
+        parameterType="com.nomnom.onnomnom.member.model.dto.MemberSelectDTO"
+        resultType="com.nomnom.onnomnom.member.model.entity.MemberEntity">
+<include refid="Base_MemberDTO_Select" />
+<where>
+  <choose>
+
+    <when test="memberNo != null">
+        MEMBER_NO = #{memberNo}
+    </when> 
+
+    <when test="memberId != null">
+        MEMBER_ID = #{memberId}
+    </when>
+
+    <when test="memberEmail != null">
+        MEMBER_EMAIL = #{memberEmail}
+    </when>
+
+    <when test="memberName != null">
+        MEMBER_NAME = #{memberName}
+    </when>
+
+    <when test="memberNickName != null">
+        MEMBER_NICKNAME = #{memberNickName}
+    </when>
+
+    <when test="memberPh != null">
+        MEMBER_PH = #{memberPh}
+    </when>
+
+    <when test="memberRole != null">
+        MEMBER_ROLE = #{memberRole}
+    </when>
+
+    <when test="isActive != null">
+        IS_ACTIVE = #{isActive}
+    </when>
+    <when test="isStoreOwner != null">
+        IS_STORE_OWNER = #{isStoreOwner}
+    </when>
+    <otherwise/>
+  </choose>
+  <!-- <if test="memberNo != null">AND MEMBER_NO = #{memberNo}</if>
+  <if test="memberId != null">AND MEMBER_ID = #{memberId}</if>
+  <if test="memberEmail != null">AND MEMBER_EMAIL = #{memberEmail}</if>
+  <if test="memberName != null">AND MEMBER_NAME = #{memberName}</if>
+  <if test="memberNickName != null">AND MEMBER_NICKNAME = #{memberNickName}</if>
+  <if test="memberPh != null">AND MEMBER_PH = #{memberPh}</if>
+  <if test="memberRole != null">AND MEMBER_ROLE = #{memberRole}</if> -->
+</where>
+</select>
+<select id="selectMemberList"
+        parameterType="com.nomnom.onnomnom.member.model.dto.MemberSelectDTO"
+        resultType="com.nomnom.onnomnom.member.model.entity.MemberEntity">
+<include refid="Base_MemberDTO_Select" />
+<where>
+  <if test="search != null and search != ''">
+  AND (
+    MEMBER_ID     LIKE '%' || #{search} || '%'
+    OR MEMBER_EMAIL   LIKE '%' || #{search} || '%'
+    OR MEMBER_NAME    LIKE '%' || #{search} || '%'
+    OR MEMBER_NICKNAME LIKE '%' || #{search} || '%'
+  )
+</if>
+  <if test="isActive != null and isActive != ''">AND IS_ACTIVE = #{isActive}</if>
+  <if test="isStoreOwner != null and isStoreOwner != ''">AND IS_STORE_OWNER = #{isStoreOwner}</if>
+</where>
+</select>
+
+<insert id="insertMember"
+parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+    INSERT INTO TB_MEMBER(
+        MEMBER_ID,
+        MEMBER_PW,
+        MEMBER_EMAIL,
+        MEMBER_NAME,
+        MEMBER_NICKNAME,
+        MEMBER_PH,
+        MEMBER_ROLE,
+        MEMBER_SELFIE
+    ) VALUES (
+        #{memberId},
+        #{memberPw},
+        #{memberEmail},
+        #{memberName},
+        #{memberNickName},
+        #{memberPh},
+        #{memberRole},
+        #{memberSelfie}
+    )
+</insert>
+<update id="updateSocialInfo"
+parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+UPDATE TB_MEMBER
+SET MEMBER_NAME = #{memberName},
+    MEMBER_NICKNAME = #{memberNickName},
+    MEMBER_SELFIE = #{memberSelfie},
+    MEMBER_MODIFIED_DATE = SYSDATE
+WHERE
+    MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateAdminMember"
+parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+  UPDATE TB_MEMBER
+  <set>
+    <if test="isActive != null">
+      IS_ACTIVE     = #{isActive},
+    </if>
+    <if test="isStoreOwner != null">
+      IS_STORE_OWNER = #{isStoreOwner},
+    </if>
+  </set>
+    WHERE MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateInfo" parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+UPDATE TB_MEMBER
+  <set>
+    <if test="memberNickName != null and memberNickName != ''">
+      MEMBER_NICKNAME = #{memberNickName},
+    </if>
+    <if test="memberPw != null and memberPw != ''">
+      MEMBER_PW = #{memberPw},
+    </if>
+    <if test="memberSelfie != null and memberSelfie != ''">
+      MEMBER_SELFIE = #{memberSelfie},
+    </if>
+  </set>
+  WHERE MEMBER_ID = #{memberId}
+</update>
+
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nomnom.onnomnom.reservation.model.dao.ReservationMapper">
+
+	<insert id="insertReservationInfo">
+		INSERT
+		  INTO
+		        TB_RESERVATION_LIST
+		        (
+				RESTAURANT_NO,
+				MEMBER_NO,
+				RESERVE_DAY,
+				RESERVE_TIME,
+				NUMBER_OF_GUESTS
+			    )
+		VALUES  (
+			    #{restaurantNo},
+			    #{memberNo},
+			    #{reserveDay},
+			    #{reserveTime},
+			    #{numberOfGuests}
+			    )
+	      
+	     		
+	</insert>
+
+	<select id="selectReservationInfo" parameterType="String" resultType="ReservationSettingDTO">
+		SELECT
+		       RESTAURANT_NO restaurantNo,
+		       INTERVAL interval,
+		       MAX_NUM maxNum,
+		       MIN_NUM minNum,
+		       DESCRIPTION description
+		 FROM
+		   	   TB_RESERVATION_SETTING
+	    WHERE
+	           RESTAURANT_NO = #{restaurantNo}
+	</select>
+	
+	<!--<select id="selectReservationInfo" parameterType="String" resultType="ReservationSettingDTO">
+		SELECT
+		       RL.RESERVATION_NO reservationNo,
+		       RL.RESTAURANT_NO restaurantNo,
+		       RS.INTERVAL interval,
+		       RS.MAX_NUM maxNum,
+		       RS.MIN_NUM minNum,
+		       RS.DESCRIPTION description
+		 FROM
+		   	   TB_RESERVATION_LIST RL
+	LEFT JOIN
+	           TB_RESERVATION_SETTING RS ON (RS.RESTAURANT_NO = RL.RESTAURANT_NO)
+	    WHERE
+	           RESTAURANT_NO = #{restaurantNo}
+	      AND
+	           RESERVE_DAY = #{reserveDay}
+	</select>-->
+	
+	<select id="selectTimesInfo" parameterType="operatingVo" resultType="ResponseTimeDTO">
+		SELECT
+				B.BREAK_START_TIME breakStartTime,
+				B.BREAK_END_TIME breakEndTime,
+				AT.RESERVATION_START_TIME reservationStartTime,
+				AT.RESERVATION_END_TIME reservationEndTime,
+				RS.INTERVAL interval
+		  FROM
+		        TB_BREAKTIME B
+	RIGHT JOIN
+		        TB_OPERATING_HOURS OH ON (OH.OPERATING_HOURS_NO = B.OPERATING_HOURS_NO)
+	 	  JOIN
+		        TB_AVAILABLE_TIME AT ON (AT.OPERATING_HOURS_NO = OH.OPERATING_HOURS_NO)
+	 LEFT JOIN
+		        TB_RESERVATION_SETTING RS ON (RS.RESTAURANT_NO = OH.RESTAURANT_NO)
+		 WHERE	    
+		        OH.RESTAURANT_NO = #{restaurantNo}
+		   AND
+		        OH.WEEKDAY = #{weekDay}
+	</select>
+	
+	<select id="selectCheckAvailableTimes" parameterType="ReservationVo" resultType="ReservationDTO">
+		SELECT
+		       RL.RESERVE_TIME reserveTime,
+		       COUNT(*) count
+		 FROM
+		   	   TB_RESERVATION_LIST RL
+	     JOIN
+	           TB_RESERVATION_SETTING RS ON (RS.RESTAURANT_NO = RL.RESTAURANT_NO)
+	    WHERE
+	           RL.RESTAURANT_NO = #{restaurantNo}
+	      AND
+	           RL.RESERVE_DAY = #{reserveDay}
+	      AND
+	           RL.RESERVE_TIME = #{reserveTime}
+	    GROUP
+	       BY
+	           RL.RESERVE_TIME,RS.MAX_TEAM_NUM
+	   HAVING
+	     	   COUNT(*) >= RS.MAX_TEAM_NUM
+	</select>
+	
+	<select id="selectReservationCheck" parameterType="ReservationVo" resultType="ReservationDTO">
+		SELECT
+		       RESERVATION_NO reservationNo,
+		       RESTAURANT_NO restaurantNo,
+		       MEMBER_NO memberNo,
+		       RESERVE_DAY reserveDay,
+		       RESERVE_TIME reserveTime,
+		       NUMBER_OF_GUESTS numberOfGuests,
+		       CREATE_DATE createDate
+		 FROM
+		   	   TB_RESERVATION_LIST
+	    WHERE
+	           MEMBER_NO = #{memberNo}
+	    ORDER
+	       BY
+	           CREATE_DATE DESC
+	</select>
+	
+	<select id="selectAllReservation" resultType="ReservationDTO">
+		SELECT
+		       RESERVATION_NO reservationNo,
+		       RESTAURANT_NO restaurantNo,
+		       MEMBER_NO memberNo,
+		       RESERVE_DAY reserveDay,
+		       RESERVE_TIME reserveTime,
+		       NUMBER_OF_GUESTS numberOfGuests,
+		       CREATE_DATE createDate
+		 FROM
+		   	   TB_RESERVATION_LIST
+	    ORDER
+	       BY
+	           CREATE_DATE DESC
+	</select>
+
+	<delete id="deleteReservation" parameterType="String">
+		DELETE
+		  FROM
+		  		TB_RESERVATION_LIST
+		 WHERE
+		        RESERVATION_NO = #{reservationNo}
+	</delete>
+			
+
+</mapper>
+
+
+
+
