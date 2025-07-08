@@ -1,15 +1,15 @@
 package com.nomnom.onnomnom.restaurant.model.dao;
 
-import com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO;
-import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
-import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDetailDTO;
-import com.nomnom.onnomnom.restaurant.model.dto.SimpleRestaurantDTO;
-
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO;
+import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
+import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDetailDTO;
+import com.nomnom.onnomnom.restaurant.model.dto.SimpleRestaurantDTO;
 
 @Mapper
 public interface RestaurantMapper {
