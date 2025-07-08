@@ -28,4 +28,8 @@ public interface OperatingMapper {
 
 	int selectCountByRestaurantNo(String restaurantNo);
 
+	List<OperatingDTO> selectOperatingByMemberNo(String memberNo);
+
+	int selectReservationSetting(String restaurantNo);
+
 }

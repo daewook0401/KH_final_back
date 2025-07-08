@@ -91,8 +91,15 @@ public enum ErrorCode {
     
 	UNAVAILABLE_RESERVATION_ERROR("E945", "잘못된 예약입니다."),
 	
-	EXISTING_OPERATING_HOURS_ERROR("E946", "운영시간이 이미 등록되었습니다.");
+	EXISTING_OPERATING_HOURS_ERROR("E946", "운영시간이 이미 등록되었습니다."),
 
+	FAILED_TO_ENROLL_SETTING_ERROR("E947", "예약설정 등록 실패하였습니다."),
+	
+	NOT_ENROLLED_OPERATING_HOURS_ERROR("E948", "예약설정을 등록할 수 없습니다."),
+	
+	CANT_DELETE_OPERATING_INFO_ERROR("E949", "운영시간을 삭제할 수 없습니다.");
+	
+	
     private final String code;
     private final String defaultMessage;
     ErrorCode(String code, String defaultMessage) { 

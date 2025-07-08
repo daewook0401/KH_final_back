@@ -75,33 +75,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	            TB_CHATTING_LIST
 	     WHERE
 	            ROOM_NO = #{roomNo}
+	     ORDER
+	        BY
+	            CREATE_DATE ASC
 	</select>
 	
 	<select id="selectAdminChatList" parameterType="String" resultType="ChattingList">
 		SELECT
-				C.CHAT_NO chatNo,
-				C.ROOM_NO roomNo,
-				C.MEMBER_NO memberNo,
-				C.CONTENT content,
-				C.CREATE_DATE createDate,
-				M.MEMBER_NICKNAME  memberNickname
-	      FROM
-                (SELECT 
-                         CHAT_NO ,
-						 ROOM_NO ,
-						 MEMBER_NO ,
-						 CONTENT ,
-						 CREATE_DATE ,
-                         ROW_NUMBER() OVER (PARTITION BY ROOM_NO ORDER BY CREATE_DATE DESC) AS RN
-                  FROM
-                         TB_CHATTING_LIST) C
-         JOIN
-         		TB_MEMBER M ON (M.MEMBER_NO = C.MEMBER_NO)
-		 WHERE
-                C.RN = 1
-		 ORDER
-            BY
-                C.CREATE_DATE DESC
+			    C.CHAT_NO chatNo,
+			    C.ROOM_NO roomNo,
+			    M.MEMBER_NO memberNo,
+			    C.CONTENT content,
+			    C.CREATE_DATE createDate,
+			    M.MEMBER_NICKNAME memberNickname
+			FROM
+			    (SELECT 
+			        CHAT_NO,
+			        ROOM_NO,
+			        MEMBER_NO,
+			        CONTENT,
+			        CREATE_DATE,
+			        ROW_NUMBER() OVER (PARTITION BY ROOM_NO ORDER BY CREATE_DATE DESC) AS RN
+			     FROM TB_CHATTING_LIST
+			    ) C
+			JOIN TB_CHATTING_ROOM R ON R.ROOM_NO = C.ROOM_NO
+			JOIN TB_MEMBER M ON M.MEMBER_NO = R.MEMBER_NO
+			WHERE
+			    C.RN = 1
+			ORDER BY
+			    C.CREATE_DATE DESC
 	</select>
 	
 

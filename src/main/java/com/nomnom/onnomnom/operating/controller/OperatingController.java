@@ -40,6 +40,11 @@ public class OperatingController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.selectOperating(restaurantNo));
 	}
 	
+	@GetMapping("/memberNo")
+	public ResponseEntity<ListResponseWrapper<OperatingDTO>> selectOperatingByMemberNo() {
+		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.selectOperatingByMemberNo());
+	}
+	
 	@PutMapping
 	public ResponseEntity<ObjectResponseWrapper<String>> updateOperatingHours(@RequestBody List<OperatingDTO> operatingHours) throws ParseException {
 		return ResponseEntity.status(HttpStatus.CREATED).body(operatingService.updateOperating(operatingHours));
