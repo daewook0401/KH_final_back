@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nomnom.onnomnom.restaurant.model.dao.RestaurantMapper">
+
+    
+    <select id="search" resultType="com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO">
+        SELECT
+            RESTAURANT_NO as restaurantNo,
+            RESTAURANT_NAME as restaurantName,
+            RESTAURANT_ADDRESS as restaurantAddress,
+            IS_ACTIVE as isActive
+        FROM
+            TB_RESTAURANT
+        <where>
+            <if test="status != null and status != ''">
+                AND IS_ACTIVE = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND RESTAURANT_NAME LIKE '%' || #{keyword} || '%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

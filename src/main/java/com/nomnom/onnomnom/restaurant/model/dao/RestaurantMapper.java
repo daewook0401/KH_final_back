@@ -1,15 +1,19 @@
 package com.nomnom.onnomnom.restaurant.model.dao;
 
+import com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDetailDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.SimpleRestaurantDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface RestaurantMapper {
@@ -43,7 +47,7 @@ public interface RestaurantMapper {
     int insertRestaurant(RestaurantDTO dto);
     
     @Select("""
-            SELECT
+            SELECT DISTINCT
                 R.RESTAURANT_NO as restaurantNo,
                 R.RESTAURANT_NAME as name,
                 R.RESTAURANT_MAIN_PHOTO as imageUrl
@@ -64,6 +68,7 @@ public interface RestaurantMapper {
                 R.RESTAURANT_ADDRESS,
                 R.RESTAURANT_DESCRIPTION,
                 R.RESTAURANT_MAIN_PHOTO,
+                R.MEMBER_NO,
                 (SELECT LISTAGG(MC.MINOR_CATEGORY_NAME, ',') WITHIN GROUP (ORDER BY MC.MINOR_CATEGORY_NAME)
                  FROM TB_RESTAURANT_CATEGORY_MAP MAP
                  JOIN TB_MINOR_CATEGORY MC ON MAP.MINOR_CATEGORY_ID = MC.MINOR_CATEGORY_ID
@@ -73,4 +78,12 @@ public interface RestaurantMapper {
             AND R.IS_ACTIVE = 'Y'
             """)
         RestaurantDetailDTO findRestaurantById(String restaurantId);
+
+
+    // 관리자 페이지: 맛집 목록 동적 검색 (구현은 RestaurantMapper.xml에 있음)
+    List<AdminRestaurantDTO> search(Map<String, Object> params);
+    
+    // 관리자 페이지: 특정 식당의 상태 변경
+    @Update("UPDATE TB_RESTAURANT SET IS_ACTIVE = #{status} WHERE RESTAURANT_NO = #{restaurantId}")
+    int updateRestaurantStatus(@Param("restaurantId") String restaurantId, @Param("status") String status);
 }

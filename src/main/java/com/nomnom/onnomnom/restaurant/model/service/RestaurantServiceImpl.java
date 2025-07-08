@@ -1,7 +1,9 @@
 package com.nomnom.onnomnom.restaurant.model.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import com.nomnom.onnomnom.restaurant.model.dao.CategoryMapper;
 import com.nomnom.onnomnom.restaurant.model.dao.RestaurantCategoryMapMapper;
 import com.nomnom.onnomnom.restaurant.model.dao.RestaurantMapper;
 import com.nomnom.onnomnom.restaurant.model.dao.ReviewMapper2;
+import com.nomnom.onnomnom.restaurant.model.dto.AdminRestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.MinorCategoryDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RatingInfoDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
@@ -145,5 +148,22 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public RatingInfoDTO getRatingInfoByRestaurantId(String restaurantId) {
         return reviewMapper.getRatingInfoByRestaurantId(restaurantId);
+    }
+    
+    @Override
+    public List<AdminRestaurantDTO> searchRestaurants(String status, String keyword) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status);
+        params.put("keyword", keyword);
+        return restaurantMapper.search(params);
+    }
+    
+    @Override
+    @Transactional
+    public void updateRestaurantStatus(String restaurantId, String status) {
+        int result = restaurantMapper.updateRestaurantStatus(restaurantId, status);
+        if (result == 0) {
+            throw new BaseException(ErrorCode.RESTAURANT_NOT_FOUND);
+        }
     }
 }
