@@ -29,4 +29,5 @@ public interface MemberService {
     ObjectResponseWrapper<MemberDTO> selectMypageInfo(String memberNo);
     ListResponseWrapper<MemberDTO> selectMemberList(MemberSelectDTO member);
     ObjectResponseWrapper<String> updateAdminMember(MemberSelectDTO member);
+    ObjectResponseWrapper<String> updateInfo(MemberInsertVo info, List<MultipartFile> memberSelfie);
 }

@@ -137,4 +137,21 @@ parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
   </set>
     WHERE MEMBER_ID = #{memberId}
 </update>
+
+<update id="updateInfo" parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+UPDATE TB_MEMBER
+  <set>
+    <if test="memberNickName != null and memberNickName != ''">
+      MEMBER_NICKNAME = #{memberNickName},
+    </if>
+    <if test="memberPw != null and memberPw != ''">
+      MEMBER_PW = #{memberPw},
+    </if>
+    <if test="memberSelfie != null and memberSelfie != ''">
+      MEMBER_SELFIE = #{memberSelfie},
+    </if>
+  </set>
+  WHERE MEMBER_ID = #{memberId}
+</update>
+
 </mapper>
