@@ -43,7 +43,7 @@ public interface RestaurantMapper {
     int insertRestaurant(RestaurantDTO dto);
     
     @Select("""
-            SELECT
+            SELECT DISTINCT
                 R.RESTAURANT_NO as restaurantNo,
                 R.RESTAURANT_NAME as name,
                 R.RESTAURANT_MAIN_PHOTO as imageUrl
@@ -53,7 +53,7 @@ public interface RestaurantMapper {
             JOIN TB_MAJOR_CATEGORY MAJOR ON MINOR.MAJOR_CATEGORY_ID = MAJOR.MAJOR_CATEGORY_ID
             WHERE MAJOR.MAJOR_CATEGORY_NAME = #{categoryName}
             AND R.IS_ACTIVE = 'Y'
-            AND ROWNUM <= 5
+            AND ROWNUM <= 100
             ORDER BY R.RESTAURANT_NO DESC
             """)
     List<SimpleRestaurantDTO> findRestaurantsByMajorCategory(String categoryName);
