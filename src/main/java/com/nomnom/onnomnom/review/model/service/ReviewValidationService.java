@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nomnom.onnomnom.auth.model.service.AuthService;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.review.model.dao.ReviewMapper;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class ReviewValidationService {
 
     private final ReviewMapper reviewMapper;
+    private final AuthService authService;
 
     private static final int MAX_IMAGE_COUNT = 8;
     private static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png", "webp");
@@ -50,22 +53,24 @@ public class ReviewValidationService {
 
     // 수정 권한 체크 (현재 로그인 유저가 작성자거나 관리자여야 함)
     public void checkUpdatePermission(String reviewNo) {
-        String currentUserId = getCurrentUserId();
+        CustomUserDetails userDetails = authService.getUserDetails();
+        String memberNo = userDetails.getMemberNo();  // memberNo로 비교
         boolean isAdmin = hasRole("ROLE_ADMIN");
 
         String reviewWriterId = getReviewWriterIdOrThrow(reviewNo);
-        if (!isAdmin && !reviewWriterId.equals(currentUserId)) {
+        if (!isAdmin && !reviewWriterId.equals(memberNo)) {
             throw new BaseException(ErrorCode.NO_UPDATE_PERMISSION, "수정 권한이 없습니다.");
         }
     }
 
     // 삭제 권한 체크 (현재 로그인 유저가 작성자거나 관리자여야 함)
     public void checkDeletePermission(String reviewNo) {
-        String currentUserId = getCurrentUserId();
+        CustomUserDetails userDetails = authService.getUserDetails();
+        String memberNo = userDetails.getMemberNo();  // memberNo로 비교
         boolean isAdmin = hasRole("ROLE_ADMIN");
 
-        String reviewWriterId = getReviewWriterIdOrThrow(reviewNo);
-        if (!isAdmin && !reviewWriterId.equals(currentUserId)) {
+        String reviewWriterMemberNo = getReviewWriterIdOrThrow(reviewNo);
+        if (!isAdmin && !reviewWriterMemberNo.equals(memberNo)) {
             throw new BaseException(ErrorCode.NO_DELETE_PERMISSION, "삭제 권한이 없습니다.");
         }
     }
@@ -102,6 +107,15 @@ public class ReviewValidationService {
             if (!photo.isEmpty() && !isValidExtension(photo.getOriginalFilename())) {
                 throw new BaseException(ErrorCode.INVALID_FILE_FORMAT, "지원하지 않는 이미지 형식입니다.");
             }
+        }
+    }
+
+    public void validateBillPhoto(MultipartFile billPhoto) {
+        if (billPhoto == null || billPhoto.isEmpty()) {
+            throw new BaseException(ErrorCode.FILE_NOT_FOUND, "영수증 이미지를 첨부해주세요.");
+        }
+        if (!isValidExtension(billPhoto.getOriginalFilename())) {
+            throw new BaseException(ErrorCode.INVALID_FILE_FORMAT, "지원하지 않는 이미지 형식입니다.");
         }
     }
 

@@ -13,9 +13,12 @@ public interface OperatingService {
 
 	ListResponseWrapper<OperatingDTO> selectOperating(String restaurantNo);
 
+	ListResponseWrapper<OperatingDTO> selectOperatingByMemberNo();
+	
 	ObjectResponseWrapper<String> updateOperating(List<OperatingDTO> operatingHours) throws ParseException;
 	
 	ObjectResponseWrapper<String> deleteOperating(String restaurantNo);
+
 
 
 }

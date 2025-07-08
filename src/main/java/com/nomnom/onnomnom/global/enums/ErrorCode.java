@@ -77,8 +77,6 @@ public enum ErrorCode {
     
     REVIEW_NOT_FOUND("E938", "리뷰 정보가 존재하지 않음"),
 
-    INVALID_TOKEN("E944", "유효하지 않은 토큰"),
-	
     BREAK_ENDTIME_ERROR("E939", "브레이크 종료 시간을 잘못 입력하셨습니다."),
 	
 	TIME_VALUE_ERROR("E940", "시간은 10분단위로 입력해주세요"),
@@ -86,11 +84,22 @@ public enum ErrorCode {
 	DELETE_OPERATING_INFO_FAILED_ERROR("E941", "운영정보 삭제에 실패하였습니다."),
 
 	BREAK_STARTTIME_ERROR("E942", "브레이크 시작 시간을 잘못 입력하셨습니다."),
-	
+
+	FILE_NOT_FOUND("E943", "파일이 존재하지 않음"),
+
+    INVALID_TOKEN("E944", "유효하지 않은 토큰"),
+    
 	UNAVAILABLE_RESERVATION_ERROR("E945", "잘못된 예약입니다."),
 	
-	EXISTING_OPERATING_HOURS_ERROR("E946", "운영시간이 이미 등록되었습니다.");
+	EXISTING_OPERATING_HOURS_ERROR("E946", "운영시간이 이미 등록되었습니다."),
 
+	FAILED_TO_ENROLL_SETTING_ERROR("E947", "예약설정 등록 실패하였습니다."),
+	
+	NOT_ENROLLED_OPERATING_HOURS_ERROR("E948", "예약설정을 등록할 수 없습니다."),
+	
+	CANT_DELETE_OPERATING_INFO_ERROR("E949", "운영시간을 삭제할 수 없습니다.");
+	
+	
     private final String code;
     private final String defaultMessage;
     ErrorCode(String code, String defaultMessage) { 

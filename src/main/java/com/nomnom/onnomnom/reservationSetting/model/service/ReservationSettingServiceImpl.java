@@ -5,7 +5,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import com.nomnom.onnomnom.auth.controller.AuthController;
+import com.nomnom.onnomnom.auth.model.service.AuthService;
+import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
+import com.nomnom.onnomnom.global.exception.FailedToEnrollSettingException;
+import com.nomnom.onnomnom.global.exception.NotEnrolledOperatingHours;
 import com.nomnom.onnomnom.global.exception.TimeValueException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
@@ -17,6 +21,7 @@ import com.nomnom.onnomnom.reservationSetting.model.dto.ReservationSettingDTO;
 import com.nomnom.onnomnom.reservationSetting.model.dto.ReservationSettingRequestDTO;
 import com.nomnom.onnomnom.reservationSetting.model.vo.AvailableTimeVo;
 import com.nomnom.onnomnom.reservationSetting.model.vo.ReservationSettingVo;
+import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +33,23 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 
     private final ReservationSettingMapper reservationSettingMapper;
     private final ResponseWrapperService responseWrapperService;
+    private final AuthService authService;
     
 	@Override
 	public ObjectResponseWrapper<String> insertSetting(ReservationSettingRequestDTO request) {
 		
 		List<AvailableTimeDTO> availableTime = request.getReservation();      
-	    ReservationSettingDTO  settingInfo = request.getSettingInfo();     
-	
+	    ReservationSettingDTO  settingInfo = request.getSettingInfo(); 
+	    
+	    // restaurantNo꺼내서 운영정보가 등록되어있지 않으면 예외처리 후 return하기
+	    int operatingInfoCheck = reservationSettingMapper.selectCheckOperatingInfo(settingInfo.getRestaurantNo());
+	    if(operatingInfoCheck == 0) {
+	    	throw new NotEnrolledOperatingHours(ErrorCode.NOT_ENROLLED_OPERATING_HOURS_ERROR);
+	    }
+	    
+	    
+	    log.info("settingInfo : {} ",settingInfo);
+	    log.info("availableTime : {} ",availableTime);
 	    ReservationSettingVo reservationSettingVo = ReservationSettingVo.builder()
 	    		.restaurantNo(settingInfo.getRestaurantNo())
 	    		.interval(settingInfo.getInterval())
@@ -65,6 +80,10 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 	    									.build();
 	    		
 	    		int result = reservationSettingMapper.insertAvailableTime(availableTimeVo);
+	    		if(result == 0) {
+	    			reservationSettingMapper.deleteSettingInfo(settingInfo.getRestaurantNo());
+	    			throw new FailedToEnrollSettingException(ErrorCode.FAILED_TO_ENROLL_SETTING_ERROR);
+	    		}
 	    	}
 	    }
 	    
@@ -81,9 +100,11 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 	
 
 	@Override
-	public ObjectResponseWrapper<ReservationSettingRequestDTO> selectSetting(String restaurantNo) {
-		List<AvailableTimeDTO> AvailableTimeList = reservationSettingMapper.selectAvailableTime(restaurantNo);
-		ReservationSettingDTO reservationSettingDTO = reservationSettingMapper.selectSettingInfo(restaurantNo);
+	public ObjectResponseWrapper<ReservationSettingRequestDTO> selectSettingByMemberNo() {
+		CustomUserDetails memeber = authService.getUserDetails();
+		String memberNo = memeber.getMemberNo();
+		List<AvailableTimeDTO> AvailableTimeList = reservationSettingMapper.selectAvailableTime(memberNo);
+		ReservationSettingDTO reservationSettingDTO = reservationSettingMapper.selectSettingInfo(memberNo);
 		
 		ReservationSettingRequestDTO reservationSettingRequestDTO = ReservationSettingRequestDTO.builder()
 				.reservation(AvailableTimeList)
@@ -95,6 +116,23 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 		
 		return responseWrapperService.wrapperCreate("S101", "예약설정 조회 성공",reservationSettingRequestDTO);
 	}
+	
+	@Override
+	public ObjectResponseWrapper<ReservationSettingRequestDTO> selectSettingByRestaurantNo(String restaurantNo) {
+		List<AvailableTimeDTO> AvailableTimeList = reservationSettingMapper.selectAvailableTimeByRestaurantNo(restaurantNo);
+		ReservationSettingDTO reservationSettingDTO = reservationSettingMapper.selectSettingInfoByRestaurantNo(restaurantNo);
+		
+		ReservationSettingRequestDTO reservationSettingRequestDTO = ReservationSettingRequestDTO.builder()
+				.reservation(AvailableTimeList)
+				.settingInfo(reservationSettingDTO)
+				.build();
+		
+		log.info("AvailableTimeList : {} ",AvailableTimeList);
+		log.info("reservationSettingRequestDTO : {} ",reservationSettingRequestDTO);
+		
+		return responseWrapperService.wrapperCreate("S101", "예약설정 조회 성공",reservationSettingRequestDTO);
+	}
+
 	
 	
 	
@@ -146,6 +184,17 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 		int result1 = reservationSettingMapper.deleteSettingInfo(restaurantNo);
 		return responseWrapperService.wrapperCreate("S103", "예약설정 삭제 성공");
 	}
+
+	@Override
+	public ObjectResponseWrapper<RestaurantDTO> selectMyRestaurant() {
+		CustomUserDetails memeber = authService.getUserDetails();
+		String memberNo = memeber.getMemberNo();
+		
+		RestaurantDTO myRestaurantInfo = reservationSettingMapper.selectMyRestaurant(memberNo);
+		log.info("myRestaurantInfo :{}",myRestaurantInfo);
+		return responseWrapperService.wrapperCreate("S101", "내 가게 조회 성공",myRestaurantInfo);
+	}
+
 
 
 }

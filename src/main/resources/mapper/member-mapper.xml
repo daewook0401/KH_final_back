@@ -73,6 +73,23 @@ FROM
   <if test="memberRole != null">AND MEMBER_ROLE = #{memberRole}</if> -->
 </where>
 </select>
+<select id="selectMemberList"
+        parameterType="com.nomnom.onnomnom.member.model.dto.MemberSelectDTO"
+        resultType="com.nomnom.onnomnom.member.model.entity.MemberEntity">
+<include refid="Base_MemberDTO_Select" />
+<where>
+  <if test="search != null and search != ''">
+  AND (
+    MEMBER_ID     LIKE '%' || #{search} || '%'
+    OR MEMBER_EMAIL   LIKE '%' || #{search} || '%'
+    OR MEMBER_NAME    LIKE '%' || #{search} || '%'
+    OR MEMBER_NICKNAME LIKE '%' || #{search} || '%'
+  )
+</if>
+  <if test="isActive != null and isActive != ''">AND IS_ACTIVE = #{isActive}</if>
+  <if test="isStoreOwner != null and isStoreOwner != ''">AND IS_STORE_OWNER = #{isStoreOwner}</if>
+</where>
+</select>
 
 <insert id="insertMember"
 parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
@@ -106,4 +123,35 @@ SET MEMBER_NAME = #{memberName},
 WHERE
     MEMBER_ID = #{memberId}
 </update>
+
+<update id="updateAdminMember"
+parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+  UPDATE TB_MEMBER
+  <set>
+    <if test="isActive != null">
+      IS_ACTIVE     = #{isActive},
+    </if>
+    <if test="isStoreOwner != null">
+      IS_STORE_OWNER = #{isStoreOwner},
+    </if>
+  </set>
+    WHERE MEMBER_ID = #{memberId}
+</update>
+
+<update id="updateInfo" parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+UPDATE TB_MEMBER
+  <set>
+    <if test="memberNickName != null and memberNickName != ''">
+      MEMBER_NICKNAME = #{memberNickName},
+    </if>
+    <if test="memberPw != null and memberPw != ''">
+      MEMBER_PW = #{memberPw},
+    </if>
+    <if test="memberSelfie != null and memberSelfie != ''">
+      MEMBER_SELFIE = #{memberSelfie},
+    </if>
+  </set>
+  WHERE MEMBER_ID = #{memberId}
+</update>
+
 </mapper>

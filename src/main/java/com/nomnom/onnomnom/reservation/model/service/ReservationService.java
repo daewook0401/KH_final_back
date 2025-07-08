@@ -16,7 +16,10 @@ public interface ReservationService {
 	
 	ListResponseWrapper<ReservationDTO> selectReservationCheck(String restaurantNo);
 	
+	ListResponseWrapper<ReservationDTO> selectAllReservation();
+	
 	ObjectResponseWrapper<String> deleteReservation(String reservationNo);
+
 
 
 

@@ -95,4 +95,12 @@ public class EmailServiceImpl implements EmailService{
         }
         return responseWrapperService.wrapperCreate("S100", "이메일 인증 성공");
     }
+
+    @Override
+    public ObjectResponseWrapper<String> editProfileVerify(String email){
+        if (memberService.selectMemberByEmail(email) == null){
+            throw new BaseException(ErrorCode.DUPLICATE_MEMBER_EMAIL);
+        }
+        return sendVerifyCode(email);
+    }
 }

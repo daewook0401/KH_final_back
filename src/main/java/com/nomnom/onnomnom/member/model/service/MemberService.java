@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberSelectDTO;
@@ -26,4 +27,7 @@ public interface MemberService {
     ObjectResponseWrapper<String> insertMember(MemberInsertVo member, List<MultipartFile> memberSelfie);
     ObjectResponseWrapper<String> updateSocialInfo(MemberInsertVo socialInfo, List<MultipartFile> memberProFiles);
     ObjectResponseWrapper<MemberDTO> selectMypageInfo(String memberNo);
+    ListResponseWrapper<MemberDTO> selectMemberList(MemberSelectDTO member);
+    ObjectResponseWrapper<String> updateAdminMember(MemberSelectDTO member);
+    ObjectResponseWrapper<String> updateInfo(MemberInsertVo info, List<MultipartFile> memberSelfie);
 }

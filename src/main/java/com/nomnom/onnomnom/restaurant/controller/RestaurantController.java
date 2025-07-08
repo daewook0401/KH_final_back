@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
+import com.nomnom.onnomnom.global.response.ListResponseWrapper;
+import com.nomnom.onnomnom.reservation.model.dto.ReservationDTO;
 import com.nomnom.onnomnom.restaurant.model.dto.RestaurantDTO;
 import com.nomnom.onnomnom.restaurant.model.service.RestaurantService;
 
@@ -77,5 +79,9 @@ public class RestaurantController {
                     .body(Map.of("header", header));
         }
     }
+    
+
+    
+    
 
 }
