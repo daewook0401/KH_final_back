@@ -8,6 +8,7 @@ import java.util.List;
 @Setter
 public class RestaurantDetailDTO {
     private String restaurantName;
+    private String memberNo;
     private String restaurantAddress;
     private String restaurantDescription;
     private String restaurantMainPhoto;
