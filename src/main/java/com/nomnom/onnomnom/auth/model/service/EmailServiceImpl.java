@@ -154,7 +154,7 @@ public class EmailServiceImpl implements EmailService{
             		<div style="text-align:center; margin:25px 0;">
             		    <span style="display:inline-block; font-size:26px; font-weight:bold; color:#f28c38; 
                             padding:12px 24px; border:2px dashed #f28c38; border-radius:6px; background:#fff3e6;">
-            		        """ + encrypted + """
+            		        """ + tempPassword + """
             		    </span>
             		</div>
             		  	  <p style="font-size:16px; margin:15px 0;">임시 비밀번호 발급 후 <strong>꼭</strong> 비밀번호를 제거해주세요.</p>
