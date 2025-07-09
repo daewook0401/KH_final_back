@@ -44,7 +44,7 @@
    			WHERE MAJOR.MAJOR_CATEGORY_NAME = #{categoryName}
       			AND R.IS_ACTIVE = 'Y'
 		)
-		WHERE <![CDATA[ ROWNUM <= 5 ]]>
+		WHERE <![CDATA[ ROWNUM <= 4 ]]>
     </select>
 
     <select id="findRestaurantById" resultMap="restaurantDetailResultMap" parameterType="String">
