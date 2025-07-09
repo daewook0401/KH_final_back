@@ -25,46 +25,50 @@ public class RestaurantSearchController {
 
 	private final RestaurantService restaurantService;
 
+    /** 카테고리별 식당 목록 조회 */
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<Map<String, Object>> getRestaurantsByCategory(
-            // --- 이 부분을 수정합니다 ---
             @PathVariable("categoryName") String categoryName) {
-            // --- @PathVariable("categoryName") 처럼 괄호 안에 이름을 명시 ---
-        
-        List<SimpleRestaurantDTO> restaurantList = restaurantService.findRestaurantsByMajorCategory(categoryName);
-        
-        Map<String, String> header = Map.of("code", "S200", "message", "정상적으로 조회되었습니다.");
-        Map<String, Object> response = Map.of("header", header, "body", restaurantList);
-        
+
+        List<SimpleRestaurantDTO> restaurantList =
+                restaurantService.findRestaurantsByMajorCategory(categoryName);
+
+        Map<String, Object> response = Map.of(
+                "header", Map.of("code", "S200", "message", "정상적으로 조회되었습니다."),
+                "body",   restaurantList
+        );
         return ResponseEntity.ok(response);
     }
-    
- // 식당 상세 정보 조회 API
+
+    /** 식당 상세 정보 조회 */
     @GetMapping("/{restaurantId}")
     public ResponseEntity<Map<String, Object>> getRestaurantDetail(
             @PathVariable("restaurantId") String restaurantId) {
-        
-        // ▼▼▼▼▼ 여기에 로그를 추가합니다 ▼▼▼▼▼
-        log.info("▶▶▶ 식당 상세 정보 조회 API 호출 - PathVariable restaurantId: {}", restaurantId);
-        // ▲▲▲▲▲ 여기까지 추가 ▲▲▲▲▲
+
+        log.info("식당 상세 정보 조회 API 호출 - restaurantId: {}", restaurantId);
+
         RestaurantDetailDTO detail = restaurantService.findRestaurantById(restaurantId);
-        Map<String, String> header = Map.of("code", "S200", "message", "식당 상세 정보 조회 성공");
-        Map<String, Object> response = Map.of("header", header, "body", detail);
+
+        Map<String, Object> response = Map.of(
+                "header", Map.of("code", "S200", "message", "식당 상세 정보 조회 성공"),
+                "body",   detail
+        );
         return ResponseEntity.ok(response);
     }
 
-    /*
-     * ▼▼▼▼▼ 점 조회 API ▼▼▼▼▼
-     */
+    /** 식당 별점 정보 조회 */
     @GetMapping("/{restaurantId}/rating")
     public ResponseEntity<Map<String, Object>> getRestaurantRating(
             @PathVariable("restaurantId") String restaurantId) {
-        
-        log.info("▶▶▶ 식당 별점 정보 조회 API 호출 - PathVariable restaurantId: {}", restaurantId);
+
+        log.info("식당 별점 정보 조회 API 호출 - restaurantId: {}", restaurantId);
 
         RatingInfoDTO ratingInfo = restaurantService.getRatingInfoByRestaurantId(restaurantId);
-        Map<String, String> header = Map.of("code", "S200", "message", "식당 별점 정보 조회 성공");
-        Map<String, Object> response = Map.of("header", header, "body", ratingInfo);
+
+        Map<String, Object> response = Map.of(
+                "header", Map.of("code", "S200", "message", "식당 별점 정보 조회 성공"),
+                "body",   ratingInfo
+        );
         return ResponseEntity.ok(response);
     }
 }

@@ -28,8 +28,8 @@ public class RestaurantAdminController {
     // 맛집 목록 조회 (필터링, 검색 포함)
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> searchRestaurants(
-	        @RequestParam(name = "status",  required = false) String status,
-	        @RequestParam(name = "keyword", required = false) String keyword) {
+	        @RequestParam(name = "status2",  required = false) String status,
+	        @RequestParam(name = "keyword2", required = false) String keyword) {
 
 	    List<AdminRestaurantDTO> list = restaurantService.searchRestaurants(status, keyword);
 	    Map<String, Object> res = Map.of(
@@ -45,6 +45,7 @@ public class RestaurantAdminController {
 	        @RequestBody UpdateStatusRequestDTO req) {
 
 	    restaurantService.updateRestaurantStatus(restaurantId, req.getStatus());
+	    restaurantService.someMethodToUpdateStatus(restaurantId, req.getStatus());
 	    return ResponseEntity.ok(Map.of("message", "상태가 성공적으로 변경되었습니다."));
 	}
 }
