@@ -16,6 +16,7 @@ import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
+import com.nomnom.onnomnom.member.model.dao.MemberMapper;
 import com.nomnom.onnomnom.member.model.dto.CheckInfoDTO;
 import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.service.MemberService;
@@ -34,7 +35,7 @@ public class EmailServiceImpl implements EmailService{
     private final ResponseWrapperService responseWrapperService;
     private final EmailMapper emailMapper;
     private final PasswordEncoder passwordEncoder;
-
+    private final MemberMapper memberMapper;
     @Override
     public ObjectResponseWrapper<String> insertVerifyCode(String email){
         if (memberService.selectMemberByEmail(email) != null){
@@ -135,7 +136,7 @@ public class EmailServiceImpl implements EmailService{
         String encrypted = passwordEncoder.encode(tempPassword);
         MemberInsertVo memberInsert = MemberInsertVo.builder().memberPw(encrypted).memberId(member.getMemberId()).build();
 
-        memberService.updateInfo(memberInsert, null);
+        memberMapper.updatePw(memberInsert);
         MimeMessage message = sender.createMimeMessage();
         try{
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
