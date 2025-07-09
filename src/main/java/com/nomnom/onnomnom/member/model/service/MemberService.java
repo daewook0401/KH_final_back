@@ -30,4 +30,5 @@ public interface MemberService {
     ListResponseWrapper<MemberDTO> selectMemberList(MemberSelectDTO member);
     ObjectResponseWrapper<String> updateAdminMember(MemberSelectDTO member);
     ObjectResponseWrapper<String> updateInfo(MemberInsertVo info, List<MultipartFile> memberSelfie);
+    ObjectResponseWrapper<MemberDTO> selectFindMember(MemberSelectDTO member);
 }

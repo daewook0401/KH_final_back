@@ -33,4 +33,8 @@ public class EmailController {
     public ResponseEntity<ObjectResponseWrapper<String>> checkVerifyCode(@RequestBody VerifyCodeDTO verifyCodeDTO){
         return ResponseEntity.ok(emailService.selectCheckVerifyCode(verifyCodeDTO));
     }
+    @PostMapping("/pw-verify")
+    public ResponseEntity<ObjectResponseWrapper<String>> checkVerifyCodePw(@Valid @RequestBody CheckInfoDTO checkInfo){
+        return ResponseEntity.ok(emailService.pwVerify(checkInfo));
+    }
 }

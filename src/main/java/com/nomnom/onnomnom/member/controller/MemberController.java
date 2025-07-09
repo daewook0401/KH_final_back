@@ -93,4 +93,13 @@ public class MemberController {
         
         return ResponseEntity.ok(memberService.updateAdminMember(member));
     }
+
+    @PostMapping("/find-id")
+    public ResponseEntity<ObjectResponseWrapper<MemberDTO>> selectFindMember(
+        @RequestBody MemberSelectDTO member
+    ){
+        return ResponseEntity.ok(memberService.selectFindMember(member));
+    }
+
+    
 }
