@@ -284,4 +284,9 @@ public class MemberServiceImpl implements MemberService {
         memberMapper.updateAdminMember(memberValue);
         return responseWrapperService.wrapperCreate("S100", "수정 성공");
     }
+
+    @Override
+    public ObjectResponseWrapper<MemberDTO> selectFindMember(MemberSelectDTO member){
+        return responseWrapperService.wrapperCreate("S100", "아이디 조회 성공", selectMemberByEmail(member.getMemberEmail()));
+    }
 }
