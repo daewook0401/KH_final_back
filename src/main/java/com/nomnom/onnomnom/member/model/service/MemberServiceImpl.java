@@ -200,7 +200,7 @@ public class MemberServiceImpl implements MemberService {
             List<MultipartFile> memberSelfie) {
         
         String url = "";
-        if (memberSelfie == null){
+        if (info.getMemberSelfie() != null && info.getMemberSelfie().equals("NULL") && memberSelfie == null){
             url = "NULL";
         } else if (memberSelfie.size()==1){
             url = fileService.imageUpLoad(memberSelfie).get(0);
@@ -212,7 +212,7 @@ public class MemberServiceImpl implements MemberService {
                         .getPrincipal();
         MemberInsertVo memberValue;
         String oldSelfie = selectMemberById(userDetails.getUsername()).getMemberSelfie();
-        if (oldSelfie != "NULL"){
+        if (!oldSelfie.equals("NULL")){
             s3Service.deleteFile(oldSelfie);
         }
         if (info.getMemberPw() != null && !info.getMemberPw().isBlank()) {
