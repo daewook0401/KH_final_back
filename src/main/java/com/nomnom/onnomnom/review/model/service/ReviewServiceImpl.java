@@ -112,7 +112,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ObjectResponseWrapper<String> deleteReview(String reviewNo) {
+    public ObjectResponseWrapper<String> deleteReview(String reviewNo, String memberNo) {
         reviewValidationService.checkDeletePermission(reviewNo);
 
         String billPhotoUrl = reviewMapper.selectBillPhotoUrl(reviewNo);
