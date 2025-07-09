@@ -43,36 +43,38 @@ public class ReviewController {
     }
 
     // 리뷰 작성
-    @PostMapping("/restaurants/{restaurantNo}/reviews")
+    @PostMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
-            @PathVariable String restaurantNo,
             @RequestPart("review") ReviewDTO reviewDTO,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
             @RequestPart(value = "billPhoto", required = false) MultipartFile billPhoto) {
 
-        reviewDTO.setRestaurantNo(restaurantNo);
+        CustomUserDetails userDetails = authService.getUserDetails();
+        reviewDTO.setMemberNo(userDetails.getMemberNo());
+
         return ResponseEntity.ok(reviewService.insertReview(reviewDTO, photos, billPhoto));
     }
 
     // 리뷰 수정
-    @PutMapping("/restaurants/{restaurantNo}/reviews/{reviewNo}")
+    @PutMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
-            @PathVariable String restaurantNo,
-            @PathVariable String reviewNo,
             @RequestPart("review") ReviewDTO reviewDTO,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
-                
-        reviewDTO.setRestaurantNo(restaurantNo);
-        reviewDTO.setReviewNo(reviewNo);
+
+        CustomUserDetails userDetails = authService.getUserDetails();
+        reviewDTO.setMemberNo(userDetails.getMemberNo());
+
         return ResponseEntity.ok(reviewService.updateReview(reviewDTO, photos));
     }
 
     // 리뷰 삭제
-    @DeleteMapping("/restaurants/{restaurantNo}/reviews/{reviewNo}")
+    @DeleteMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
-            @PathVariable String restaurantNo,
-            @PathVariable String reviewNo) {
-        return ResponseEntity.ok(reviewService.deleteReview(reviewNo));
+            @RequestParam String reviewNo) {
+
+        CustomUserDetails userDetails = authService.getUserDetails();
+
+        return ResponseEntity.ok(reviewService.deleteReview(reviewNo, userDetails.getMemberNo()));
     }
 
     // 영수증 등록

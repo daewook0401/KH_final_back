@@ -20,7 +20,7 @@ public interface ReviewService {
     ObjectResponseWrapper<String> updateReview(ReviewDTO reviewDTO, List<MultipartFile> photos);
 
     // 리뷰 삭제
-    ObjectResponseWrapper<String> deleteReview(String reviewNo);
+    ObjectResponseWrapper<String> deleteReview(String reviewNo, String memberNo);
 
     // 리뷰 사진 등록
     ObjectResponseWrapper<String> insertReviewPhoto(List<ReviewPhotoDTO> reviewPhotoDTO);
