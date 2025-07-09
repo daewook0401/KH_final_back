@@ -97,7 +97,9 @@ public enum ErrorCode {
 	
 	NOT_ENROLLED_OPERATING_HOURS_ERROR("E948", "예약설정을 등록할 수 없습니다."),
 	
-	CANT_DELETE_OPERATING_INFO_ERROR("E949", "운영시간을 삭제할 수 없습니다.");
+	CANT_DELETE_OPERATING_INFO_ERROR("E949", "운영시간을 삭제할 수 없습니다."),
+	
+	NON_EXISTING_TIME_ERROR("E950", "예약이 불가능한 요일입니다.");
 	
 	
     private final String code;
