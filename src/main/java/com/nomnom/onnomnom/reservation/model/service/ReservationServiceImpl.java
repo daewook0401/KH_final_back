@@ -2,8 +2,6 @@ package com.nomnom.onnomnom.reservation.model.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.nomnom.onnomnom.auth.model.service.AuthService;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.enums.ErrorCode;
+import com.nomnom.onnomnom.global.exception.NonExistingTimeException;
 import com.nomnom.onnomnom.global.exception.UnavailableReservationException;
 import com.nomnom.onnomnom.global.response.ListResponseWrapper;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
@@ -101,7 +100,9 @@ public class ReservationServiceImpl implements ReservationService {
 	              .build();
 		ResponseTimeDTO timesInfo = reservationMapper.selectTimesInfo(operatingVo);
 		log.info("timesInfo : {}",timesInfo);
-		
+		if(timesInfo == null) {
+			throw new NonExistingTimeException(ErrorCode.NON_EXISTING_TIME_ERROR);
+		}
 		String breakStartTime = timesInfo.getBreakStartTime();
 		String breakEndTime = timesInfo.getBreakEndTime();
 		String reservationStartTime = timesInfo.getReservationStartTime();
