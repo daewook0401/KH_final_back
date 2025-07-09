@@ -62,4 +62,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(NotEnrolledOperatingHours e){
     	return makeResponseEntity(e, e.getErrorCode());
     }
+    
+    @ExceptionHandler(NonExistingTimeException.class)
+    public ResponseEntity<ObjectResponseWrapper<String>> makeResponseEntity(NonExistingTimeException e){
+    	return makeResponseEntity(e, e.getErrorCode());
+    }
 }
