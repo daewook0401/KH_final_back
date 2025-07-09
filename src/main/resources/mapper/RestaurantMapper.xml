@@ -66,7 +66,8 @@
             RESTAURANT_NO      AS restaurantNo,
             RESTAURANT_NAME    AS restaurantName,
             RESTAURANT_ADDRESS AS restaurantAddress,
-            IS_ACTIVE          AS isActive
+            IS_ACTIVE          AS isActive,
+            RESTAURANT_MAIN_PHOTO AS restaurant_image
         FROM
             TB_RESTAURANT
         <where>
@@ -78,6 +79,13 @@
             </if>
         </where>
     </select>
+    
+    <select id="countActiveRestaurantsByMemberNo" resultType="int">
+    	SELECT COUNT(*)
+    	FROM TB_RESTAURANT
+    	WHERE MEMBER_NO = (SELECT MEMBER_NO FROM TB_RESTAURANT WHERE RESTAURANT_NO = #{restaurantId})
+      		AND IS_ACTIVE = 'Y'
+	</select>
 
     <update id="updateRestaurantStatus">
         UPDATE TB_RESTAURANT 
@@ -85,4 +93,9 @@
         WHERE RESTAURANT_NO = #{restaurantId}
     </update>
 
+	<update id="updateMemberStoreOwner">
+    	UPDATE TB_MEMBER
+    	SET IS_STORE_OWNER = #{isStoreOwner}
+    	WHERE MEMBER_NO = (SELECT MEMBER_NO FROM TB_RESTAURANT WHERE RESTAURANT_NO = #{restaurantId})
+	</update>
 </mapper>

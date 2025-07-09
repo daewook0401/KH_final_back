@@ -25,8 +25,8 @@ public class RestaurantDTO {
     private String restaurantNo;
 
     @NotBlank(message = "가게 이름은 필수 입력값입니다.")
-    @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,20}$",
-             message = "가게 이름은 2~20자 이내의 한글, 영문, 숫자만 사용 가능합니다.")
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9 ]{2,16}$",
+             message = "가게 이름은 2~16자 이내의 한글, 영문, 숫자만 사용 가능합니다.")
     private String restaurantName;
 
     @NotBlank(message = "주소는 필수 입력값입니다.")
@@ -42,6 +42,8 @@ public class RestaurantDTO {
     private String restaurantPhoneNumber;
 
     @NotBlank(message = "가게 설명은 필수 입력값입니다.")
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9 ]{2,16}$",
+    		message = "가게 설명은 2~96자 이내의 한글, 영문, 숫자만 사용 가능합니다.")
     private String restaurantDescription;
 
     @NotNull(message = "태그 리스트는 null일 수 없습니다.")
