@@ -52,12 +52,11 @@ public class OAuthController {
             LoginResponseDTO loginResponse = kakaoService.getKakaoAcessToken(code);
             
             // 프론트엔드로 리다이렉트 (토큰 정보를 쿼리 파라미터로 전달)
-            String redirectUrl = "http://localhost:5173/oauth2/kakao/callback" + "?refreshToken=" + URLEncoder.encode(loginResponse.getTokens().getRefreshToken(), "UTF-8");
+            String redirectUrl = "https://onnomnom.shop/oauth2/kakao/callback" + "?refreshToken=" + URLEncoder.encode(loginResponse.getTokens().getRefreshToken(), "UTF-8");
             response.sendRedirect(redirectUrl);
            
         } catch (Exception e) {
-            response.sendRedirect("http://localhost:5173/login?error=" + URLEncoder.encode(e.getMessage(), "UTF-8"));
-        
+            response.sendRedirect("https://onnomnom.shop/login?error=" + URLEncoder.encode(e.getMessage(), "UTF-8"));
         }
     }
     // @PostMapping("/kakao-login")
