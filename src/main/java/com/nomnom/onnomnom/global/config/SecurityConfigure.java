@@ -41,10 +41,10 @@ public class SecurityConfigure {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers(HttpMethod.POST, "/api/test", "/api/member/mypage-info", "/api/auth/password-confirm").authenticated();
-                    requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout", "/api/reservation/**","/api/operatings/**","/api/settings/**").authenticated();
+                    requests.requestMatchers(HttpMethod.DELETE, "/api/auth/logout", "/api/reservation/**","/api/operatings/**","/api/settings/**","/api/restaurants/**").authenticated();
                     //requests.requestMatchers(HttpMethod.DELETE, "/restaurants/**").permitAll();
                     //requests.requestMatchers(HttpMethod.GET).authenticated();
-                    requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update", "/api/member/update").authenticated();
+                    requests.requestMatchers(HttpMethod.PUT, "/api/member/social-update", "/api/member/update","/api/restaurants/**").authenticated();
                     requests.requestMatchers(HttpMethod.PATCH).authenticated();
                     requests.requestMatchers(HttpMethod.GET).permitAll();
                     requests.requestMatchers(HttpMethod.POST).permitAll();
