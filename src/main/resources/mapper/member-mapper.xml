@@ -155,7 +155,7 @@ UPDATE TB_MEMBER
 </update>
 <update id="updatePw" parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
 UPDATE TB_MEMBER
-SET MEMBER_PW = #{memberPw},
+SET MEMBER_PW = #{memberPw}
 WHERE MEMBER_ID = #{memberId}
 </update>
 </mapper>
