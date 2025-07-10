@@ -40,12 +40,12 @@ public class AuthController {
             LoginResponseDTO body = response.getBody().getItems();
             ResponseCookie cookie = ResponseCookie
                 .from("Refresh-Token", body.getTokens().getRefreshToken())
-                .domain("localhost")
+                .domain("onnomnom.shop")
                 .httpOnly(true)
-                .secure(false) // https 환경일 때 true로 변경
+                .secure(true) // https 환경일 때 true로 변경
                 .path("/")
                 .maxAge(Duration.ofDays(30))
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .build();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
         }
@@ -74,12 +74,12 @@ public class AuthController {
     ){
         ResponseCookie deleteCookie = ResponseCookie
                 .from("Refresh-Token", "")
-                .domain("localhost")
+                .domain("onnomnom.shop")
                 .httpOnly(true)
-                .secure(false) // https 환경일 때 true로 변경
+                .secure(true) // https 환경일 때 true로 변경
                 .path("/")
                 .maxAge(0)
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, deleteCookie.toString()).body(authService.logout(userDetails));
     }

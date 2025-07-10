@@ -10,5 +10,6 @@ public class AdminRestaurantDTO {
     private String restaurantName;
     private String restaurantAddress;
     private String isActive;
+    private String restaurantImage;
 
 }
