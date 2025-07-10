@@ -17,7 +17,7 @@ public interface ReviewService {
     ObjectResponseWrapper<String> insertReview(ReviewDTO reviewDTO, List<MultipartFile> photos, MultipartFile billPhoto);
 
     // 리뷰 수정
-    ObjectResponseWrapper<String> updateReview(ReviewDTO reviewDTO, List<MultipartFile> photos);
+    ObjectResponseWrapper<String> updateReview(ReviewDTO reviewDTO, List<MultipartFile> photos, List<String> existingPhotoUrls);
 
     // 리뷰 삭제
     ObjectResponseWrapper<String> deleteReview(String reviewNo, String memberNo);

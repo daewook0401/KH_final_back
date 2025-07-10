@@ -25,5 +25,5 @@ public class ReviewDTO {
   private Date createDate;
   private List<ReviewPhotoDTO> photos;
   private String billNo;
-  private List<String> deletedPhotoUrls;
+  private List<String> existingPhotoUrls;
 }

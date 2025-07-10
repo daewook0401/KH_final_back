@@ -56,4 +56,6 @@ public interface ReviewMapper {
 
     // 내 리뷰 리스트 조회 (페이징 처리)
     List<ReviewDTO> selectMyReview(String memberNo, RowBounds rowBounds);
+
+    void deleteReviewPhotoByUrl(String url);
 }

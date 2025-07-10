@@ -1,5 +1,7 @@
 package com.nomnom.onnomnom.review.model.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -91,24 +93,42 @@ public class ReviewServiceImpl implements ReviewService {
         return responseWrapperService.wrapperCreate("S100", "리뷰 및 영수증 등록 성공", "success");
     }
 
-    @Override
-    @Transactional
-    public ObjectResponseWrapper<String> updateReview(ReviewDTO reviewDTO, List<MultipartFile> photos) {
-        reviewValidationService.checkUpdatePermission(reviewDTO.getReviewNo());
-        reviewValidationService.validateReviewUpdate(reviewDTO, photos);
+@Override
+@Transactional
+public ObjectResponseWrapper<String> updateReview(
+        ReviewDTO reviewDTO,
+        List<MultipartFile> newPhotos,
+        List<String> existingPhotoUrls
+) {
+    reviewValidationService.checkUpdatePermission(reviewDTO.getReviewNo());
+    reviewValidationService.validateReviewUpdate(reviewDTO, newPhotos);
 
-        reviewMapper.updateReview(reviewDTO);
+    reviewMapper.updateReview(reviewDTO);
 
-        List<String> existingPhotoUrls = reviewMapper.selectReviewPhotoUrls(reviewDTO.getReviewNo());
-        for (String url : existingPhotoUrls) {
-            s3Service.deleteFile(url);
+    List<String> currentPhotoUrls = reviewMapper.selectReviewPhotoUrls(reviewDTO.getReviewNo());
+
+    final List<String> safeExistingPhotoUrls = existingPhotoUrls == null
+            ? Collections.emptyList()
+            : existingPhotoUrls;
+
+    List<String> photosToDelete = new ArrayList<>();
+    for (String url : currentPhotoUrls) {
+        if (!safeExistingPhotoUrls.contains(url)) {
+            photosToDelete.add(url);
         }
-        reviewMapper.deleteReviewPhoto(reviewDTO.getReviewNo());
-
-        uploadReviewPhotos(reviewDTO.getReviewNo(), photos);
-
-        return responseWrapperService.wrapperCreate("S102", "리뷰 수정 성공", "success");
     }
+
+    for (String url : photosToDelete) {
+        s3Service.deleteFile(url);
+        reviewMapper.deleteReviewPhotoByUrl(url);
+    }
+
+    if (newPhotos != null && !newPhotos.isEmpty()) {
+        uploadReviewPhotos(reviewDTO.getReviewNo(), newPhotos);
+    }
+
+    return responseWrapperService.wrapperCreate("S102", "리뷰 수정 성공", "success");
+}
 
     @Override
     @Transactional
