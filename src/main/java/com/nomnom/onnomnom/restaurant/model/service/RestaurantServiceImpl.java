@@ -9,6 +9,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	private final ReviewMapper2 reviewMapper;
 	
+	@Autowired
 	private final RestaurantMapper restaurantMapper;
     // private final RestaurantTagMapper restaurantTagMapper; // 기존 매퍼는 삭제
     private final RestaurantCategoryMapMapper restaurantCategoryMapMapper; // 새 매퍼로 교체
@@ -164,6 +166,32 @@ public class RestaurantServiceImpl implements RestaurantService {
         int result = restaurantMapper.updateRestaurantStatus(restaurantId, status);
         if (result == 0) {
             throw new BaseException(ErrorCode.RESTAURANT_NOT_FOUND);
+        }
+    }
+    
+    @Override
+    @Transactional
+    public void someMethodToUpdateStatus(String restaurantId, String status) {
+        
+    	// 1. 먼저 맛집의 상태를 업데이트합니다.
+        restaurantMapper.updateRestaurantStatus(restaurantId, status);
+
+        // 2. 만약 새로운 상태가 'Y' (활성)이라면,
+        if ("Y".equals(status)) {
+            // 고민할 필요 없이 해당 회원을 바로 사장님(Y)으로 만듭니다.
+            restaurantMapper.updateMemberStoreOwner(restaurantId, "Y");
+        
+        // 3. 만약 새로운 상태가 'Y'가 아니라면 (비활성, 거부 등)
+        } else {
+            // 해당 회원이 가진 '다른' 활성 상태의 가게가 남아있는지 확인합니다.
+            int activeCount = restaurantMapper.countActiveRestaurantsByMemberNo(restaurantId);
+
+            // 4. 만약 활성 상태인 가게가 하나도 없다면,
+            if (activeCount == 0) {
+                // 이제 더 이상 사장님이 아니므로, 사장님 권한을 'N'으로 변경합니다.
+                restaurantMapper.updateMemberStoreOwner(restaurantId, "N");
+            }
+            // (활성 가게가 1개 이상 남아있다면, 아무것도 하지 않고 사장님 권한을 Y로 유지합니다.)
         }
     }
 }

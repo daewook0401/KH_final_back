@@ -26,4 +26,6 @@ public interface RestaurantService {
     
     List<AdminRestaurantDTO> searchRestaurants(String status, String keyword);
     void updateRestaurantStatus(String restaurantId, String status);
+    
+    void someMethodToUpdateStatus(String restaurantId, String status);
 }

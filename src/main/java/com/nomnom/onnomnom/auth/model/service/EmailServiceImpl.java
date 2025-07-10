@@ -1,8 +1,13 @@
 package com.nomnom.onnomnom.auth.model.service;
 
 
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nomnom.onnomnom.auth.model.dao.EmailMapper;
@@ -11,7 +16,11 @@ import com.nomnom.onnomnom.global.enums.ErrorCode;
 import com.nomnom.onnomnom.global.exception.BaseException;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 import com.nomnom.onnomnom.global.service.ResponseWrapperService;
+import com.nomnom.onnomnom.member.model.dao.MemberMapper;
+import com.nomnom.onnomnom.member.model.dto.CheckInfoDTO;
+import com.nomnom.onnomnom.member.model.dto.MemberDTO;
 import com.nomnom.onnomnom.member.model.service.MemberService;
+import com.nomnom.onnomnom.member.model.vo.MemberInsertVo;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -25,7 +34,8 @@ public class EmailServiceImpl implements EmailService{
     private final JavaMailSender sender;
     private final ResponseWrapperService responseWrapperService;
     private final EmailMapper emailMapper;
-
+    private final PasswordEncoder passwordEncoder;
+    private final MemberMapper memberMapper;
     @Override
     public ObjectResponseWrapper<String> insertVerifyCode(String email){
         if (memberService.selectMemberByEmail(email) != null){
@@ -102,5 +112,66 @@ public class EmailServiceImpl implements EmailService{
             throw new BaseException(ErrorCode.DUPLICATE_MEMBER_EMAIL);
         }
         return sendVerifyCode(email);
+    }
+    @Override
+    public ObjectResponseWrapper<String> pwVerify(CheckInfoDTO checkInfo){
+        MemberDTO member = memberService.selectMemberByEmail(checkInfo.getMemberEmail());
+        if (member == null || !member.getMemberId().equals(checkInfo.getMemberId())){
+            throw new BaseException(ErrorCode.DUPLICATE_MEMBER_EMAIL);
+        }
+        return sendVerifyCodePw(member);
+    }
+    private String generateTempPassword() {
+        SecureRandom rnd = new SecureRandom();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+    private ObjectResponseWrapper<String> sendVerifyCodePw(MemberDTO member){
+        String tempPassword = generateTempPassword();  
+        // 4. 암호화 후 DB 저장
+        String encrypted = passwordEncoder.encode(tempPassword);
+        MemberInsertVo memberInsert = MemberInsertVo.builder().memberPw(encrypted).memberId(member.getMemberId()).build();
+
+        memberMapper.updatePw(memberInsert);
+        MimeMessage message = sender.createMimeMessage();
+        try{
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            helper.setTo(member.getMemberEmail());
+            helper.setSubject("뇸뇸 이메일 임시비밀번호입니다.");
+            helper.setText("""
+            <div style="width:100%; background:#fff8f0; padding:20px; font-family:'Segoe UI', Arial, sans-serif;">
+            	<div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 8px rgba(0,0,0,0.1);">
+            	<div style="background:#f28c38; color:#ffffff; padding:20px; text-align:center;">
+            		<h1 style="margin:0; font-size:28px;">임시 비밀번호</h1>
+            	</div>
+            	<div style="padding:30px; color:#333;">
+            		<p style="font-size:16px; margin:0 0 15px;">안녕하세요, 회원님!</p>
+            		<p style="font-size:16px; line-height:1.5;">맛있는 여정을 시작하기 위한 냠냠! 계정 임시 비밀번호 입니다.</p>
+            		<div style="text-align:center; margin:25px 0;">
+            		    <span style="display:inline-block; font-size:26px; font-weight:bold; color:#f28c38; 
+                            padding:12px 24px; border:2px dashed #f28c38; border-radius:6px; background:#fff3e6;">
+            		        """ + encrypted + """
+            		    </span>
+            		</div>
+            		  	  <p style="font-size:16px; margin:15px 0;">임시 비밀번호 발급 후 <strong>꼭</strong> 비밀번호를 제거해주세요.</p>
+            		  	  <p style="font-size:16px; margin:0;">맛있는 경험을 함께 만들어가요!</p>
+            		  	  <p style="font-size:16px; margin:15px 0 0;">nomnom 팀 드림</p>
+            		  </div>
+            		  <div style="background:#f28c38; color:#ffffff; text-align:center; padding:10px; font-size:14px;">
+            		  	  <p style="margin:0;">맛집찾기 | 최고의 맛집을 찾아드립니다!</p>
+            		  </div>
+            	</div>
+            </div>
+                    """, true);
+            sender.send(message);
+        } catch(MessagingException e){
+            e.printStackTrace();
+            throw new BaseException(ErrorCode.EMAIL_VERIFICATION_MISMATCH, "메일 발송 실패");
+        }
+        return responseWrapperService.wrapperCreate("S100", "비밀번호 수정 성공");
     }
 }
