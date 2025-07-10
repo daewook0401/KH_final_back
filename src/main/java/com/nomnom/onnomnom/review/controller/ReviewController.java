@@ -59,12 +59,13 @@ public class ReviewController {
     @PutMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
             @RequestPart("review") ReviewDTO reviewDTO,
-            @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
-
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos
+    ) {
         CustomUserDetails userDetails = authService.getUserDetails();
         reviewDTO.setMemberNo(userDetails.getMemberNo());
+        List<String> existingPhotoUrls = reviewDTO.getExistingPhotoUrls();
 
-        return ResponseEntity.ok(reviewService.updateReview(reviewDTO, photos));
+        return ResponseEntity.ok(reviewService.updateReview(reviewDTO, photos, existingPhotoUrls));
     }
 
     // 리뷰 삭제
