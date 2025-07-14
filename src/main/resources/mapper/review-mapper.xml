@@ -188,6 +188,11 @@
     WHERE REVIEW_NO = #{reviewNo}
   </select>
 
-  
+  <delete id="deleteReviewPhotoByUrl">
+    DELETE FROM 
+    TB_REVIEW_PHOTO
+    WHERE
+    REVIEW_PHOTO_URL = #{url}
+  </delete>
 
 </mapper>
