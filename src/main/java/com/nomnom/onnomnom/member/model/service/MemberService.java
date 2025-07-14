@@ -31,4 +31,5 @@ public interface MemberService {
     ObjectResponseWrapper<String> updateAdminMember(MemberSelectDTO member);
     ObjectResponseWrapper<String> updateInfo(MemberInsertVo info, List<MultipartFile> memberSelfie);
     ObjectResponseWrapper<MemberDTO> selectFindMember(MemberSelectDTO member);
+    ObjectResponseWrapper<String> deleteMember(String inputPassword, String memberPassword);
 }
