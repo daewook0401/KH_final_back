@@ -28,7 +28,7 @@ public class RestaurantSearchController {
     /** 카테고리별 식당 목록 조회 */
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<Map<String, Object>> getRestaurantsByCategory(
-            @PathVariable("categoryName") String categoryName) {
+            @PathVariable(name = "categoryName") String categoryName) {
 
         List<SimpleRestaurantDTO> restaurantList =
                 restaurantService.findRestaurantsByMajorCategory(categoryName);
@@ -43,7 +43,7 @@ public class RestaurantSearchController {
     /** 식당 상세 정보 조회 */
     @GetMapping("/{restaurantId}")
     public ResponseEntity<Map<String, Object>> getRestaurantDetail(
-            @PathVariable("restaurantId") String restaurantId) {
+            @PathVariable(name = "restaurantId") String restaurantId) {
 
         log.info("식당 상세 정보 조회 API 호출 - restaurantId: {}", restaurantId);
 
@@ -59,7 +59,7 @@ public class RestaurantSearchController {
     /** 식당 별점 정보 조회 */
     @GetMapping("/{restaurantId}/rating")
     public ResponseEntity<Map<String, Object>> getRestaurantRating(
-            @PathVariable("restaurantId") String restaurantId) {
+            @PathVariable(name = "restaurantId") String restaurantId) {
 
         log.info("식당 별점 정보 조회 API 호출 - restaurantId: {}", restaurantId);
 

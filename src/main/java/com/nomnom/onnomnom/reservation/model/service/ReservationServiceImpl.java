@@ -58,9 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
 			// 예외처리
 			throw new UnavailableReservationException(ErrorCode.UNAVAILABLE_RESERVATION_ERROR);
 		}
-								
 		int result = reservationMapper.insertReservationInfo(reservationVo);
-		
 		return responseWrapperService.wrapperCreate("S101", "예약 성공");
 	}
 	
@@ -75,24 +73,7 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	@Override
 	public ObjectResponseWrapper<ResponseResultDTO> selectReservation(String restaurantNo, String reserveDay) {
-		/*
-		 * 선택한 날짜와 식당 번호로 1. 예약이 가능한 시간대와, 2. 예약이 가능한 시간대 중에 예약이 차지 않은 시간대들을 반환해야함
-		 * 
-		 * 1. 예약 가능한 시간대 => 예약시작,마감시각/브레이크 시작,마감시각/시간간격으로  계산
-		 * 2. 그 시간대로 db조회해서 예약 가능한지 아닌지(boolean) 반환
-		 * LIST<예약시간> = 시간, 예약가능(boolean)
-		 * 시간 = 가게정보 
-		 * 예약 가능 = 예약 테이블 
-		 */
-		/*
-		 * 1-1. RESERVE_DAY에서 요일 추출
-		 * 1-2. weekday,restaurantNo으로 db 조회해서 브레이크정보,예약가능한시간정보,예약간격 얻어오기
-		 * 		(브레이크 타임은 없을 수도 있음)
-		 * 1-3. 그걸 이용해서 예약이 가능한 시간대 리스트로 조회
-		 * 2-1. 조회된 시간 리스트로 for문 돌려서 TB_RESERVATION_LIST테이블에 예약이 가능한지 확인
-		 */
-		log.info("reserveDay : {}",reserveDay);
-		log.info("restaurantNo : {}",restaurantNo);
+	
 		String weekDay = getDayOfWeek(reserveDay);
 		OperatingVo operatingVo = OperatingVo.builder()
 	              .restaurantNo(restaurantNo)
@@ -127,7 +108,6 @@ public class ReservationServiceImpl implements ReservationService {
 			
 			// 이거 조회 값이 나오면 예약 가득찬거임
 			if(reservationDTO != null ) {
-				
 				resultMap.put(reservationDTO.getReserveTime(),false);
 			} else {
 				resultMap.put(time,true);

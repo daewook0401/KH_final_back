@@ -12,6 +12,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 WHERE
 		 		RESTAURANT_NO = #{restaurantNo}
 	</select>
+	
+	<select id="selectOperatingHoursNo" parameterType="AvailableTimeVo" resultType="int">
+		SELECT
+			 	COUNT(*)
+		  FROM
+		  		TB_OPERATING_HOURS
+		 WHERE
+		 		WEEKDAY = #{weekDay}
+		   AND
+			    RESTAURANT_NO = #{restaurantNo} 
+	</select>
 
 	<insert id="insertAvailableTime"
 				parameterType="AvailableTimeVo">

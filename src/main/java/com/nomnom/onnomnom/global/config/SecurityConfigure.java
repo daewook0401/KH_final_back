@@ -57,8 +57,8 @@ public class SecurityConfigure {
     public CorsConfigurationSource corsConfigurationSource(){
 		CorsConfiguration configuration = new CorsConfiguration();
 		// configuration.setAllowedOrigins(Arrays.asList("192.168.219.**:**"));
-		configuration.setAllowedOriginPatterns(Arrays.asList("https://onnomnom.shop"));
-		// configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+		//configuration.setAllowedOriginPatterns(Arrays.asList("https://onnomnom.shop"));
+		configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 		configuration.setAllowCredentials(true);

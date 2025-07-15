@@ -45,7 +45,7 @@ public class ReviewController {
     // 리뷰 작성
     @PostMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
-            @RequestPart("review") ReviewDTO reviewDTO,
+            @RequestPart(value = "review") ReviewDTO reviewDTO,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
             @RequestPart(value = "billPhoto", required = false) MultipartFile billPhoto) {
 
@@ -58,7 +58,7 @@ public class ReviewController {
     // 리뷰 수정
     @PutMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
-            @RequestPart("review") ReviewDTO reviewDTO,
+            @RequestPart(value = "review") ReviewDTO reviewDTO,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
 
         CustomUserDetails userDetails = authService.getUserDetails();
@@ -81,7 +81,7 @@ public class ReviewController {
     @PostMapping("/restaurants/{restaurantNo}/reviews/bill")
     public ResponseEntity<ObjectResponseWrapper<String>> insertBill(
             @PathVariable String restaurantNo,
-            @RequestPart("billPhoto") MultipartFile billPhoto,
+            @RequestPart(value = "billPhoto") MultipartFile billPhoto,
             @RequestParam String reviewNo) {
 
         CustomUserDetails userDetails = authService.getUserDetails();
