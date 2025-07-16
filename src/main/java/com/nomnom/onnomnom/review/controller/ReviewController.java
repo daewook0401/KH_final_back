@@ -36,7 +36,7 @@ public class ReviewController {
     // 식당 리뷰 목록 조회
     @GetMapping("/restaurants/{restaurantNo}/reviews")
     public ResponseEntity<ObjectResponseWrapper<ReviewResponseDTO>> getReviews(
-            @PathVariable String restaurantNo,
+    		@PathVariable(name = "restaurantNo") String restaurantNo,
             @RequestParam(name = "page", defaultValue = "1") int page) {
 
         return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
@@ -81,7 +81,7 @@ public class ReviewController {
     // 리뷰 삭제
     @DeleteMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
-            @RequestParam String reviewNo) {
+            @RequestParam(name = "reviewNo") String reviewNo) {
 
         CustomUserDetails userDetails = authService.getUserDetails();
 
@@ -91,9 +91,9 @@ public class ReviewController {
     // 영수증 등록
     @PostMapping("/restaurants/{restaurantNo}/reviews/bill")
     public ResponseEntity<ObjectResponseWrapper<String>> insertBill(
-            @PathVariable String restaurantNo,
+    		@PathVariable(name = "restaurantNo") String restaurantNo,
             @RequestPart(value = "billPhoto") MultipartFile billPhoto,
-            @RequestParam String reviewNo) {
+            @RequestParam(name = "reviewNo") String reviewNo) {
 
         CustomUserDetails userDetails = authService.getUserDetails();
         String memberNo = userDetails.getMemberNo();

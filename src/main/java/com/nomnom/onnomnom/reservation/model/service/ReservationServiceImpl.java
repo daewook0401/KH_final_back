@@ -152,7 +152,6 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 	
-	
 	private int toMinute(String timeStr) {
 	    String[] split = timeStr.split(":");
 	    int hour   = Integer.parseInt(split[0]);  
