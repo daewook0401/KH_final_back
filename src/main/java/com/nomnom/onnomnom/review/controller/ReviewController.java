@@ -3,7 +3,15 @@ package com.nomnom.onnomnom.review.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nomnom.onnomnom.auth.model.service.AuthService;
@@ -28,7 +36,7 @@ public class ReviewController {
     // 식당 리뷰 목록 조회
     @GetMapping("/restaurants/{restaurantNo}/reviews")
     public ResponseEntity<ObjectResponseWrapper<ReviewResponseDTO>> getReviews(
-            @PathVariable String restaurantNo,
+    		@PathVariable(name = "restaurantNo") String restaurantNo,
             @RequestParam(name = "page", defaultValue = "1") int page) {
 
         return ResponseEntity.ok(reviewService.selectReview(restaurantNo, page));
@@ -45,7 +53,7 @@ public class ReviewController {
     // 리뷰 작성
     @PostMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> insertReview(
-            @RequestPart("review") ReviewDTO reviewDTO,
+            @RequestPart(value = "review") ReviewDTO reviewDTO,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
             @RequestPart(value = "billPhoto", required = false) MultipartFile billPhoto) {
 
@@ -58,19 +66,22 @@ public class ReviewController {
     // 리뷰 수정
     @PutMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> updateReview(
-            @RequestPart("review") ReviewDTO reviewDTO,
+
+            @RequestPart(value = "review") ReviewDTO reviewDTO,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
+
 
         CustomUserDetails userDetails = authService.getUserDetails();
         reviewDTO.setMemberNo(userDetails.getMemberNo());
+        List<String> existingPhotoUrls = reviewDTO.getExistingPhotoUrls();
 
-        return ResponseEntity.ok(reviewService.updateReview(reviewDTO, photos));
+        return ResponseEntity.ok(reviewService.updateReview(reviewDTO, photos, existingPhotoUrls));
     }
 
     // 리뷰 삭제
     @DeleteMapping("/reviews")
     public ResponseEntity<ObjectResponseWrapper<String>> deleteReview(
-            @RequestParam String reviewNo) {
+            @RequestParam(name = "reviewNo") String reviewNo) {
 
         CustomUserDetails userDetails = authService.getUserDetails();
 
@@ -80,9 +91,9 @@ public class ReviewController {
     // 영수증 등록
     @PostMapping("/restaurants/{restaurantNo}/reviews/bill")
     public ResponseEntity<ObjectResponseWrapper<String>> insertBill(
-            @PathVariable String restaurantNo,
-            @RequestPart("billPhoto") MultipartFile billPhoto,
-            @RequestParam String reviewNo) {
+    		@PathVariable(name = "restaurantNo") String restaurantNo,
+            @RequestPart(value = "billPhoto") MultipartFile billPhoto,
+            @RequestParam(name = "reviewNo") String reviewNo) {
 
         CustomUserDetails userDetails = authService.getUserDetails();
         String memberNo = userDetails.getMemberNo();

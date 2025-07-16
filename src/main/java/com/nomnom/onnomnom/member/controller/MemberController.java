@@ -71,9 +71,9 @@ public class MemberController {
 
     @GetMapping("/member-list")
     public ResponseEntity<ListResponseWrapper<MemberDTO>> selectMemberList(
-        @RequestParam(required = false) String isActive,
-        @RequestParam(required = false) String isStoreOwner,
-        @RequestParam(required = false) String search,
+        @RequestParam(name = "isActive",required = false) String isActive,
+        @RequestParam(name = "isStoreOwner",required = false) String isStoreOwner,
+        @RequestParam(name = "search",required = false) String search,
         @AuthenticationPrincipal CustomUserDetails useDetails
     ){
         log.info("{}", isActive);
