@@ -254,6 +254,7 @@ public class MemberServiceImpl implements MemberService {
                                                     .memberId(userDetails.getUsername())
                                                     .memberName(socialInfo.getMemberName())
                                                     .memberNickName(socialInfo.getMemberNickName())
+                                                    .memberEmail(socialInfo.getMemberEmail())
                                                     .memberSelfie(url)
                                                     .build();
         memberMapper.updateSocialInfo(memberValue);

@@ -114,14 +114,18 @@ parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
     )
 </insert>
 <update id="updateSocialInfo"
-parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
-UPDATE TB_MEMBER
-SET MEMBER_NAME = #{memberName},
-    MEMBER_NICKNAME = #{memberNickName},
-    MEMBER_SELFIE = #{memberSelfie},
+        parameterType="com.nomnom.onnomnom.member.model.vo.MemberInsertVo">
+  UPDATE TB_MEMBER
+  <set>
+    MEMBER_NAME         = #{memberName},
+    MEMBER_NICKNAME     = #{memberNickName},
+    MEMBER_SELFIE       = #{memberSelfie},
+    <if test="memberEmail != null and memberEmail != ''">
+      MEMBER_EMAIL      = #{memberEmail},
+    </if>
     MEMBER_MODIFIED_DATE = SYSDATE
-WHERE
-    MEMBER_ID = #{memberId}
+  </set>
+  WHERE MEMBER_ID = #{memberId}
 </update>
 
 <update id="updateAdminMember"
