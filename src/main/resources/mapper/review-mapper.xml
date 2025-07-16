@@ -195,4 +195,27 @@
     REVIEW_PHOTO_URL = #{url}
   </delete>
 
+  <select id="selectAllReviews" resultType="com.nomnom.onnomnom.review.model.dto.ReviewAdminDTO">
+    SELECT
+        R.REVIEW_NO AS reviewNo,
+        R.MEMBER_NO AS memberNo,
+        M.MEMBER_ID AS memberId,
+        M.MEMBER_NICKNAME AS memberNickname,
+        R.RESTAURANT_NO AS restaurantNo,
+        RES.RESTAURANT_NAME AS restaurantName,
+        R.REVIEW_SCORE AS reviewScore,
+        R.REVIEW_CONTENT AS reviewContent,
+        R.CREATE_DATE AS createDate,
+        R.IS_ACTIVE AS isActive
+    FROM TB_REVIEW R
+    JOIN TB_MEMBER M ON R.MEMBER_NO = M.MEMBER_NO
+    JOIN TB_RESTAURANT RES ON R.RESTAURANT_NO = RES.RESTAURANT_NO
+  </select>
+
+  <update id="updateReviewActiveStatus">
+      UPDATE TB_REVIEW
+      SET IS_ACTIVE = #{isActive}
+      WHERE REVIEW_NO = #{reviewNo}
+  </update>
+
 </mapper>

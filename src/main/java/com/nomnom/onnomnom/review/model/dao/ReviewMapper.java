@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.nomnom.onnomnom.review.model.dto.BillDTO;
+import com.nomnom.onnomnom.review.model.dto.ReviewAdminDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewDTO;
 import com.nomnom.onnomnom.review.model.dto.ReviewPhotoDTO;
 
@@ -58,4 +59,11 @@ public interface ReviewMapper {
     List<ReviewDTO> selectMyReview(String memberNo, RowBounds rowBounds);
 
     void deleteReviewPhotoByUrl(String url);
+
+    List<ReviewAdminDTO> selectAllReviews(RowBounds rowBounds);
+
+    // 리뷰 활성화 상태 변경
+    int updateReviewActiveStatus(String reviewNo, String isActive);
+
+    int selectReviewCount();
 }
