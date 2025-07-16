@@ -91,7 +91,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	        // 6) 해당 세션에만 보내기
 	        userSess.sendMessage(new TextMessage(objectMapper.writeValueAsString(responseList)));  // 변경된 부분
-	        userSess.sendMessage(new TextMessage(objectMapper.writeValueAsString(responseList)));  // 변경된 부분
 	    }
 //		// Message 객체를 JSON 형태로 바꿔서 뿌리기 
 //		TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatMessage));

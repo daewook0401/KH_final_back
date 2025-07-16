@@ -22,6 +22,7 @@ public class WebSocketConfig implements WebSocketConfigurer{
 		registry.addHandler(chatHandler, "/ws/chat/{roomId}")
 				.addInterceptors(handShakeInterceptor) 
 				.setAllowedOrigins("https://onnomnom.shop");
+				//.setAllowedOrigins("http://localhost:5173");
 		
 	}
 

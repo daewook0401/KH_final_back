@@ -35,7 +35,7 @@ public class RestaurantController {
     @PostMapping
     public ResponseEntity<Map<String, Map<String, String>>> insertRestaurant(
             @Valid @ModelAttribute RestaurantDTO restaurant,
-            @RequestPart("restaurantMainPhoto") MultipartFile restaurantMainPhoto
+            @RequestPart(name = "restaurantMainPhoto") MultipartFile restaurantMainPhoto
     ) {
         try {
             log.info("🔐 [Controller] 가게 등록 요청 수신");

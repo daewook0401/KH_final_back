@@ -78,11 +78,15 @@ public class ReservationSettingServiceImpl implements ReservationSettingService 
 	    									.reservationStartTime(time.getReservationStartTime())
 	    									.reservationEndTime(time.getReservationEndTime())
 	    									.build();
+	    		int checkOperatingHoursNo = reservationSettingMapper.selectOperatingHoursNo(availableTimeVo);
 	    		
-	    		int result = reservationSettingMapper.insertAvailableTime(availableTimeVo);
-	    		if(result == 0) {
-	    			reservationSettingMapper.deleteSettingInfo(settingInfo.getRestaurantNo());
-	    			throw new FailedToEnrollSettingException(ErrorCode.FAILED_TO_ENROLL_SETTING_ERROR);
+	    		if (checkOperatingHoursNo != 0) {
+	    			
+	    			int result = reservationSettingMapper.insertAvailableTime(availableTimeVo);
+	    			if(result == 0) {
+	    				reservationSettingMapper.deleteSettingInfo(settingInfo.getRestaurantNo());
+	    				throw new FailedToEnrollSettingException(ErrorCode.FAILED_TO_ENROLL_SETTING_ERROR);
+	    			}
 	    		}
 	    	}
 	    }

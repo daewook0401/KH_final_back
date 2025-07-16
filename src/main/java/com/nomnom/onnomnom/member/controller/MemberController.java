@@ -20,10 +20,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,9 +71,9 @@ public class MemberController {
 
     @GetMapping("/member-list")
     public ResponseEntity<ListResponseWrapper<MemberDTO>> selectMemberList(
-        @RequestParam(required = false) String isActive,
-        @RequestParam(required = false) String isStoreOwner,
-        @RequestParam(required = false) String search,
+        @RequestParam(name = "isActive",required = false) String isActive,
+        @RequestParam(name = "isStoreOwner",required = false) String isStoreOwner,
+        @RequestParam(name = "search",required = false) String search,
         @AuthenticationPrincipal CustomUserDetails useDetails
     ){
         log.info("{}", isActive);
@@ -101,5 +103,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.selectFindMember(member));
     }
 
-    
+    @DeleteMapping("/delete")
+    public ResponseEntity<ObjectResponseWrapper<String>> deleteMember(@RequestBody Map<String, String> password, @AuthenticationPrincipal CustomUserDetails userDetail){
+        return ResponseEntity.ok(memberService.deleteMember(password.get("password"), userDetail.getPassword()));
+    };
 }

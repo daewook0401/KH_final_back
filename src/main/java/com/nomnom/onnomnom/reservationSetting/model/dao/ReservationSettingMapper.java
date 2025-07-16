@@ -32,6 +32,8 @@ public interface ReservationSettingMapper {
 	
 	RestaurantDTO selectMyRestaurant(String memberNo);
 
+	int selectOperatingHoursNo(AvailableTimeVo availableTimeVo);
+
 
 	
 }

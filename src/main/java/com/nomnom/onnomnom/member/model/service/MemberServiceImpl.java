@@ -196,25 +196,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public ObjectResponseWrapper<String> updateInfo(MemberInsertVo info,
-            List<MultipartFile> memberSelfie) {
+    public ObjectResponseWrapper<String> updateInfo(MemberInsertVo info, List<MultipartFile> memberSelfie) {
         
-        String url = "";
-        if (info.getMemberSelfie() != null && info.getMemberSelfie().equals("NULL") && memberSelfie == null){
-            url = "NULL";
-        } else if (memberSelfie.size()==1){
-            url = fileService.imageUpLoad(memberSelfie).get(0);
-        } else if(memberSelfie.size()>1) {
-            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
-        }
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getPrincipal();
-        MemberInsertVo memberValue;
-        String oldSelfie = selectMemberById(userDetails.getUsername()).getMemberSelfie();
-        if (!oldSelfie.equals("NULL")){
-            s3Service.deleteFile(oldSelfie);
+        MemberDTO oldInfo = selectMemberById(userDetails.getUsername());
+        String url = "";
+        if (memberSelfie == null && oldInfo.getMemberSelfie().equals("NULL")){
+            url = "NULL";
+        } else if (memberSelfie == null && !oldInfo.getMemberSelfie().equals("NULL")) {
+            url = oldInfo.getMemberSelfie();
+        } else if (memberSelfie != null && memberSelfie.size()==1 && !oldInfo.getMemberSelfie().equals("NULL")){
+            url = fileService.imageUpLoad(memberSelfie).get(0);
+            s3Service.deleteFile(oldInfo.getMemberSelfie());
+        } else if (memberSelfie != null && memberSelfie.size()==1 && oldInfo.getMemberSelfie().equals("NULL")){
+            url = fileService.imageUpLoad(memberSelfie).get(0);
+        } else if(memberSelfie != null && memberSelfie.size()>1) {
+            throw new BaseException(ErrorCode.FILE_SIZE_EXCEEDED, "이미지 개수가 초과 되었습니다.");
         }
+        MemberInsertVo memberValue;
         if (info.getMemberPw() != null && !info.getMemberPw().isBlank()) {
             memberValue = MemberInsertVo.builder()
                                             .memberId(userDetails.getUsername())
@@ -253,6 +254,7 @@ public class MemberServiceImpl implements MemberService {
                                                     .memberId(userDetails.getUsername())
                                                     .memberName(socialInfo.getMemberName())
                                                     .memberNickName(socialInfo.getMemberNickName())
+                                                    .memberEmail(socialInfo.getMemberEmail())
                                                     .memberSelfie(url)
                                                     .build();
         memberMapper.updateSocialInfo(memberValue);
@@ -288,5 +290,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public ObjectResponseWrapper<MemberDTO> selectFindMember(MemberSelectDTO member){
         return responseWrapperService.wrapperCreate("S100", "아이디 조회 성공", selectMemberByEmail(member.getMemberEmail()));
+    }
+
+    @Override
+    public ObjectResponseWrapper<String> deleteMember(String inputPassword, String memberPassword){
+        if (passwordEncoder.matches(inputPassword, memberPassword)) {
+            MemberInsertVo memberInfo = MemberInsertVo.builder().isActive("N").build();
+            memberMapper.updateInfo(memberInfo);
+            return responseWrapperService.wrapperCreate("S104", "회원탈퇴 성공");
+        }
+        throw new BaseException(ErrorCode.INVALID_PASSWORD_FORMAT, "비밀번호 잘못 입력함");
+        
     }
 }

@@ -44,7 +44,7 @@ public class ReservationSettingController {
 	}
 	
 	@GetMapping("/byRestaurantNo")
-	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSettingByRestaurantNo(@RequestParam("restaurantNo") String restaurantNo) {
+	public ResponseEntity<ObjectResponseWrapper<ReservationSettingRequestDTO>> selectSettingByRestaurantNo(@RequestParam(name = "restaurantNo") String restaurantNo) {
 		return ResponseEntity.ok(reservationSettingService.selectSettingByRestaurantNo(restaurantNo));
 	}
 	
@@ -55,7 +55,7 @@ public class ReservationSettingController {
 	}
 	
 	@DeleteMapping
-	public ResponseEntity<ObjectResponseWrapper<String>> deleteSetting(@RequestParam("restaurantNo") String restaurantNo){
+	public ResponseEntity<ObjectResponseWrapper<String>> deleteSetting(@RequestParam(name = "restaurantNo") String restaurantNo){
 		log.info("restaurantNo : {}",restaurantNo);
 		return ResponseEntity.ok(reservationSettingService.deleteSetting(restaurantNo));
 	}

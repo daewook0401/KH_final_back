@@ -23,8 +23,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			    #{reserveTime},
 			    #{numberOfGuests}
 			    )
-	      
-	     		
 	</insert>
 
 	<select id="selectReservationInfo" parameterType="String" resultType="ReservationSettingDTO">

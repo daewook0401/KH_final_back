@@ -42,7 +42,7 @@ public class RestaurantDTO {
     private String restaurantPhoneNumber;
 
     @NotBlank(message = "가게 설명은 필수 입력값입니다.")
-    @Pattern(regexp = "^[가-힣a-zA-Z0-9 ]{2,16}$",
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9 ]{2,96}$",
     		message = "가게 설명은 2~96자 이내의 한글, 영문, 숫자만 사용 가능합니다.")
     private String restaurantDescription;
 
