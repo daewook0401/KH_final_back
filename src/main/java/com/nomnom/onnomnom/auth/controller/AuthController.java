@@ -22,7 +22,6 @@ import com.nomnom.onnomnom.auth.model.service.AuthService;
 import com.nomnom.onnomnom.auth.model.vo.CustomUserDetails;
 import com.nomnom.onnomnom.global.response.ObjectResponseWrapper;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
